@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using FastReport.Utils;
 
 namespace FastReport.Gauge.Simple
@@ -60,8 +60,8 @@ namespace FastReport.Gauge.Simple
         /// <param name="parent">The parent gauge object.</param>
         public SimpleScale(GaugeObject parent) : base(parent)
         {
-            MajorTicks = new ScaleTicks(10, 2, Color.Black);
-            MinorTicks = new ScaleTicks(6, 1, Color.Black);
+            MajorTicks = new ScaleTicks(10, 2, SkiaSharp.SKColors.Black);
+            MinorTicks = new ScaleTicks(6, 1, SkiaSharp.SKColors.Black);
             majorTicksNum = 6;
             firstSubScale = new SimpleSubScale();
             secondSubScale = new SimpleSubScale();
@@ -73,9 +73,10 @@ namespace FastReport.Gauge.Simple
 
         private void DrawMajorTicksHorz(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(MajorTicks.Color, MajorTicks.Width * e.ScaleX, DashStyle.Solid);
-            Brush brush = TextFill.CreateBrush(new RectangleF(Parent.AbsLeft, Parent.AbsTop, Parent.Width, Parent.Height), e.ScaleX, e.ScaleY);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(MajorTicks.Color, MajorTicks.Width * e.ScaleX, DashStyle.Solid);
+            /*Brush/SkiaSharp.SKPaint brush = TextFill.CreateBrush(new SkiaSharp.SKRect(Parent.AbsLeft, Parent.AbsTop, Parent.Width, Parent.Height), e.ScaleX, e.ScaleY);
             pointerHeightOffset = (Parent.Pointer as SimplePointer).Height / 2 + Parent.Pointer.BorderWidth * 2 * e.ScaleY;
             float x = left;
             float y1 = top;
@@ -84,7 +85,7 @@ namespace FastReport.Gauge.Simple
             float y4 = top + height;
             float step = width / (majorTicksNum - 1);
             int textStep = (int)((Parent.Maximum - Parent.Minimum) / (majorTicksNum - 1));
-            Font font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
+            SkiaSharp.SKFont font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
             string text = Parent.Minimum.ToString();
             if (firstSubScale.Enabled)
             {
@@ -93,7 +94,7 @@ namespace FastReport.Gauge.Simple
                     g.DrawLine(pen, x, y1, x, y2);
                     if (firstSubScale.ShowCaption)
                     {
-                        SizeF strSize = g.MeasureString(text, Font);
+                        SkiaSharp.SKSize strSize = g.MeasureString(text, Font);
                         g.DrawString(text, font, brush, x - strSize.Width / 2 * e.ScaleX / (DrawUtils.ScreenDpi / 96f), y1 - 0.4f * Units.Centimeters * e.ScaleY);
                         text = Convert.ToString(textStep * (i + 1) + Parent.Minimum);
                     }
@@ -109,7 +110,7 @@ namespace FastReport.Gauge.Simple
                     g.DrawLine(pen, x, y3, x, y4);
                     if (secondSubScale.ShowCaption)
                     {
-                        SizeF strSize = g.MeasureString(text, Font);
+                        SkiaSharp.SKSize strSize = g.MeasureString(text, Font);
 
                         g.DrawString(text, font, brush, x - strSize.Width / 2 * e.ScaleX / (DrawUtils.ScreenDpi / 96f), y4 + 0.08f * Units.Centimeters * e.ScaleY);
                         text = Convert.ToString(textStep * (i + 1) + Parent.Minimum);
@@ -117,13 +118,14 @@ namespace FastReport.Gauge.Simple
                     x += step;
                 }
             }
-            brush.Dispose();
+            brush.Dispose();*/
         }
 
         private void DrawMinorTicksHorz(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(MinorTicks.Color, MinorTicks.Width * e.ScaleX, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(MinorTicks.Color, MinorTicks.Width * e.ScaleX, DashStyle.Solid);
             pointerHeightOffset = (Parent.Pointer as SimplePointer).Height / 2 + Parent.Pointer.BorderWidth * 2 * e.ScaleY;
             float x = left;
             float y1 = top + height * 0.15f;
@@ -155,14 +157,15 @@ namespace FastReport.Gauge.Simple
                         x += step;
                     }
                 }
-            }
+            }*/
         }
 
         private void DrawMajorTicksVert(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(MajorTicks.Color, MajorTicks.Width * e.ScaleY, DashStyle.Solid);
-            Brush brush = TextFill.CreateBrush(new RectangleF(Parent.AbsLeft * e.ScaleX, Parent.AbsTop * e.ScaleY,
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(MajorTicks.Color, MajorTicks.Width * e.ScaleY, DashStyle.Solid);
+            /*Brush/SkiaSharp.SKPaint brush = TextFill.CreateBrush(new SkiaSharp.SKRect(Parent.AbsLeft * e.ScaleX, Parent.AbsTop * e.ScaleY,
     Parent.Width * e.ScaleX, Parent.Height * e.ScaleY), e.ScaleX, e.ScaleY);
             pointerWidthOffset = (Parent.Pointer as SimplePointer).Width / 2 + Parent.Pointer.BorderWidth * 2 * e.ScaleX;
             float y = top + height;
@@ -172,7 +175,7 @@ namespace FastReport.Gauge.Simple
             float x4 = left + width;
             float step = height / (majorTicksNum - 1);
             int textStep = (int)((Parent.Maximum - Parent.Minimum) / (majorTicksNum - 1));
-            Font font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
+            SkiaSharp.SKFont font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
             string text = Parent.Minimum.ToString();
             if (firstSubScale.Enabled)
             {
@@ -181,7 +184,7 @@ namespace FastReport.Gauge.Simple
                     g.DrawLine(pen, x1, y, x2, y);
                     if (firstSubScale.ShowCaption)
                     {
-                        SizeF strSize = g.MeasureString(text, Font);
+                        SkiaSharp.SKSize strSize = g.MeasureString(text, Font);
                         g.DrawString(text, font, brush, x1 - strSize.Width * e.ScaleX / (DrawUtils.ScreenDpi / 96f) - 0.04f * Units.Centimeters * e.ScaleX, y - strSize.Height / 2 * e.ScaleY / (DrawUtils.ScreenDpi / 96f));
                         text = Convert.ToString(textStep * (i + 1) + Parent.Minimum);
                     }
@@ -197,7 +200,7 @@ namespace FastReport.Gauge.Simple
                     g.DrawLine(pen, x3, y, x4, y);
                     if (secondSubScale.ShowCaption)
                     {
-                        SizeF strSize = g.MeasureString(text, Font);
+                        SkiaSharp.SKSize strSize = g.MeasureString(text, Font);
 
                         g.DrawString(text, font, brush, x4 + 0.04f * Units.Centimeters * e.ScaleX, y - strSize.Height / 2 * e.ScaleY / (DrawUtils.ScreenDpi / 96f));
                         text = Convert.ToString(textStep * (i + 1) + Parent.Minimum);
@@ -205,13 +208,14 @@ namespace FastReport.Gauge.Simple
                     y -= step;
                 }
             }
-            brush.Dispose();
+            brush.Dispose();*/
         }
 
         private void DrawMinorTicksVert(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(MinorTicks.Color, MinorTicks.Width * e.ScaleY, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(MinorTicks.Color, MinorTicks.Width * e.ScaleY, DashStyle.Solid);
             pointerWidthOffset = (Parent.Pointer as SimplePointer).Width / 2 + Parent.Pointer.BorderWidth * 2 * e.ScaleX;
             float y = top + height;
             float x1 = left + width * 0.15f;
@@ -243,7 +247,7 @@ namespace FastReport.Gauge.Simple
                         y -= step;
                     }
                 }
-            }
+            }*/
         }
 
         #endregion // Private Methods

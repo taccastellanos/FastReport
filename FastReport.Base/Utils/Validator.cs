@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -106,14 +106,14 @@ namespace FastReport.Utils
         /// <param name="parent"></param>
         /// <param name="child"></param>
         /// <returns></returns>
-        static public bool RectContainInOtherRect(RectangleF parent, RectangleF child)
+        static public bool RectContainInOtherRect(SkiaSharp.SKRect parent, SkiaSharp.SKRect child)
         {
             return parent.Contains(GetReducedRect(child));
         }
 
-        private static RectangleF GetReducedRect(RectangleF rect)
+        private static SkiaSharp.SKRect GetReducedRect(SkiaSharp.SKRect rect)
         {
-            return new RectangleF(rect.X + 0.01f, rect.Y + 0.01f, rect.Width - 0.02f, rect.Height - 0.02f);
+            return new SkiaSharp.SKRect(rect.X + 0.01f, rect.Y + 0.01f, rect.Width - 0.02f, rect.Height - 0.02f);
         }
 
         /// <summary>

@@ -1,5 +1,5 @@
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using FastReport.Utils;
 
 namespace FastReport
@@ -17,15 +17,15 @@ namespace FastReport
         #region Protected Methods
 
         /// <summary>
-        /// Calculate GraphicsPath for draw to page
+        /// Calculate SkiaSharp.SKPath for draw to page
         /// </summary>
         /// <param name="pen">Pen for lines</param>
         /// <param name="scaleX">scale by width</param>
         /// <param name="scaleY">scale by height</param>
         /// <returns>Always returns a non-empty path</returns>
-        protected GraphicsPath getPolygonPath(Pen pen, float scaleX, float scaleY)
+        protected SkiaSharp.SKPath getPolygonPath (/*Pen*/SkiaSharp.SKPaint pen, float scaleX, float scaleY)
         {
-            GraphicsPath gp = base.GetPath(pen, AbsLeft, AbsTop, AbsRight, AbsBottom, scaleX, scaleY);
+            SkiaSharp.SKPath gp = base.GetPath(pen, AbsLeft, AbsTop, AbsRight, AbsBottom, scaleX, scaleY);
             gp.CloseAllFigures();
             return gp;
         }
@@ -41,18 +41,18 @@ namespace FastReport
             float dx = (Width - Border.Width) * e.ScaleX - 1;
             float dy = (Height - Border.Width) * e.ScaleY - 1;
 
-            Pen pen;
+            /*Pen*/SkiaSharp.SKPaint pen;
             if (polygonSelectionMode == PolygonSelectionMode.MoveAndScale)
             {
                 pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
             }
             else pen = e.Cache.GetPen(Border.Color, 1, DashStyle.Solid);
 
-            Brush brush = null;
+            /*Brush*/SkiaSharp.SKPaint brush = null;
             if (Fill is SolidFill)
-                brush = e.Cache.GetBrush((Fill as SolidFill).Color);
+                /*Brush*/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
             else
-                brush = Fill.CreateBrush(new RectangleF(x, y, dx, dy), e.ScaleX, e.ScaleY);
+                /*Brush*/SkiaSharp.SKPaint = Fill.CreateBrush(new SkiaSharp.SKRect(x, y, dx, dy), e.ScaleX, e.ScaleY);
 
             using (GraphicsPath path = getPolygonPath(pen, e.ScaleX, e.ScaleY))
             {

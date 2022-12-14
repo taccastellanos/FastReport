@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Drawing.Drawing2D;
+
+
+
 using FastReport.Utils;
 using FastReport.Code;
 using System.Windows.Forms;
-using System.Drawing.Design;
+
 using FastReport.Barcode.QRCode;
 
 namespace FastReport.Barcode
@@ -93,7 +93,7 @@ namespace FastReport.Barcode
         private string savedText;
         private bool asBitmap;
         private Alignment horzAlign;
-        private RectangleF origRect;
+        private SkiaSharp.SKRect origRect;
         #endregion
 
         #region Properties
@@ -101,7 +101,7 @@ namespace FastReport.Barcode
         /// Gets or sets the barcode type.
         /// </summary>
         [Category("Appearance")]
-        [Editor("FastReport.TypeEditors.BarcodeEditor, FastReport", typeof(UITypeEditor))]
+        
         public BarcodeBase Barcode
         {
             get { return barcode; }
@@ -206,7 +206,7 @@ namespace FastReport.Barcode
         /// Value must be in the form "Datasource.Column".
         /// </remarks>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.DataColumnEditor, FastReport", typeof(UITypeEditor))]
+        
         public string DataColumn
         {
             get { return dataColumn; }
@@ -217,7 +217,7 @@ namespace FastReport.Barcode
         /// Gets or sets an expression that contains the barcode data.
         /// </summary>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string Expression
         {
             get { return expression; }
@@ -260,7 +260,7 @@ namespace FastReport.Barcode
         /// Gets or sets the barcode data.
         /// </summary>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string Text
         {
             get { return text; }
@@ -330,12 +330,12 @@ namespace FastReport.Barcode
 
         private void DrawBarcode(FRPaintEventArgs e)
         {
-            RectangleF displayRect = new RectangleF(
+            SkiaSharp.SKRect displayRect = new SkiaSharp.SKRect(
               (AbsLeft + Padding.Left) * e.ScaleX,
               (AbsTop + Padding.Top) * e.ScaleY,
               (Width - Padding.Horizontal) * e.ScaleX,
               (Height - Padding.Vertical) * e.ScaleY);
-
+/* TODO
             IGraphics g = e.Graphics;
             IGraphicsState state = g.Save();
             try
@@ -355,7 +355,7 @@ namespace FastReport.Barcode
             finally
             {
                 g.Restore(state);
-            }
+            }*/
         }
 
         #endregion
@@ -378,7 +378,7 @@ namespace FastReport.Barcode
         public void UpdateAutoSize()
         {
             SetBarcodeProperties();
-            SizeF size = Barcode.CalcBounds();
+            SkiaSharp.SKSize size = Barcode.CalcBounds();
             size.Width *= Zoom;
             size.Height *= Zoom;
             if (AutoSize)
@@ -404,7 +404,7 @@ namespace FastReport.Barcode
         /// </summary>
         public void RelocateAlign()
         {
-            if (HorzAlign == Alignment.Left || origRect == RectangleF.Empty)
+            if (HorzAlign == Alignment.Left || origRect == SkiaSharp.SKRect.Empty)
                 return;
             switch( HorzAlign)
             {
@@ -419,7 +419,7 @@ namespace FastReport.Barcode
                         break;
                     }
             }
-            origRect = RectangleF.Empty;
+            origRect = SkiaSharp.SKRect.Empty;
         }
 
         /// <inheritdoc/>
@@ -489,13 +489,14 @@ namespace FastReport.Barcode
                         error = true;
                     }
                 }
-
+/* TODO
                 if (error)
                     e.Graphics.DrawString(errorText, DrawUtils.DefaultReportFont, Brushes.Red,
-                        new RectangleF(AbsLeft * e.ScaleX, AbsTop * e.ScaleY, Width * e.ScaleX, Height * e.ScaleY));
+                        new SkiaSharp.SKRect(AbsLeft * e.ScaleX, AbsTop * e.ScaleY, Width * e.ScaleX, Height * e.ScaleY));
+       */
             }
             DrawMarkers(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
         }
 
         /// <inheritdoc/>

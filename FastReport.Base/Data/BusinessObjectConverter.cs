@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
+
 using FastReport.Utils;
 using System.Windows.Forms;
 
@@ -68,7 +68,7 @@ namespace FastReport.Data
       if (type.IsValueType ||
         type == typeof(string) ||
         type == typeof(byte[]) ||
-        typeof(Image).IsAssignableFrom(type))
+        typeof(SkiaSharp.SKImage).IsAssignableFrom(type))
       {
         kind = PropertyKind.Simple;
       }

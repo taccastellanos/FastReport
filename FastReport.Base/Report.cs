@@ -10,8 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Text;
+
+
 using System.IO;
 using System.Security;
 using System.Text;
@@ -194,7 +194,7 @@ namespace FastReport
     /// // create Text object and put it to the title
     /// TextObject text = new TextObject();
     /// text.Name = "Text1";
-    /// text.Bounds = new RectangleF(0, 0, Units.Millimeters * 100, Units.Millimeters * 5);
+    /// text.Bounds = new SkiaSharp.SKRect(0, 0, Units.Millimeters * 100, Units.Millimeters * 5);
     /// page.ReportTitle.Objects.Add(text);
     /// // create data band
     /// DataBand data = new DataBand();
@@ -239,7 +239,7 @@ namespace FastReport
         private FastReport.Preview.PreparedPages preparedPages;
         private ReportEngine engine;
         private bool aborted;
-        private Bitmap measureBitmap;
+        private SkiaSharp.SKBitmap measureBitmap;
         private IGraphics measureGraphics;
         private bool storeInResources;
         private PermissionSet scriptRestrictions;

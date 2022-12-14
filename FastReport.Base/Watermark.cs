@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
+
 using FastReport.Utils;
 using System.Windows.Forms;
-using System.Drawing.Design;
+
 
 namespace FastReport
 {
@@ -72,7 +72,6 @@ namespace FastReport
     /// watermark, set its <b>Enabled</b> property to <b>true</b>.
     /// </remarks>
     [TypeConverter(typeof(FastReport.TypeConverters.FRExpandableObjectConverter))]
-    [EditorAttribute("FastReport.TypeEditors.WatermarkEditor, FastReport", typeof(UITypeEditor))]
     public class Watermark : IDisposable
     {
         #region Fields
@@ -99,7 +98,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets the watermark image.
         /// </summary>
-        public Image Image
+        public SkiaSharp.SKImage  Image
         {
             get { return pictureObject.Image; }
             set { pictureObject.Image = value; }
@@ -140,7 +139,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets a font of the watermark text.
         /// </summary>
-        public Font Font
+        public SkiaSharp.SKFont Font
         {
             get { return textObject.Font; }
             set { textObject.Font = value; }
@@ -149,7 +148,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets a text fill.
         /// </summary>
-        [Editor("FastReport.TypeEditors.FillEditor, FastReport", typeof(UITypeEditor))]
+        
         public FillBase TextFill
         {
             get { return textObject.TextFill; }
@@ -204,7 +203,7 @@ namespace FastReport
         #region Private Methods
         //private bool ShouldSerializeFont()
         //{
-        //    return Font.Name != DrawUtils.DefaultReportFont.Name || Font.Size != 60 || Font.Style != FontStyle.Regular;
+        //    return Font.Name != DrawUtils.DefaultReportFont.Name || Font.Size != 60 || Font.Style != SkiaSharp.SKFontStyle.Regular;
         //}
 
         private bool ShouldSerializeTextFill()
@@ -214,7 +213,7 @@ namespace FastReport
 
         private bool ShouldSerializeImage()
         {
-            return Image != null;
+            return SkiaSharp.SKImage  != null;
         }
         #endregion
 
@@ -226,7 +225,7 @@ namespace FastReport
         /// <param name="displayRect"></param>
         /// <param name="report"></param>
         /// <param name="isPrinting"></param>
-        public virtual void DrawImage(FRPaintEventArgs e, RectangleF displayRect, Report report, bool isPrinting)
+        public virtual void DrawImage(FRPaintEventArgs e, SkiaSharp.SKRect displayRect, Report report, bool isPrinting)
         {
             pictureObject.SetReport(report);
             pictureObject.Bounds = displayRect;
@@ -250,7 +249,7 @@ namespace FastReport
         /// <param name="displayRect"></param>
         /// <param name="report"></param>
         /// <param name="isPrinting"></param>
-        public void DrawText(FRPaintEventArgs e, RectangleF displayRect, Report report, bool isPrinting)
+        public void DrawText(FRPaintEventArgs e, SkiaSharp.SKRect displayRect, Report report, bool isPrinting)
         {
             textObject.SetReport(report);
             textObject.Bounds = displayRect;
@@ -323,7 +322,7 @@ namespace FastReport
         public void Assign(Watermark source)
         {
             Enabled = source.Enabled;
-            Image = source.Image == null ? null : source.Image.Clone() as Image;
+            SkiaSharp.SKImage  = source.Image == null ? null : source.Image.Clone() as Image;
             ImageSize = source.ImageSize;
             ImageTransparency = source.ImageTransparency;
             Text = source.Text;
@@ -358,8 +357,8 @@ namespace FastReport
             textObject.HorzAlign = HorzAlign.Center;
             textObject.VertAlign = VertAlign.Center;
             ImageSize = WatermarkImageSize.Zoom;
-            Font = new Font(DrawUtils.DefaultReportFont.Name, 60);
-            TextFill = new SolidFill(Color.FromArgb(40, Color.Gray));
+            Font = new SkiaSharp.SKFont(DrawUtils.DefaultReportFont.Name, 60);
+            TextFill = new SolidFill(Color.FromArgb(40, SkiaSharp.SKColors.Gray));
             TextRotation = WatermarkTextRotation.ForwardDiagonal;
             ShowTextOnTop = true;
         }

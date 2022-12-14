@@ -91,15 +91,13 @@ namespace FastReport.Engine
             try
             {
                 textObject.GetData();
-                string fill_clr = textObject.FillColor.IsNamedColor ? textObject.FillColor.Name :
-                    "#" + textObject.FillColor.Name;
-                string txt_clr = textObject.TextColor.IsNamedColor ? textObject.TextColor.Name :
-                    "#" + textObject.TextColor.Name;
+                string fill_clr = textObject.FillColor.ToString();
+                string txt_clr = textObject.TextColor.ToString();
 
                 xmlItem.SetProp("x", textObject.Text);
                 xmlItem.SetProp("Fill.Color", fill_clr);
                 xmlItem.SetProp("TextFill.Color", txt_clr);
-                xmlItem.SetProp("Font.Name", textObject.Font.Name);
+                xmlItem.SetProp("Font.Name", textObject.Font.Typeface.FamilyName);
             }
             finally
             {

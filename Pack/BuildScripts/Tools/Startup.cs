@@ -187,14 +187,14 @@ namespace CakeScript
             Console.WriteLine(info);
         }
 
-        public static void Information(object info, ConsoleColor color)
+        public static void Information(object info, ConsoleSkiaSharp.SKColor color)
         {
             Console.ForegroundColor = color;
             Information(info);
             Console.ResetColor();
         }
 
-        public static void Information(string info, ConsoleColor color)
+        public static void Information(string info, ConsoleSkiaSharp.SKColor color)
         {
             Console.ForegroundColor = color;
             Information(info);

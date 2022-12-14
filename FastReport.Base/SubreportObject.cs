@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Design;
+
+
 using FastReport.Utils;
 
 namespace FastReport
@@ -25,7 +25,7 @@ namespace FastReport
     /// // add subreport on it
     /// SubreportObject subreport = new SubreportObject();
     /// subreport.Name = "Subreport1";
-    /// subreport.Bounds = new RectangleF(0, 0, Units.Millimeters * 25, Units.Millimeters * 5);
+    /// subreport.Bounds = new SkiaSharp.SKRect(0, 0, Units.Millimeters * 25, Units.Millimeters * 5);
     /// reportPage.ReportTitle.Objects.Add(subreport);
     /// // create subreport page
     /// ReportPage subreportPage = new ReportPage();
@@ -45,7 +45,7 @@ namespace FastReport
         /// Gets or sets a report page that contains the subreport bands and objects.
         /// </summary>
         //[Browsable(false)]
-        [Editor("FastReport.TypeEditors.SubreportPageEditor, FastReport", typeof(UITypeEditor))]
+        
         [TypeConverter(typeof(FastReport.TypeConverters.ComponentRefConverter))]
         public ReportPage ReportPage
         {

@@ -1,6 +1,6 @@
 using System;
 using System.Globalization;
-using System.Drawing;
+
 using FastReport.Utils;
 using FastReport.Barcode;
 using System.Xml;
@@ -78,13 +78,14 @@ namespace FastReport.Import.JasperReports
         /// </summary>
         /// <param name="str">The DevExpress Color value as string.</param>
         /// <returns>The Color value.</returns>
-        public static Color ConvertColor(string str)
+        public static SkiaSharp.SKColor ConvertColor(string str)
         {
             if (!String.IsNullOrEmpty(str))
             {
-                return ColorTranslator.FromHtml(str);
+                var chanel = System.Text.Encoding.UTF8.GetBytes(str.Replace("#",""));
+                return new SkiaSharp.SKColor(chanel[0],chanel[1], chanel[2]);
             }
-            return Color.Black;
+            return SkiaSharp.SKColors.Black;
         }
 
         /// <summary>

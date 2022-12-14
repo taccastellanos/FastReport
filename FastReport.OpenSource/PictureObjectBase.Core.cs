@@ -1,5 +1,5 @@
 ﻿using FastReport.Utils;
-using System.Drawing;
+
 
 namespace FastReport
 {

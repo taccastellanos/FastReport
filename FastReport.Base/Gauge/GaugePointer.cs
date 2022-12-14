@@ -1,7 +1,7 @@
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
-using System.Drawing.Design;
+
 
 namespace FastReport.Gauge
 {
@@ -18,7 +18,7 @@ namespace FastReport.Gauge
         private GaugeObject parent;
         private FillBase fill;
         private float borderWidth;
-        private Color borderColor;
+        private SkiaSharp.SKColor borderColor;
 
 #endregion // Fields
 
@@ -38,7 +38,7 @@ namespace FastReport.Gauge
         /// Gets or sets the color of a pointer.
         /// </summary>
         [Browsable(true)]
-        [Editor("FastReport.TypeEditors.FillEditor, FastReport", typeof(UITypeEditor))]
+        
         public FillBase Fill
         {
             get { return fill; }
@@ -59,7 +59,7 @@ namespace FastReport.Gauge
         /// Gets or sets the border color of a pointer.
         /// </summary>
         [Browsable(true)]
-        public Color BorderColor
+        public SkiaSharp.SKColor BorderColor
         {
             get { return borderColor; }
             set { borderColor = value; }
@@ -75,9 +75,9 @@ namespace FastReport.Gauge
         /// <param name="parent">The parent gauge object.</param>
         public GaugePointer(GaugeObject parent)
         {
-            fill = new SolidFill(Color.Orange);
+            fill = new SolidFill(SkiaSharp.SKColors.Orange);
             borderWidth = 1.0f;
-            borderColor = Color.Black;
+            borderColor = SkiaSharp.SKColors.Black;
             this.parent = parent;
         }
 

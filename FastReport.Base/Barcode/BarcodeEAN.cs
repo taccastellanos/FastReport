@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -73,7 +73,7 @@ namespace FastReport.Barcode
   /// </summary>
   public class BarcodeEAN8 : BarcodeEAN
   {
-    internal override void DrawText(IGraphics g, string barData)
+    internal override void DrawText(SkiaSharp.SKDrawable g, string barData)
     {
       // parts of pattern: 3 + 16 + 5 + 16 + 3
       float x1 = GetWidth(pattern.Substring(0, 3));
@@ -113,7 +113,7 @@ namespace FastReport.Barcode
   /// </summary>
   public class BarcodeEAN13 : BarcodeEAN
   {
-    //Zuordung der Paraitaetsfolgen f¹r EAN13
+    //Zuordung der Paraitaetsfolgen fï¿½r EAN13
     private static string[,] tabelle_ParityEAN13 = {
       {"A", "A", "A", "A", "A", "A"},    // 0 
       {"A", "A", "B", "A", "B", "B"},    // 1 
@@ -127,7 +127,7 @@ namespace FastReport.Barcode
       {"A", "B", "B", "A", "B", "A"}     // 9 
     };
 
-    internal override void DrawText(IGraphics g, string barData)
+    internal override void DrawText(SkiaSharp.SKDrawable g, string barData)
     {
       DrawString(g, -8, -2, barData.Substring(0, 1));
 

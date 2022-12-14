@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
-using System.Drawing;
+
 using FastReport.Utils;
 using FastReport.Format;
-using System.Drawing.Design;
+
 
 namespace FastReport.Data
 {
@@ -130,7 +130,7 @@ namespace FastReport.Data
     /// </summary>
     [TypeConverter(typeof(FastReport.TypeConverters.DataTypeConverter))]
     [Category("Data")]
-    [Editor("FastReport.TypeEditors.DataTypeEditor, FastReport", typeof(UITypeEditor))]
+    
     public Type DataType
     {
       get { return dataType; }
@@ -196,7 +196,7 @@ namespace FastReport.Data
     /// This property is used if the <see cref="Calculated"/> property is <b>true</b>.
     /// </remarks>
     [Category("Data")]
-    [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+    
     public string Expression
     {
       get { return expression; }
@@ -302,7 +302,7 @@ namespace FastReport.Data
     
     internal void SetBindableControlType(Type type)
     {
-      if (type == typeof(byte[]) || typeof(Image).IsAssignableFrom(type))
+      if (type == typeof(byte[]) || typeof(SkiaSharp.SKImage).IsAssignableFrom(type))
         BindableControl = ColumnBindableControl.Picture;
       else if (type == typeof(bool))
         BindableControl = ColumnBindableControl.CheckBox;

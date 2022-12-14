@@ -1,11 +1,11 @@
 using System;
-using System.Drawing;
+
 using System.ComponentModel;
 using System.Collections.Generic;
 using FastReport.Utils;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
-using System.Drawing.Design;
+
+
 
 namespace FastReport
 {
@@ -134,7 +134,7 @@ namespace FastReport
         /// </para>
         /// </remarks>
         [Category("Navigation")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string OutlineExpression
         {
             get { return outlineExpression; }
@@ -441,7 +441,7 @@ namespace FastReport
             updatingLayout = true;
             try
             {
-                RectangleF remainingBounds = new RectangleF(0, 0, Width, Height);
+                SkiaSharp.SKRect remainingBounds = new SkiaSharp.SKRect(0, 0, Width, Height);
                 remainingBounds.Width += dx;
                 remainingBounds.Height += dy;
                 foreach (ReportComponentBase c in Objects)
@@ -471,24 +471,24 @@ namespace FastReport
                     switch (c.Dock)
                     {
                         case DockStyle.Left:
-                            c.Bounds = new RectangleF(remainingBounds.Left, remainingBounds.Top, c.Width, remainingBounds.Height);
+                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Top, c.Width, remainingBounds.Height);
                             remainingBounds.X += c.Width;
                             remainingBounds.Width -= c.Width;
                             break;
 
                         case DockStyle.Top:
-                            c.Bounds = new RectangleF(remainingBounds.Left, remainingBounds.Top, remainingBounds.Width, c.Height);
+                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Top, remainingBounds.Width, c.Height);
                             remainingBounds.Y += c.Height;
                             remainingBounds.Height -= c.Height;
                             break;
 
                         case DockStyle.Right:
-                            c.Bounds = new RectangleF(remainingBounds.Right - c.Width, remainingBounds.Top, c.Width, remainingBounds.Height);
+                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Right - c.Width, remainingBounds.Top, c.Width, remainingBounds.Height);
                             remainingBounds.Width -= c.Width;
                             break;
 
                         case DockStyle.Bottom:
-                            c.Bounds = new RectangleF(remainingBounds.Left, remainingBounds.Bottom - c.Height, remainingBounds.Width, c.Height);
+                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Bottom - c.Height, remainingBounds.Width, c.Height);
                             remainingBounds.Height -= c.Height;
                             break;
 

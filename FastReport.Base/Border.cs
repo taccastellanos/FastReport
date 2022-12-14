@@ -1,9 +1,9 @@
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.ComponentModel;
 using FastReport.Utils;
-using System.Drawing.Design;
+
 
 namespace FastReport
 {
@@ -92,7 +92,7 @@ namespace FastReport
   public class BorderLine
   {
     #region Fields
-    private Color color;
+    private SkiaSharp.SKColor color;
     private LineStyle style;
     private float width;
     #endregion
@@ -101,8 +101,8 @@ namespace FastReport
     /// <summary>
     /// Gets or sets a color of the line.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color Color
+    
+    public SkiaSharp.SKColor Color
     {
       get { return color; }
       set { color = value; }
@@ -112,7 +112,7 @@ namespace FastReport
     /// Gets or sets a style of the line.
     /// </summary>
     [DefaultValue(LineStyle.Solid)]
-    [Editor("FastReport.TypeEditors.LineStyleEditor, FastReport", typeof(UITypeEditor))]
+    
     public LineStyle Style
     {
       get { return style; }
@@ -143,12 +143,12 @@ namespace FastReport
     #region Private Methods
     private bool ShouldSerializeColor()
     {
-      return Color != Color.Black;
+      return Color != SkiaSharp.SKColors.Black;
     }
     
     internal bool ShouldSerialize()
     {
-      return Width != 1 || Style != LineStyle.Solid || Color != Color.Black;
+      return Width != 1 || Style != LineStyle.Solid || Color != SkiaSharp.SKColors.Black;
     }
     #endregion
 
@@ -188,7 +188,7 @@ namespace FastReport
       int penWidth = (int)Math.Round(Width * e.ScaleX);
       if (penWidth <= 0)
         penWidth = 1;
-      using (Pen pen = new Pen(Color, penWidth))
+      using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (Color, penWidth))
       {
         pen.DashStyle = DashStyle;
         pen.StartCap = LineCap.Square;
@@ -248,7 +248,7 @@ namespace FastReport
 
     public BorderLine()
     {
-      color = Color.Black;
+      color = SkiaSharp.SKColors.Black;
       width = 1;
     }
     #endregion
@@ -265,13 +265,13 @@ namespace FastReport
     /// for each line, use <see cref="Color"/>, <see cref="Style"/>, <see cref="Width"/> properties of the <b>Border</b>.
     /// </remarks>
     [TypeConverter(typeof(FastReport.TypeConverters.FRExpandableObjectConverter))]
-    [Editor("FastReport.TypeEditors.BorderEditor, FastReport", typeof(UITypeEditor))]
+    
   public class Border
   {
     #region Fields
     private bool shadow;
     private float shadowWidth;
-    private Color shadowColor;
+    private SkiaSharp.SKColor shadowColor;
     private BorderLines lines;
     private BorderLine leftLine;
     private BorderLine topLine;
@@ -288,8 +288,8 @@ namespace FastReport
     /// This property actually returns a color of the <see cref="LeftLine"/>. When you assign a value 
     /// to this property, the value will be set to each border line.
     /// </remarks>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color Color
+    
+    public SkiaSharp.SKColor Color
     {
       get { return leftLine.Color; }
       set
@@ -324,8 +324,8 @@ namespace FastReport
     /// <summary>
     /// Gets or sets a shadow color.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color ShadowColor
+    
+    public SkiaSharp.SKColor ShadowColor
     {
       get { return shadowColor; }
       set { shadowColor = value; }
@@ -339,7 +339,7 @@ namespace FastReport
     /// to this property, the value will be set to each border line.
     /// </remarks>
     [DefaultValue(LineStyle.Solid)]
-    [Editor("FastReport.TypeEditors.LineStyleEditor, FastReport", typeof(UITypeEditor))]
+    
     public LineStyle Style
     {
       get { return leftLine.Style; }
@@ -356,7 +356,7 @@ namespace FastReport
     /// Gets or sets a visible lines of a border.
     /// </summary>
     [DefaultValue(BorderLines.None)]
-    [Editor("FastReport.TypeEditors.BorderLinesEditor, FastReport", typeof(UITypeEditor))]
+    
     public BorderLines Lines
     {
       get { return lines; }
@@ -461,12 +461,12 @@ namespace FastReport
     
     private bool ShouldSerializeColor()
     {
-      return Color != Color.Black;
+      return Color != SkiaSharp.SKColors.Black;
     }
 
     private bool ShouldSerializeShadowColor()
     {
-      return ShadowColor != Color.Black;
+      return ShadowColor != SkiaSharp.SKColors.Black;
     }
     #endregion
 
@@ -543,7 +543,7 @@ namespace FastReport
       {
         if (Lines != c.Lines)
           writer.WriteValue(prefix + ".Lines", Lines);
-        if (Lines != BorderLines.None || Color != Color.Black)
+        if (Lines != BorderLines.None || Color != SkiaSharp.SKColors.Black)
         {
           if (LeftLine.Equals(RightLine) && LeftLine.Equals(TopLine) && LeftLine.Equals(BottomLine) &&
             c.LeftLine.Equals(c.RightLine) && c.LeftLine.Equals(c.TopLine) && c.LeftLine.Equals(c.BottomLine))
@@ -569,7 +569,7 @@ namespace FastReport
     /// <remarks>
     /// This method is for internal use only.
     /// </remarks>
-    public void Draw(FRPaintEventArgs e, RectangleF rect)
+    public void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
       IGraphics g = e.Graphics;
       rect.X *= e.ScaleX;
@@ -585,7 +585,7 @@ namespace FastReport
         //g.DrawLine(pen, rect.Left + d, rect.Bottom + d / 2, rect.Right + d, rect.Bottom + d / 2);
 
         float d = ShadowWidth * e.ScaleX;
-        Brush brush = e.Cache.GetBrush(ShadowColor);
+        /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(ShadowColor);
         g.FillRectangle(brush, rect.Left + d, rect.Bottom, rect.Width, d);
         g.FillRectangle(brush, rect.Right, rect.Top + d, d, rect.Height);
       }
@@ -597,7 +597,7 @@ namespace FastReport
         if (Lines == BorderLines.All && LeftLine.Equals(TopLine) && LeftLine.Equals(RightLine) &&
           LeftLine.Equals(BottomLine) && LeftLine.Style == LineStyle.Solid)
         {
-          Pen pen = e.Cache.GetPen(LeftLine.Color, (int)Math.Round(LeftLine.Width * e.ScaleX), LeftLine.DashStyle);
+          /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(LeftLine.Color, (int)Math.Round(LeftLine.Width * e.ScaleX), LeftLine.DashStyle);
           g.DrawRectangle(pen, rect.Left, rect.Top, rect.Width, rect.Height);
         }
         else
@@ -629,7 +629,7 @@ namespace FastReport
       rightLine = new BorderLine();
       bottomLine = new BorderLine();
       shadowWidth = 4;
-      shadowColor = Color.Black;
+      shadowColor = SkiaSharp.SKColors.Black;
     }
 
     private Border(Border src)

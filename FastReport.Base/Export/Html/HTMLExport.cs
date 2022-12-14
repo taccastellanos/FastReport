@@ -1,7 +1,7 @@
 using FastReport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -107,7 +107,6 @@ namespace FastReport.Export.Html
         private int pagesCount;
 
         private string documentTitle;
-        private ImageFormat imageFormat;
         private bool subFolder;
         private bool navigator;
         private bool singlePage;
@@ -385,10 +384,10 @@ namespace FastReport.Export.Html
         /// <summary>
         /// Gets or sets the image format.
         /// </summary>
-        public ImageFormat ImageFormat
+        public SkiaSharp.SKEncodedImageFormat ImageFormat
         {
-            get { return imageFormat; }
-            set { imageFormat = value; }
+            get ;
+            set ; 
         }
 
         /// <summary>
@@ -1015,7 +1014,7 @@ namespace FastReport.Export.Html
             singlePage = false;
             widthUnits = HtmlSizeUnits.Pixel;
             heightUnits = HtmlSizeUnits.Pixel;
-            imageFormat = ImageFormat.Png;
+            ImageFormat = SkiaSharp.SKEncodedImageFormat.Png;
             templates = new HtmlTemplates();
             format = HTMLExportFormat.HTML;
             prevStyleList = null;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.Text;
 
 namespace FastReport.Utils
@@ -18,14 +18,14 @@ namespace FastReport.Utils
         {
             internal string text;
             internal IGraphics g;
-            internal FontFamily font;
+            internal SkiaSharp.SKTypeface font;
             internal float size;
-            internal FontStyle style; // no keep
-            internal Color color; // no keep
-            internal Color underlineColor;
-            internal RectangleF rect;
+            internal SkiaSharp.SKFontStyle style; // no keep
+            internal SkiaSharp.SKColor color; // no keep
+            internal SkiaSharp.SKColor underlineColor;
+            internal SkiaSharp.SKRect rect;
             internal bool underlines;
-            internal StringFormat format; // no keep
+            internal SkiaSharp.SKTextAlign format; // no keep
             internal HorzAlign horzAlign;
             internal VertAlign vertAlign;
             internal ParagraphFormat paragraphFormat;
@@ -50,13 +50,13 @@ namespace FastReport.Utils
         private const char SOFT_ENTER = '\u2028';
         private List<RectangleFColor> backgrounds;
         private InlineImageCache cache;
-        private RectangleF displayRect;
+        private SkiaSharp.SKRect displayRect;
         private bool everUnderlines;
-        private FontFamily font;
+        private SkiaSharp.SKTypeface font;
         private float fontLineHeight;
         private float scale;
         private bool forceJustify;
-        private StringFormat format;
+        private SkiaSharp.SKTextAlign format;
         private IGraphics graphics;
         private HorzAlign horzAlign;
         private ParagraphFormat paragraphFormat;
@@ -65,7 +65,7 @@ namespace FastReport.Utils
         private float size;
         private List<LineFColor> strikeouts;
         private string text;
-        private Color underlineColor;
+        private SkiaSharp.SKColor underlineColor;
         private List<LineFColor> underlines;
         private VertAlign vertAlign;
         private StyleDescriptor initalStyle;
@@ -80,7 +80,7 @@ namespace FastReport.Utils
         #region Public Properties
 
         public IEnumerable<RectangleFColor> Backgrounds { get { return backgrounds; } }
-        public RectangleF DisplayRect { get { return displayRect; } }
+        public SkiaSharp.SKRect DisplayRect { get { return displayRect; } }
         public float Scale { get { return scale; } }
         public float FontScale { get { return fontScale; } set { fontScale = value; } }
         public HorzAlign HorzAlign { get { return horzAlign; } }
@@ -211,9 +211,9 @@ namespace FastReport.Utils
             this.format.Trimming = saveTrimming;
         }
 
-        public HtmlTextRenderer(string text, IGraphics g, FontFamily font, float size,
-                    FontStyle style, Color color, Color underlineColor, RectangleF rect, bool underlines,
-                    StringFormat format, HorzAlign horzAlign, VertAlign vertAlign,
+        public HtmlTextRenderer(string text, IGraphics g, SkiaSharp.SKTypeface font, float size,
+                    SkiaSharp.SKFontStyle style, SkiaSharp.SKColor color, SkiaSharp.SKColor underlineColor, SkiaSharp.SKRect rect, bool underlines,
+                    SkiaSharp.SKTextAlign format, HorzAlign horzAlign, VertAlign vertAlign,
                     ParagraphFormat paragraphFormat, bool forceJustify, float scale, float fontScale, InlineImageCache cache, bool isPrinting = false, bool isDifferentTabPositions = false)
         {
             this.cache = cache;
@@ -437,7 +437,7 @@ namespace FastReport.Utils
         {
             // set clipping
             IGraphicsState state = graphics.Save();
-            //RectangleF rect = new RectangleF(FDisplayRect.Location, SizeF.Add(FDisplayRect.Size, new SizeF(width_dotnet, 0)));
+            //SkiaSharp.SKRect rect = new SkiaSharp.SKRect(FDisplayRect.Location, SizeF.Add(FDisplayRect.Size, new SizeF(width_dotnet, 0)));
             //FGraphics.SetClip(rect, CombineMode.Intersect);
             graphics.SetClip(displayRect, CombineMode.Intersect);
 
@@ -449,11 +449,11 @@ namespace FastReport.Utils
 
             //if (FRightToLeft)
             //    foreach (RectangleFColor rect in FBackgrounds)
-            //        using (Brush brush = new SolidBrush(rect.Color))
+            //        using (Brush /*Brush*/SkiaSharp.SKPaint = new SolidBrush(rect.Color))
             //            FGraphics.FillRectangle(brush, rect.Left - rect.Width, rect.Top, rect.Width, rect.Height);
             //else
             foreach (RectangleFColor rect in backgrounds)
-                using (Brush brush = new SolidBrush(rect.Color))
+                using (var brush = new SolidBrush(rect.Color))
                     graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
 
             foreach (Paragraph p in paragraphs)
@@ -477,21 +477,21 @@ namespace FastReport.Utils
             //if (RightToLeft)
             //{
             //    foreach (LineFColor line in FUnderlines)
-            //        using (Pen pen = new Pen(line.Color, line.Width))
+            //        using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
             //            FGraphics.DrawLine(pen, 2 * line.Left - line.Right, line.Top, line.Left, line.Top);
 
             //    foreach (LineFColor line in FStrikeouts)
-            //        using (Pen pen = new Pen(line.Color, line.Width))
+            //        using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
             //            FGraphics.DrawLine(pen, 2 * line.Left - line.Right, line.Top, line.Left, line.Top);
             //}
             //else
             //{
             foreach (LineFColor line in underlines)
-                using (Pen pen = new Pen(line.Color, line.Width))
+                using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
                     graphics.DrawLine(pen, line.Left, line.Top, line.Right, line.Top);
 
             foreach (LineFColor line in strikeouts)
-                using (Pen pen = new Pen(line.Color, line.Width))
+                using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
                     graphics.DrawLine(pen, line.Left, line.Top, line.Right, line.Top);
             //}
 
@@ -550,7 +550,7 @@ namespace FastReport.Utils
                     try { style.Size *= Single.Parse(tStr.Substring(0, tStr.Length - 2), CultureInfo); } catch { }
             }
             if (dict.TryGetValue("font-family", out tStr))
-                style.Font = new FontFamily(tStr);
+                style.Font = new SkiaSharp.SKTypeface(tStr);
             if (dict.TryGetValue("color", out tStr))
             {
                 if (StartsWith(tStr, "#"))
@@ -920,15 +920,15 @@ namespace FastReport.Utils
                             switch (el.name)
                             {
                                 case "b":
-                                    newStyle.FontStyle |= FontStyle.Bold;
+                                    newStyle.FontStyle |= SkiaSharp.SKFontStyle.Bold;
                                     break;
 
                                 case "i":
-                                    newStyle.FontStyle |= FontStyle.Italic;
+                                    newStyle.FontStyle |= SkiaSharp.SKFontStyle.Italic;
                                     break;
 
                                 case "u":
-                                    newStyle.FontStyle |= FontStyle.Underline;
+                                    newStyle.FontStyle |= SkiaSharp.SKFontStyle.Underline;
                                     break;
 
                                 case "sub":
@@ -940,7 +940,7 @@ namespace FastReport.Utils
                                     break;
 
                                 case "strike":
-                                    newStyle.FontStyle |= FontStyle.Strikeout;
+                                    newStyle.FontStyle |= SkiaSharp.SKFontStyle.Strikeout;
                                     break;
                                     //case "font":
                                     //    {
@@ -1209,7 +1209,7 @@ namespace FastReport.Utils
         {
 #region Public Fields
 
-            public readonly Color Color;
+            public readonly SkiaSharp.SKColor Color;
             public readonly float Left;
             public readonly float Right;
             public readonly float Top;
@@ -1219,7 +1219,7 @@ namespace FastReport.Utils
 
 #region Public Constructors
 
-            public LineFColor(float left, float top, float right, float width, Color color)
+            public LineFColor(float left, float top, float right, float width, SkiaSharp.SKColor color)
             {
                 this.Left = left;
                 this.Top = top;
@@ -1259,7 +1259,7 @@ namespace FastReport.Utils
         {
 #region Public Fields
 
-            public readonly Color Color;
+            public readonly SkiaSharp.SKColor Color;
             public readonly float Height;
             public readonly float Left;
             public readonly float Top;
@@ -1269,7 +1269,7 @@ namespace FastReport.Utils
 
 #region Public Constructors
 
-            public RectangleFColor(float left, float top, float width, float height, Color color)
+            public RectangleFColor(float left, float top, float width, float height, SkiaSharp.SKColor color)
             {
                 this.Left = left;
                 this.Top = top;
@@ -1625,7 +1625,7 @@ namespace FastReport.Utils
                 {
                     foreach (Word word in Words)
                         foreach (Run r in word.Runs)
-                            if ((r.Style.FontStyle & FontStyle.Strikeout) == FontStyle.Strikeout)
+                            if ((r.Style.FontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout)
                                 lines.Add(new LineFColor(
                                 r.Left - r.Width, r.Top + r.BaseLine / 3f * 2f, r.Left, r.Style.Size * 0.1f * fixScale,
                                 r.Style.Color));
@@ -1634,7 +1634,7 @@ namespace FastReport.Utils
                 {
                     foreach (Word word in Words)
                         foreach (Run r in word.Runs)
-                            if ((r.Style.FontStyle & FontStyle.Strikeout) == FontStyle.Strikeout)
+                            if ((r.Style.FontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout)
                                 lines.Add(new LineFColor(
                                 r.Left, r.Top + r.BaseLine / 3f * 2f, r.Left + r.Width, r.Style.Size * 0.1f * fixScale,
                                 r.Style.Color));
@@ -1654,7 +1654,7 @@ namespace FastReport.Utils
                 foreach (Word word in Words)
                     foreach (Run run in word.Runs)
                     {
-                        if ((run.Style.FontStyle & FontStyle.Underline) == FontStyle.Underline)
+                        if ((run.Style.FontStyle & SkiaSharp.SKFontStyle.Underline) == SkiaSharp.SKFontStyle.Underline)
                         {
                             if (currentRuns == null)
                             {
@@ -1899,7 +1899,7 @@ namespace FastReport.Utils
             //{
             //    if (FStyle.BackgroundColor.A > 0)
             //    {
-            //        using (Brush brush = GetBackgroundBrush())
+            //        using (Brush /*Brush*/SkiaSharp.SKPaint = GetBackgroundBrush())
             //            FRenderer.FGraphics.FillRectangle(brush, Left, top, Width, height);
             //    }
             //}
@@ -1914,7 +1914,7 @@ namespace FastReport.Utils
 
 #region Protected Methods
 
-            protected Brush GetBackgroundBrush()
+            protected /*Brush*/SkiaSharp.SKPaint GetBackgroundBrush()
             {
                 return new SolidBrush(style.BackgroundColor);
             }
@@ -1923,22 +1923,22 @@ namespace FastReport.Utils
 
             //public virtual void Draw(bool drawContents)
             //{
-            //    if ((FStyle.FontStyle & FontStyle.Underline) == FontStyle.Underline)
+            //    if ((FStyle.FontStyle & SkiaSharp.SKFontStyle.Underline) == SkiaSharp.SKFontStyle.Underline)
             //    {
             //        if (!FRenderer.FUnderLines)
             //        {
             //            float top = Top + FUnderline;
-            //            using (Pen pen = new Pen(FStyle.Color, FUnderlineSize * 0.1f))
+            //            using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (FStyle.Color, FUnderlineSize * 0.1f))
             //                if (FRenderer.FRightToLeft)
             //                    FRenderer.FGraphics.DrawLine(pen, Left - Width, top, Left, top);
             //                else
             //                    FRenderer.FGraphics.DrawLine(pen, Left, top, Left + Width, top);
             //        }
             //    }
-            //    if ((FStyle.FontStyle & FontStyle.Strikeout) == FontStyle.Strikeout)
+            //    if ((FStyle.FontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout)
             //    {
             //        float top = Top + FBaseLine / 3 * 2;
-            //        using (Pen pen = new Pen(FStyle.Color, FStyle.Size * 0.1f))
+            //        using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (FStyle.Color, FStyle.Size * 0.1f))
             //            if (FRenderer.FRightToLeft)
             //                FRenderer.FGraphics.DrawLine(pen, Left - Width, top, Left, top);
             //            else
@@ -1951,14 +1951,14 @@ namespace FastReport.Utils
         {
 #region Private Fields
 
-            private Image image;
+            private SkiaSharp.SKImage  image;
             private string src;
 
 #endregion Private Fields
 
 #region Public Properties
 
-            public Image Image { get { return image; } }
+            public SkiaSharp.SKImage  Image { get { return image; } }
 
 #endregion Public Properties
 
@@ -1969,7 +1969,7 @@ namespace FastReport.Utils
                 base.style = new StyleDescriptor(style);
                 this.src = src;
                 //disable for exports because img tag not support strikeouts and underlines
-                base.style.FontStyle &= ~(FontStyle.Strikeout | FontStyle.Underline);
+                base.style.FontStyle &= ~(FontStyle.Strikeout | SkiaSharp.SKFontStyle.Underline);
                 image = InlineImageCache.Load(Renderer.cache, src);
                 Width = image.Width * Renderer.Scale;
                 Height = image.Height * Renderer.Scale;
@@ -2012,9 +2012,9 @@ namespace FastReport.Utils
                 if (image != null)
                 {
                     if (renderer.rightToLeft)
-                        renderer.graphics.DrawImage(image, new RectangleF(Left - Width, Top, Width, Height));
+                        renderer.graphics.DrawImage(image, new SkiaSharp.SKRect(Left - Width, Top, Width, Height));
                     else
-                        renderer.graphics.DrawImage(image, new RectangleF(Left, Top, Width, Height));
+                        renderer.graphics.DrawImage(image, new SkiaSharp.SKRect(Left, Top, Width, Height));
                 }
 
                 //base.Draw(drawContents);
@@ -2030,7 +2030,7 @@ namespace FastReport.Utils
 
 #region Internal Methods
 
-            public Bitmap GetBitmap(out float width, out float height)
+            public SkiaSharp.SKBitmap GetBitmap(out float width, out float height)
             {
                 width = 1;
                 height = 1;
@@ -2070,9 +2070,9 @@ namespace FastReport.Utils
                 if (width < 1) width = 1;
                 if (height < 1) height = 1;
 
-                Bitmap bmp = new Bitmap((int)width, (int)height);
+                SkiaSharp.SKSkiaSharp.SKBitmap bmp = new Bitmap((int)width, (int)height);
                 using (Graphics g = Graphics.FromImage(bmp))
-                    g.DrawImage(image, new PointF(x, y));
+                    g.DrawImage(image, new SkiaSharp.SKPoint(x, y));
                 width /= scaleX;
                 height /= scaleY;
                 return bmp;
@@ -2090,7 +2090,7 @@ namespace FastReport.Utils
             //            {
             //                try
             //                {
-            //                    using (Bitmap bmp = new Bitmap(FImage.Width, FImage.Height))
+            //                    using (SkiaSharp.SKBitmap bmp = new Bitmap(FImage.Width, FImage.Height))
             //                    {
             //                        using (Graphics g = Graphics.FromImage(bmp))
             //                        {
@@ -2157,7 +2157,7 @@ namespace FastReport.Utils
                         base.charIndex = text[0].Index;
                         if (word.Type == WordType.WhiteSpace)
                         {
-                            //using (Font f = new Font("Consolas", 10))
+                            //using (Font f = new SkiaSharp.SKFont("Consolas", 10))
                             width = CalcSpaceWidth(this.text, ff);
                         }
                         else
@@ -2179,7 +2179,7 @@ namespace FastReport.Utils
 
 #region Public Methods
 
-            public float CalcSpaceWidth(string text, Font ff)
+            public float CalcSpaceWidth(string text, SkiaSharp.SKFont ff)
             {
                 return Renderer.graphics.MeasureString("1" + text + "2", ff, int.MaxValue, renderer.format).Width
                     - Renderer.graphics.MeasureString("12", ff, int.MaxValue, renderer.format).Width;
@@ -2188,13 +2188,13 @@ namespace FastReport.Utils
             public override void Draw()
             //public override void Draw(bool drawContents)
             {
-                using (Font font = style.GetFont())
-                using (Brush brush = GetBrush())
+                using (SkiaSharp.SKFont font = style.GetFont())
+                using (var brush = GetBrush())
                 {
                     //if (drawContents)
                     //{
                     //#if DEBUG
-                    //                    SizeF size = FRenderer.FGraphics.MeasureString(FText, font, int.MaxValue, FRenderer.FFormat);
+                    //                    SkiaSharp.SKSize size = FRenderer.FGraphics.MeasureString(FText, font, int.MaxValue, FRenderer.FFormat);
                     //                    if (FRenderer.RightToLeft)
                     //                        FRenderer.FGraphics.DrawRectangle(Pens.Red, Left - size.Width, Top, size.Width, size.Height);
                     //                    else
@@ -2206,7 +2206,7 @@ namespace FastReport.Utils
                 //base.Draw(drawContents);
             }
 
-            public Brush GetBrush()
+            public /*Brush*/SkiaSharp.SKPaint GetBrush()
             {
                 return new SolidBrush(Style.Color);
             }
@@ -2804,19 +2804,19 @@ namespace FastReport.Utils
         {
 #region Private Fields
 
-            private static readonly Color DefaultColor = Color.Transparent;
-            private Color backgroundColor;
+            private static readonly SkiaSharp.SKColor DefaultColor = Color.Transparent;
+            private SkiaSharp.SKColor backgroundColor;
             private BaseLine baseLine;
-            private Color color;
-            private FontFamily font;
-            private FontStyle fontStyle;
+            private SkiaSharp.SKColor color;
+            private SkiaSharp.SKTypeface font;
+            private SkiaSharp.SKFontStyle fontStyle;
             private float size;
 
 #endregion Private Fields
 
 #region Public Properties
 
-            public Color BackgroundColor
+            public SkiaSharp.SKColor BackgroundColor
             {
                 get { return backgroundColor; }
                 set { backgroundColor = value; }
@@ -2828,19 +2828,19 @@ namespace FastReport.Utils
                 set { baseLine = value; }
             }
 
-            public Color Color
+            public SkiaSharp.SKColor Color
             {
                 get { return color; }
                 set { color = value; }
             }
 
-            public FontFamily Font
+            public SkiaSharp.SKTypeface Font
             {
                 get { return font; }
                 set { font = value; }
             }
 
-            public FontStyle FontStyle
+            public SkiaSharp.SKFontStyle FontStyle
             {
                 get { return fontStyle; }
                 set { fontStyle = value; }
@@ -2856,7 +2856,7 @@ namespace FastReport.Utils
 
 #region Public Constructors
 
-            public StyleDescriptor(FontStyle fontStyle, Color color, BaseLine baseLine, FontFamily font, float size)
+            public StyleDescriptor(SkiaSharp.SKFontStyle fontStyle, SkiaSharp.SKColor color, BaseLine baseLine, SkiaSharp.SKTypeface font, float size)
             {
                 this.fontStyle = fontStyle;
                 this.color = color;
@@ -2903,16 +2903,16 @@ namespace FastReport.Utils
                     backgroundColor.Equals(obj.backgroundColor);
             }
 
-            public Font GetFont()
+            public SkiaSharp.SKFont GetFont()
             {
                 float fontSize = size;
                 if (baseLine != BaseLine.Normal)
                     fontSize *= 0.6f;
 
-                FontStyle fontStyle = FontStyle;
+                SkiaSharp.SKFontStyle fontStyle = FontStyle;
 
                 fontStyle = fontStyle & ~FontStyle.Underline & ~FontStyle.Strikeout;
-                return new Font(font, fontSize, fontStyle);
+                return new SkiaSharp.SKFont(font, fontSize, fontStyle);
             }
 
             public override int GetHashCode()
@@ -2935,10 +2935,10 @@ namespace FastReport.Utils
                 {
                     sb.Append("</span>");
 
-                    if ((fontStyle & FontStyle.Strikeout) == FontStyle.Strikeout) sb.Append("</strike>");
-                    if ((fontStyle & FontStyle.Underline) == FontStyle.Underline) sb.Append("</u>");
-                    if ((fontStyle & FontStyle.Italic) == FontStyle.Italic) sb.Append("</i>");
-                    if ((fontStyle & FontStyle.Bold) == FontStyle.Bold) sb.Append("</b>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout) sb.Append("</strike>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Underline) == SkiaSharp.SKFontStyle.Underline) sb.Append("</u>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Italic) == SkiaSharp.SKFontStyle.Italic) sb.Append("</i>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Bold) == SkiaSharp.SKFontStyle.Bold) sb.Append("</b>");
 
                     switch (baseLine)
                     {
@@ -2954,10 +2954,10 @@ namespace FastReport.Utils
                         case BaseLine.Superscript: sb.Append("<sup>"); break;
                     }
 
-                    if ((fontStyle & FontStyle.Bold) == FontStyle.Bold) sb.Append("<b>");
-                    if ((fontStyle & FontStyle.Italic) == FontStyle.Italic) sb.Append("<i>");
-                    if ((fontStyle & FontStyle.Underline) == FontStyle.Underline) sb.Append("<u>");
-                    if ((fontStyle & FontStyle.Strikeout) == FontStyle.Strikeout) sb.Append("<strike>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Bold) == SkiaSharp.SKFontStyle.Bold) sb.Append("<b>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Italic) == SkiaSharp.SKFontStyle.Italic) sb.Append("<i>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Underline) == SkiaSharp.SKFontStyle.Underline) sb.Append("<u>");
+                    if ((fontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout) sb.Append("<strike>");
 
                     sb.Append("<span style=\"");
                     if (backgroundColor.A > 0) sb.Append(String.Format(CultureInfo, "background-color:rgba({0},{1},{2},{3});", backgroundColor.R, backgroundColor.G, backgroundColor.B, ((float)backgroundColor.A) / 255f));

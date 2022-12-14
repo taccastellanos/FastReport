@@ -1,7 +1,7 @@
 ﻿using FastReport.Table;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Text;
 
 namespace FastReport.Web
@@ -28,7 +28,7 @@ namespace FastReport.Web
                 if (page != null)
                 {
                     ObjectCollection allObjects = page.AllObjects;
-                    var point = new System.Drawing.PointF(left + 1, top + 1);
+                    var point = new SkiaSharp.SKPoint(left + 1, top + 1);
                     foreach (Base obj in allObjects)
                     {
                         if (obj is ReportComponentBase)
@@ -44,7 +44,7 @@ namespace FastReport.Web
                                         TableCell textcell = table[j, i];
                                         if (textcell.Name == objectName)
                                         {
-                                            RectangleF rect = new RectangleF(table.Columns[j].AbsLeft,
+                                            SkiaSharp.SKRect rect = new SkiaSharp.SKRect(table.Columns[j].AbsLeft,
                                                 table.Rows[i].AbsTop,
                                                 textcell.Width,
                                                 textcell.Height);

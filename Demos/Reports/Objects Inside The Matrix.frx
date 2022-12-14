@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Drawing;
+
 using System.Data;
 using FastReport;
 using FastReport.Data;
@@ -31,7 +31,7 @@ namespace FastReport
       Shape3.Visible = value &gt;= 3000;
       
       // Highlight: red &lt; 100; yellow &lt; 3000; green &gt;= 3000
-      Color color = Color.Red;
+      SkiaSharp.SKColor color = Color.Red;
       if (value &gt;= 100)
         color = Color.Yellow;
       if (value &gt;= 3000)

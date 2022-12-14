@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Drawing;
+
 using System.Data;
 using FastReport;
 using FastReport.Data;
@@ -32,8 +32,8 @@ namespace FastReport
         Line3.Border.Color = Color.White;
       }
       else  { 
-        Barcode4.Barcode.Color = Color.Black;
-        Line3.Border.Color = Color.Black;
+        Barcode4.Barcode.Color = SkiaSharp.SKColors.Black;
+        Line3.Border.Color = SkiaSharp.SKColors.Black;
       }
     }
 

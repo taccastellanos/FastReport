@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using FastReport.Utils;
 
 namespace FastReport
@@ -91,7 +91,7 @@ namespace FastReport
                 g.SmoothingMode = SmoothingMode.AntiAlias;
             }
 
-            Pen pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
+            /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
 
             float width = Width;
             float height = Height;
@@ -123,8 +123,8 @@ namespace FastReport
                 g.TranslateTransform(x1, y1);
                 g.RotateTransform(-angle);
                 float y = 0;
-                GraphicsPath startCapPath = null;
-                GraphicsPath endCapPath = null;
+                SkiaSharp.SKPath startCapPath = null;
+                SkiaSharp.SKPath endCapPath = null;
                 float inset = 0;
                 if (StartCap.Style != CapStyle.None)
                 {

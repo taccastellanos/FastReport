@@ -1,5 +1,5 @@
 ﻿using FastReport.Utils;
-using System.Drawing;
+
 
 namespace FastReport
 {
@@ -9,7 +9,7 @@ namespace FastReport
         public override void Draw(FRPaintEventArgs e)
         {
             DrawBackground(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
         }
     }
 }

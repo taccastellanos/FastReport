@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -16,7 +16,7 @@ namespace FastReport.Barcode
         internal int angle;
         internal bool showText;
         internal float zoom;
-        private Color color;
+        private SkiaSharp.SKColor color;
         #endregion
 
         #region Properties
@@ -32,7 +32,7 @@ namespace FastReport.Barcode
         /// <summary>
         /// Gets or sets the color of barcode.
         /// </summary>
-        public Color Color
+        public SkiaSharp.SKColor Color
         {
             get { return color; }
             set { color = value; }
@@ -76,9 +76,9 @@ namespace FastReport.Barcode
             this.zoom = zoom;
         }
 
-        internal virtual SizeF CalcBounds()
+        internal virtual SkiaSharp.SKSize CalcBounds()
         {
-            return SizeF.Empty;
+            return SkiaSharp.SKSize.Empty;
         }
 
         internal virtual string StripControlCodes(string data)
@@ -86,7 +86,7 @@ namespace FastReport.Barcode
             return data;
         }
 
-        public virtual void DrawBarcode(IGraphics g, RectangleF displayRect)
+        public virtual void DrawBarcode(SkiaSharp.SKDrawable g, SkiaSharp.SKRect displayRect)
         {
         }
         #endregion
@@ -97,7 +97,7 @@ namespace FastReport.Barcode
         public BarcodeBase()
         {
             text = "";
-            color = Color.Black;
+            color = SkiaSharp.SKColors.Black;
         }
 
         /// <summary>

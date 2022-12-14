@@ -1,7 +1,7 @@
 ﻿using FastReport.Utils;
 using System;
 using System.ComponentModel;
-using System.Drawing;
+
 
 namespace FastReport.Gauge
 {
@@ -15,8 +15,8 @@ namespace FastReport.Gauge
     {
         #region Private Fields
         private string text;
-        private Font font;
-        private Color color;
+        private SkiaSharp.SKFont font;
+        private SkiaSharp.SKColor color;
         private GaugeObject parent;
 
         #endregion //Private Fields
@@ -39,7 +39,7 @@ namespace FastReport.Gauge
         /// <summary>
         /// Gets or sets the label font
         /// </summary>
-        public Font Font
+        public SkiaSharp.SKFont Font
         {
             get { return font; }
             set
@@ -53,7 +53,7 @@ namespace FastReport.Gauge
         /// <summary>
         /// Gets or sets the label color
         /// </summary>
-        public Color Color
+        public SkiaSharp.SKColor Color
         {
             get { return color; }
             set
@@ -81,7 +81,7 @@ namespace FastReport.Gauge
         public GaugeLabel(GaugeObject parent)
         {
             Text = "";
-            Color = Color.Black;
+            Color = SkiaSharp.SKColors.Black;
             Font = parent.Scale.Font;
             this.parent = parent;
         }
@@ -93,7 +93,7 @@ namespace FastReport.Gauge
         /// <param name="font">Label font</param>
         /// <param name="color">Label color</param>
         /// <param name="parent">Label parent</param>
-        public GaugeLabel(GaugeObject parent, string text, Font font, Color color)
+        public GaugeLabel(GaugeObject parent, string text, SkiaSharp.SKFont font, SkiaSharp.SKColor color)
         {
             Text = text;
             Font = font;

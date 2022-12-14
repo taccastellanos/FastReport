@@ -3,7 +3,7 @@
 namespace FastReport.Export.PdfSimple.PdfObjects
 {
     /// <summary>
-    /// XObject Image for pdf
+    /// XObject SkiaSharp.SKImage  for pdf
     /// </summary>
     public class PdfImage : PdfStream
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Xml;
-using System.Drawing;
+
 using System.Windows.Forms;
 using FastReport.Data;
 using FastReport.Table;
@@ -177,7 +177,7 @@ namespace FastReport.Import.RDL
 
         private void LoadStyle(XmlNode styleNode)
         {
-            FontStyle fontStyle = FontStyle.Regular;
+            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
             string fontFamily = "Arial";
             float fontSize = 10.0f;
             int paddingTop = 0;
@@ -269,7 +269,7 @@ namespace FastReport.Import.RDL
             }
             if (component is TextObject)
             {
-                (component as TextObject).Font = new Font(fontFamily, fontSize, fontStyle);
+                (component as TextObject).Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontFamily), fontSize);
                 (component as TextObject).Padding = new Padding(paddingLeft, paddingTop, paddingRight, paddingBottom);
             }
             else if (component is PictureObject)
@@ -387,7 +387,7 @@ namespace FastReport.Import.RDL
             parent = component;
             XmlNodeList nodeList = rectangleNode.ChildNodes;
             (component as ContainerObject).Border.Lines = BorderLines.All;
-            (component as ContainerObject).Border.Color = Color.Black;
+            (component as ContainerObject).Border.Color = SkiaSharp.SKColors.Black;
             LoadReportItem(nodeList);
             foreach (XmlNode node in nodeList)
             {
@@ -469,22 +469,24 @@ namespace FastReport.Import.RDL
 
         private void ParseTextBoxStyle(XmlNode runChild)
         {
-            FontStyle style = FontStyle.Regular;
-            Color textBoxForeColor = Color.Black;
+            SkiaSharp.SKFontStyle style = SkiaSharp.SKFontStyle.Normal;
+            var textBoxForeColor = SkiaSharp.SKColors.Black;
             string fontFamily = String.Empty;
             int fontSize = 0;
+            /*TODO
             foreach (XmlNode styleChild in runChild.ChildNodes)
             {
+                
                 if (styleChild.Name == "FontFamily")
                     fontFamily = styleChild.InnerText;
                 else if (styleChild.Name == "FontSize")
                     int.TryParse(styleChild.InnerText.Replace("pt", ""), out fontSize);
                 else if (styleChild.Name == "FontWeight" && styleChild.InnerText == "Bold")
-                    style = style | FontStyle.Bold;
+                    style = style | SkiaSharp.SKFontStyle.Bold;
                 else if (styleChild.Name == "FontStyle" && styleChild.InnerText == "Italic")
-                    style = style | FontStyle.Italic;
+                    style = style | SkiaSharp.SKFontStyle.Italic;
                 else if (styleChild.Name == "TextDecoration" && styleChild.InnerText == "Underline")
-                    style = style | FontStyle.Underline;
+                    style = style | SkiaSharp.SKFontStyle.Underline;
                 else if(styleChild.Name == "Color")
                    textBoxForeColor = ColorTranslator.FromHtml(styleChild.InnerText);
 
@@ -492,14 +494,14 @@ namespace FastReport.Import.RDL
             if (fontFamily == string.Empty)
                 fontFamily = defaultFontFamily;
             if (fontFamily == string.Empty && fontSize == 0)
-                (component as TextObject).Font = new Font((component as TextObject).Font, style);
+                (component as TextObject).Font = new SkiaSharp.SKFont((component as TextObject).Font, style);
             else if (fontFamily == string.Empty)
-                (component as TextObject).Font = new Font((component as TextObject).Font.FontFamily, fontSize, style);
+                (component as TextObject).Font = new SkiaSharp.SKFont((component as TextObject).Font.FontFamily, fontSize, style);
             else if (fontSize == 0)
-                (component as TextObject).Font = new Font(fontFamily, (component as TextObject).Font.Size, style);
+                (component as TextObject).Font = new SkiaSharp.SKFont(fontFamily, (component as TextObject).Font.Size, style);
             else
-                (component as TextObject).Font = new Font(fontFamily, fontSize, style);
-            (component as TextObject).TextColor = textBoxForeColor;
+                (component as TextObject).Font = new SkiaSharp.SKFont(fontFamily, fontSize, style);
+            (component as TextObject).TextColor = textBoxForeColor;*/
         }
 
         private string GetValue(string rdlValue)

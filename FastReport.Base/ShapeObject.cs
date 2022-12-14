@@ -1,6 +1,6 @@
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -81,9 +81,9 @@ namespace FastReport
 
     #region Private Methods
 #if MONO
-    private GraphicsPath GetRoundRectPath(float x, float y, float x1, float y1, float radius)
+    private SkiaSharp.SKPath GetRoundRectPath(float x, float y, float x1, float y1, float radius)
     {
-      GraphicsPath gp = new GraphicsPath();
+      SkiaSharp.SKPath gp = new GraphicsPath();
       if (radius < 1)
         radius = 1;
       gp.AddLine(x + radius, y, x1 - radius, y);
@@ -98,9 +98,9 @@ namespace FastReport
       return gp;
     }
 #else    
-    private GraphicsPath GetRoundRectPath(float x, float y, float x1, float y1, float radius)
+    private SkiaSharp.SKPath GetRoundRectPath(float x, float y, float x1, float y1, float radius)
     {
-        GraphicsPath gp = new GraphicsPath();
+        SkiaSharp.SKPath gp = new GraphicsPath();
         if (radius < 1)
             radius = 1;
         gp.AddArc(x1 - radius - 1, y, radius + 1, radius + 1, 270, 90);
@@ -138,12 +138,12 @@ namespace FastReport
       float x1 = x + dx;
       float y1 = y + dy;
 
-      Pen pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
-      Brush brush = null;
+      /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
+      /*Brush*/SkiaSharp.SKPaint brush = null;
       if (Fill is SolidFill)
-        brush = e.Cache.GetBrush((Fill as SolidFill).Color);
+        /*Brush*/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
       else
-        brush = Fill.CreateBrush(new RectangleF(x, y, dx, dy), e.ScaleX, e.ScaleY);
+        /*Brush*/SkiaSharp.SKPaint = Fill.CreateBrush(new SkiaSharp.SKRect(x, y, dx, dy), e.ScaleX, e.ScaleY);
         
       Report report = Report;
       if (report != null && report.SmoothGraphics && Shape != ShapeKind.Rectangle)
@@ -164,7 +164,7 @@ namespace FastReport
             min = min / 4;
           else
             min = Math.Min(min, curve * e.ScaleX * 10);
-          GraphicsPath gp = GetRoundRectPath(x, y, x1, y1, min);
+          SkiaSharp.SKPath gp = GetRoundRectPath(x, y, x1, y1, min);
           g.FillAndDrawPath(pen, brush, gp);
           gp.Dispose();
           break;
@@ -174,15 +174,15 @@ namespace FastReport
           break;
 
         case ShapeKind.Triangle:
-          PointF[] triPoints = { 
-            new PointF(x1, y1), new PointF(x, y1), new PointF(x + dx / 2, y), new PointF(x1, y1) };
+          SkiaSharp.SKSkiaSharp.SKPoint[] triPoints = { 
+            new SkiaSharp.SKPoint(x1, y1), new SkiaSharp.SKPoint(x, y1), new SkiaSharp.SKPoint(x + dx / 2, y), new SkiaSharp.SKPoint(x1, y1) };
           g.FillAndDrawPolygon(pen, brush, triPoints);
           break;
 
         case ShapeKind.Diamond:
-          PointF[] diaPoints = { 
-            new PointF(x + dx / 2, y), new PointF(x1, y + dy / 2), new PointF(x + dx / 2, y1),
-            new PointF(x, y + dy / 2) };
+          SkiaSharp.SKSkiaSharp.SKPoint[] diaPoints = { 
+            new SkiaSharp.SKPoint(x + dx / 2, y), new SkiaSharp.SKPoint(x1, y + dy / 2), new SkiaSharp.SKPoint(x + dx / 2, y1),
+            new SkiaSharp.SKPoint(x, y + dy / 2) };
           g.FillAndDrawPolygon(pen, brush, diaPoints);
           break;
       }

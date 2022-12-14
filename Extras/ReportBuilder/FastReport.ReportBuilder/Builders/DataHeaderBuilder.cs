@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿
 
 namespace FastReport.ReportBuilder
 {
@@ -26,9 +26,9 @@ namespace FastReport.ReportBuilder
         /// <param name="emSize"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public DataHeaderBuilder<T> Font(string familyName, float emSize, FontStyle style)
+        public DataHeaderBuilder<T> Font(string familyName, float emSize, SkiaSharp.SKFontStyle style)
         {
-            _report._dataHeader.Font = new Font(familyName, emSize, style);
+            _report._dataHeader.Font = new SkiaSharp.SKFont(familyName, emSize, style);
             return this;
         }
 
@@ -41,7 +41,7 @@ namespace FastReport.ReportBuilder
         /// <returns></returns>
         public DataHeaderBuilder<T> Font(string familyName, float emSize)
         {
-            return Font(familyName, emSize, FontStyle.Regular);
+            return Font(familyName, emSize, SkiaSharp.SKFontStyle.Regular);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace FastReport.ReportBuilder
         /// <returns></returns>
         public DataHeaderBuilder<T> Font(string familyName)
         {
-            return Font(familyName, 10.0f, FontStyle.Regular);
+            return Font(familyName, 10.0f, SkiaSharp.SKFontStyle.Regular);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace FastReport.ReportBuilder
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public DataHeaderBuilder<T> TextColor(Color color)
+        public DataHeaderBuilder<T> TextColor(SkiaSharp.SKColor color)
         {
             _report._dataHeader.TextColor = color;
             return this;
@@ -81,7 +81,7 @@ namespace FastReport.ReportBuilder
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public DataHeaderBuilder<T> FillColor(Color color)
+        public DataHeaderBuilder<T> FillColor(SkiaSharp.SKColor color)
         {
             _report._dataHeader.FillColor = color;
             return this;

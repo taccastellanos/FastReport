@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Xml;
-using System.Drawing;
+
 using System.Windows.Forms;
 using FastReport.Table;
 using System.Collections.Generic;
@@ -72,11 +72,13 @@ namespace FastReport.Import.StimulSoft
 
                 if (parent is TableCell)
                 {
-                    RectangleF rect = ParseRectangleF(xmlObject["ClientRectangle"].InnerText);
+                    SkiaSharp.SKRect rect = ParseRectangleF(xmlObject["ClientRectangle"].InnerText);
                     rect.Offset(-rect.Left, -rect.Top);
                     rect.Offset(-rect.Left + 1, -rect.Top + 1);
+                    /*TODO
                     rect.Width -= 2;
                     rect.Height -= 2;
+                    */
                     PictureObject.Bounds = rect;
                 }
                 else if (useAbsTop)
@@ -115,7 +117,7 @@ namespace FastReport.Import.StimulSoft
 
             if (band is TableCell)
             {
-                checkBox.Bounds = new RectangleF(1, 1, Math.Min(checkBox.Width, checkBox.Height) - 1, Math.Min(checkBox.Width, checkBox.Height) - 1);
+                checkBox.Bounds = new SkiaSharp.SKRect(1, 1, Math.Min(checkBox.Width, checkBox.Height) - 1, Math.Min(checkBox.Width, checkBox.Height) - 1);
             }
             else if (useAbsTop)
                 SetAbsTop(checkBox, band);
@@ -146,8 +148,8 @@ namespace FastReport.Import.StimulSoft
                         LoadReportComponentBase(lineObject, xmlObject);
                         lineObject.Diagonal = true;
 
-                        RectangleF rectangle = ParseRectangleF(xmlObject["ClientRectangle"].InnerText);
-                        lineObject.Bounds = new RectangleF(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width, -rectangle.Height);
+                        SkiaSharp.SKRect rectangle = ParseRectangleF(xmlObject["ClientRectangle"].InnerText);
+                        lineObject.Bounds = new SkiaSharp.SKRect(rectangle.Left, rectangle.Top + rectangle.Height, rectangle.Width, -rectangle.Height);
 
                         if (useAbsTop)
                             SetAbsTop(lineObject, band);
@@ -252,7 +254,7 @@ namespace FastReport.Import.StimulSoft
                         matrix.Data.Rows.Add(row);
                         matrix.BuildTemplate();
 
-                        RectangleF rectCellOfRow = ParseRectangleF(node["ClientRectangle"].InnerText);
+                        SkiaSharp.SKRect rectCellOfRow = ParseRectangleF(node["ClientRectangle"].InnerText);
                         row.TemplateColumn.Width = rectCellOfRow.Width;
                         row.TemplateRow.Height = rectCellOfRow.Height;
                         row.TemplateCell.AssignAll(LoadTableCell(node));
@@ -270,7 +272,7 @@ namespace FastReport.Import.StimulSoft
                         matrix.Data.Columns.Add(column);
                         matrix.BuildTemplate();
 
-                        RectangleF rectCellOfColumn = ParseRectangleF(node["ClientRectangle"].InnerText);
+                        SkiaSharp.SKRect rectCellOfColumn = ParseRectangleF(node["ClientRectangle"].InnerText);
                         column.TemplateColumn.Width = rectCellOfColumn.Width;
                         column.TemplateRow.Height = rectCellOfColumn.Height;
                         column.TemplateCell.AssignAll(LoadTableCell(node));
@@ -315,7 +317,7 @@ namespace FastReport.Import.StimulSoft
             int fixRows = 0;
             DataBand nonHeaderPartOfTab = null;
 
-            RectangleF rectangle = table.Bounds;
+            SkiaSharp.SKRect rectangle = table.Bounds;
             if (useAbsTop)
             {
                 rectangle.Offset(0, -band.Bounds.Top);
@@ -365,8 +367,9 @@ namespace FastReport.Import.StimulSoft
                     row.SetReport(Report);
                     row.CreateUniqueName();
                     row.Height = ParseRectangleF(cell["ClientRectangle"].InnerText).Height;
+                    /*TODO
                     rectangle.Height -= row.Height;
-                    rectangle.Y += row.Height;
+                    rectangle.Y += row.Height;*/
                     table.Rows.Add(row);
                 }
                 if (index < columnCount)
@@ -804,7 +807,7 @@ namespace FastReport.Import.StimulSoft
                             if (item["ClientRectangle"] != null)
                             {
                                 DataBand dataBand = ComponentsFactory.CreateDataBand(page);
-                                RectangleF rect = ParseRectangleF(item["ClientRectangle"].InnerText);
+                                SkiaSharp.SKRect rect = ParseRectangleF(item["ClientRectangle"].InnerText);
                                 dataBand.Bounds = rect;
                                 foreach (Base obj in page.AllObjects)
                                 {
@@ -944,8 +947,8 @@ namespace FastReport.Import.StimulSoft
                 case "CrossDataBand":
                 case "CrossGroupHeaderBand":
                     {
-                        RectangleF rectangle = ParseRectangleF(xmlObject["ClientRectangle"].InnerText);
-                        leftOffset = rectangle.X;
+                        SkiaSharp.SKRect rectangle = ParseRectangleF(xmlObject["ClientRectangle"].InnerText);
+                        leftOffset = rectangle.Left;
                         LoadReportObjects(xmlObject, band);
                         leftOffset = 0;
                         break;
@@ -959,7 +962,7 @@ namespace FastReport.Import.StimulSoft
 
         private void SetAbsTop(ReportComponentBase obj, ReportComponentBase parent)
         {
-            RectangleF rect = obj.Bounds;
+            SkiaSharp.SKRect rect = obj.Bounds;
             rect.Offset(0, -parent.Bounds.Top);
             obj.Bounds = rect;
         }
@@ -1077,8 +1080,8 @@ namespace FastReport.Import.StimulSoft
         {
             if (node["ClientRectangle"] != null)
             {
-                RectangleF rect = ParseRectangleF(node["ClientRectangle"].InnerText);
-                rect.X += leftOffset;
+                SkiaSharp.SKRect rect = ParseRectangleF(node["ClientRectangle"].InnerText);
+                rect.Left += leftOffset;
                 obj.Bounds = rect;
             }
 
@@ -1150,7 +1153,7 @@ namespace FastReport.Import.StimulSoft
                 return band;
         }
 
-        private BandBase GetParentBandBase(RectangleF rect, ReportPage page)
+        private BandBase GetParentBandBase(SkiaSharp.SKRect rect, ReportPage page)
         {
             BandBase result = null;
             float offset = 10000;
@@ -1164,7 +1167,7 @@ namespace FastReport.Import.StimulSoft
             return result;
         }
 
-        private GroupHeaderBand GetParentGroupHeaderBand(RectangleF rect, ReportPage page)
+        private GroupHeaderBand GetParentGroupHeaderBand(SkiaSharp.SKRect rect, ReportPage page)
         {
             GroupHeaderBand result = null;
             float offset = 10000;
@@ -1178,7 +1181,7 @@ namespace FastReport.Import.StimulSoft
             return result;
         }
 
-        private BandBase GetParentDataBand(RectangleF rect, ReportPage page, bool isTopBand)
+        private BandBase GetParentDataBand(SkiaSharp.SKRect rect, ReportPage page, bool isTopBand)
         {
             BandBase result = null;
             float offset = 10000;
@@ -1211,7 +1214,7 @@ namespace FastReport.Import.StimulSoft
             return result;
         }
 
-        private DataBand GetParentDataBand(RectangleF rect, ReportPage page)
+        private DataBand GetParentDataBand(SkiaSharp.SKRect rect, ReportPage page)
         {
             DataBand result = null;
             float offset = 10000;
@@ -1238,28 +1241,31 @@ namespace FastReport.Import.StimulSoft
             return xmlNodeList;
         }
 
-        private Font ParseFont(string font)
+        private SkiaSharp.SKFont ParseFont(string font)
         {
-            FontStyle fontStyle = FontStyle.Regular;
+            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
             string[] defFontParts = font.Split(',');
+            /*TODO
             if (font.Contains("Bold"))
             {
-                fontStyle |= FontStyle.Bold;
+                fontStyle |= SkiaSharp.SKFontStyle.Bold;
             }
             if (font.Contains("Italic"))
             {
-                fontStyle |= FontStyle.Italic;
+                fontStyle |= SkiaSharp.SKFontStyle.Italic;
             }
             if (font.Contains("Underline"))
             {
-                fontStyle |= FontStyle.Underline;
+                fontStyle |= SkiaSharp.SKFontStyle.Underline;
             }
             if (font.Contains("Strikeout"))
             {
-                fontStyle |= FontStyle.Strikeout;
+                fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
             }
 
-            return new Font(defFontParts[0], UnitsConverter.ConvertFloat(defFontParts[1]), fontStyle);
+            return new SkiaSharp.SKFont(defFontParts[0], UnitsConverter.ConvertFloat(defFontParts[1]), fontStyle);
+            */
+            return new SkiaSharp.SKFont();
         }
 
         private void ParseTextOptions(TextObject textObject, string data)
@@ -1310,7 +1316,7 @@ namespace FastReport.Import.StimulSoft
             return new Padding(marg[0], marg[1], marg[2], marg[3]);
         }
 
-        private RectangleF ParseRectangleF(string rect)
+        private SkiaSharp.SKRect ParseRectangleF(string rect)
         {
             float[] marg = new float[4];
             int index = 0;
@@ -1321,7 +1327,7 @@ namespace FastReport.Import.StimulSoft
                 index++;
             }
 
-            return new RectangleF(marg[0], marg[1], marg[2], marg[3]);
+            return new SkiaSharp.SKRect(marg[0], marg[1], marg[2], marg[3]);
         }
 
         private void LoadReferencedAssemblies(XmlNode references)

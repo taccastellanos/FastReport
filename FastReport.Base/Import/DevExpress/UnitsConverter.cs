@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Drawing;
+
 using System.Windows.Forms;
 using FastReport.Utils;
 using FastReport.Barcode;
@@ -19,7 +19,7 @@ namespace FastReport.Import.DevExpress
         #region Public Methods
 
         /// <summary>
-        /// Converts SizeF to pixels.
+        /// Converts SkiaSharp.SKSize to pixels.
         /// </summary>
         /// <param name="str">SizeF value as string.</param>
         /// <returns>The value in pixels.</returns>
@@ -42,7 +42,7 @@ namespace FastReport.Import.DevExpress
         }
 
         /// <summary>
-        /// Converts SizeF to pixels.
+        /// Converts SkiaSharp.SKSize to pixels.
         /// </summary>
         /// <param name="str">SizeF value as string.</param>
         /// <returns>The value in pixels.</returns>
@@ -68,35 +68,35 @@ namespace FastReport.Import.DevExpress
         /// </summary>
         /// <param name="str">The DevExpress Color value as string.</param>
         /// <returns>The Color value.</returns>
-        public static Color ConvertColor(string str)
+        public static SkiaSharp.SKColor ConvertColor(string str)
         {
             if (!String.IsNullOrEmpty(str))
             {
                 if (str.IndexOf("FromArgb") > -1)
                 {
                     int start = str.IndexOf("byte") + 6;
-                    int red = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
+                    byte red = Convert.ToByte(str.Substring(start, str.IndexOf(")", start) - start));
                     start = str.IndexOf("byte", start) + 6;
-                    int green = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
+                    byte green = Convert.ToByte(str.Substring(start, str.IndexOf(")", start) - start));
                     start = str.IndexOf("byte", start) + 6;
-                    int blue = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
-                    return Color.FromArgb(red, green, blue);
+                    byte blue = Convert.ToByte(str.Substring(start, str.IndexOf(")", start) - start));
+                    return new SkiaSharp.SKColor(red,green,blue);
                 }
                 else if(str.Split(',').Length == 4)
                 {
                     string[] colors = str.Split(',');
-                    int alpha = Convert.ToInt32(colors[0]);
-                    int red = Convert.ToInt32(colors[1]);
-                    int green = Convert.ToInt32(colors[2]);
-                    int blue = Convert.ToInt32(colors[3]);
-                    return Color.FromArgb(alpha, red, green, blue);
+                    byte alpha = Convert.ToByte(colors[0]);
+                    byte red = Convert.ToByte(colors[1]);
+                    byte green = Convert.ToByte(colors[2]);
+                    byte blue = Convert.ToByte(colors[3]);
+                    return new SkiaSharp.SKColor(red, green, blue, alpha);
                 }
                 else
                 {
-                    return Color.FromName(str.Replace("System.Drawing.Color.", ""));
+                    return new SkiaSharp.SKColor();
                 }
             }
-            return Color.Black;
+            return SkiaSharp.SKColors.Black;
         }
 
         /// <summary>
@@ -104,35 +104,35 @@ namespace FastReport.Import.DevExpress
         /// </summary>
         /// <param name="str">The DevExpress BackColor value as string.</param>
         /// <returns>The Color value.</returns>
-        public static Color ConvertBackColor(string str)
+        public static SkiaSharp.SKColor ConvertBackColor(string str)
         {
             if (!String.IsNullOrEmpty(str))
             {
                 if (str.IndexOf("FromArgb") > -1)
                 {
                     int start = str.IndexOf("byte") + 6;
-                    int red = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
+                    byte red = Convert.ToByte(str.Substring(start, str.IndexOf(")", start) - start));
                     start = str.IndexOf("byte", start) + 6;
-                    int green = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
+                    byte green = Convert.ToByte(str.Substring(start, str.IndexOf(")", start) - start));
                     start = str.IndexOf("byte", start) + 6;
-                    int blue = Convert.ToInt32(str.Substring(start, str.IndexOf(")", start) - start));
-                    return Color.FromArgb(red, green, blue);
+                    byte blue = Convert.ToByte(str.Substring(start, str.IndexOf(")", start) - start));
+                    return new SkiaSharp.SKColor(red,green,blue);
                 }
-                else if (str.Split(',').Length == 4)
+                else if(str.Split(',').Length == 4)
                 {
                     string[] colors = str.Split(',');
-                    int alpha = Convert.ToInt32(colors[0]);
-                    int red = Convert.ToInt32(colors[1]);
-                    int green = Convert.ToInt32(colors[2]);
-                    int blue = Convert.ToInt32(colors[3]);
-                    return Color.FromArgb(alpha, red, green, blue);
+                    byte alpha = Convert.ToByte(colors[0]);
+                    byte red = Convert.ToByte(colors[1]);
+                    byte green = Convert.ToByte(colors[2]);
+                    byte blue = Convert.ToByte(colors[3]);
+                    return new SkiaSharp.SKColor(red, green, blue, alpha);
                 }
                 else
                 {
-                    return Color.FromName(str.Replace("System.Drawing.Color.", ""));
+                    return new SkiaSharp.SKColor();
                 }
             }
-            return Color.Transparent;
+            return SkiaSharp.SKColors.Transparent;
         }
 
         /// <summary>

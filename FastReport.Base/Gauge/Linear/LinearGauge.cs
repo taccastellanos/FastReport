@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using FastReport.Utils;
 
 namespace FastReport.Gauge.Linear
@@ -71,6 +71,7 @@ namespace FastReport.Gauge.Linear
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
             if (Report != null && Report.SmoothGraphics)
             {
@@ -81,7 +82,8 @@ namespace FastReport.Gauge.Linear
             base.Draw(e);
             Scale.Draw(e);
             Pointer.Draw(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
+            */
         }
 
         /// <inheritdoc/>

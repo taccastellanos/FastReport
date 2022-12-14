@@ -3,8 +3,8 @@ using FastReport.Export.PdfSimple.PdfObjects;
 using FastReport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
+
+
 using System.IO;
 
 namespace FastReport.Export.PdfSimple
@@ -49,7 +49,7 @@ namespace FastReport.Export.PdfSimple
             return Convert.ToBase64String(hash);
         }
 
-        private void DrawImage(RectangleF rectangleF, Bitmap image)
+        private void DrawImage(SkiaSharp.SKRect rectangleF, SkiaSharp.SKBitmap image)
         {
             string imageLink = AppendPDFImage(image, JpegQuality);
             pageContent.Append("q").AppendLine();
@@ -112,7 +112,7 @@ namespace FastReport.Export.PdfSimple
             return raw_picture;
         }
 
-        private void SaveJpeg(System.Drawing.Image image, Stream buff, int quality)
+        private void SaveJpeg(System.Drawing.SkiaSharp.SKImage image, Stream buff, int quality)
         {
             ImageCodecInfo ici = GetCodec("image/jpeg");
             EncoderParameters ep = new EncoderParameters();

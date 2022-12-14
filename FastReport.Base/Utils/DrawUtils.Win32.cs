@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;
+
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -36,9 +36,10 @@ namespace FastReport.Utils
         /// <param name="control">Control to draw.</param>
         /// <param name="children">Determines whether to draw control's children or not.</param>
         /// <returns>The bitmap.</returns>
-        public static Bitmap DrawToBitmap(Control control, bool children)
+        public static SkiaSharp.SKBitmap DrawToBitmap(Control control, bool children)
         {
-            Bitmap bitmap = new Bitmap(control.Width, control.Height);
+            SkiaSharp.SKBitmap bitmap = new SkiaSharp.SKBitmap(control.Width, control.Height);
+            /*TODO
             using (Graphics gr = Graphics.FromImage(bitmap))
             {
                 IntPtr hdc = gr.GetHdc();
@@ -48,7 +49,7 @@ namespace FastReport.Utils
                     options |= DrawingOptions.PRF_CHILDREN;
                 SendMessage(control.Handle, WM_PRINT, hdc, options);
                 gr.ReleaseHdc(hdc);
-            }
+            }*/
             return bitmap;
         }
     }

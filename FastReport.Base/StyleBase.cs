@@ -1,5 +1,5 @@
 using FastReport.Utils;
-using System.Drawing;
+
 
 namespace FastReport
 {
@@ -16,7 +16,7 @@ namespace FastReport
         private bool applyTextFill;
         private Border border;
         private FillBase fill;
-        private Font font;
+        private SkiaSharp.SKFont font;
         private FillBase textFill;
 
         #endregion Private Fields
@@ -80,7 +80,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets a font.
         /// </summary>
-        public Font Font
+        public SkiaSharp.SKFont Font
         {
             get { return font; }
             set { font = value; }
@@ -106,7 +106,7 @@ namespace FastReport
         {
             Border = new Border();
             Fill = new SolidFill();
-            TextFill = new SolidFill(Color.Black);
+            TextFill = new SolidFill(SkiaSharp.SKColors.Black);
             Font = GetDefaultFontInternal();
         }
 

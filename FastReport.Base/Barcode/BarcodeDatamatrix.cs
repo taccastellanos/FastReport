@@ -22,7 +22,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -981,10 +981,10 @@ namespace FastReport.Barcode
             Generate(base.text);
     }
 
-    internal override SizeF CalcBounds()
+    internal override SkiaSharp.SKSize CalcBounds()
     {
       int textAdd = showText ? 18 : 0;
-      return new SizeF(width * PixelSize, height * PixelSize + textAdd);
+      return new SkiaSharp.SKSize(width * PixelSize, height * PixelSize + textAdd);
     }
 
     internal override string StripControlCodes(string data)
@@ -998,13 +998,13 @@ namespace FastReport.Barcode
             return data;
     }
 
-    internal override void Draw2DBarcode(IGraphics g, float kx, float ky)
+    internal override void Draw2DBarcode(SkiaSharp.SKDrawable g, float kx, float ky)
     {
       if (image == null)
         return;
-      
-      Brush light = Brushes.White;
-      Brush dark = new SolidBrush(Color);
+      /* TODO
+      /*Brush/SkiaSharp.SKPaint light = Brushes.White;
+      /*Brush/SkiaSharp.SKPaint dark = new SolidBrush(Color);
       int stride = (width + 7) / 8;
 
       for (int k = 0; k < height; ++k)
@@ -1015,14 +1015,14 @@ namespace FastReport.Barcode
           int b = image[p + (j / 8)] & 0xff;
           b <<= j % 8;
 
-          Brush brush = /*(b & 0x80) == 0 ? light :*/ dark;
+          /*Brush/SkiaSharp.SKPaint brush = /*(b & 0x80) == 0 ? light :/ dark;
           if ((b & 0x80) != 0)
             g.FillRectangle(brush, j * PixelSize * kx, k * PixelSize * ky,
             PixelSize * kx, PixelSize * ky);
         }
       }
 
-      dark.Dispose();
+      dark.Dispose();*/
     }
     #endregion
 

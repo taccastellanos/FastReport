@@ -1,11 +1,11 @@
 using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.ComponentModel;
 using FastReport.Utils;
-using System.Drawing.Design;
+
 using System.IO;
-using System.Drawing.Imaging;
+
 
 namespace FastReport
 {
@@ -41,20 +41,20 @@ namespace FastReport
     public abstract FillBase Clone();
 
     /// <summary>
-    /// Creates the GDI+ Brush object.
+    /// Creates the GDI+ /*Brush*/SkiaSharp.SKPaint object.
     /// </summary>
     /// <param name="rect">Drawing rectangle.</param>
     /// <returns>Brush object.</returns>
-    public abstract Brush CreateBrush(RectangleF rect);
+    public abstract /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect);
 
     /// <summary>
-    /// Creates the GDI+ Brush object with scaling.
+    /// Creates the GDI+ /*Brush*/SkiaSharp.SKPaint object with scaling.
     /// </summary>
     /// <param name="rect">Drawing rectangle.</param>
     /// <param name="scaleX">X scaling coefficient.</param>
     /// <param name="scaleY">Y scaling coefficient.</param>
     /// <returns>Brush object.</returns>
-    public virtual Brush CreateBrush(RectangleF rect, float scaleX, float scaleY)
+    public virtual /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect, float scaleX, float scaleY)
     {
         return CreateBrush(rect);
     }
@@ -91,10 +91,10 @@ namespace FastReport
     /// </summary>
     /// <param name="e">Draw event arguments.</param>
     /// <param name="rect">Drawing rectangle.</param>
-    public virtual void Draw(FRPaintEventArgs e, RectangleF rect)
+    public virtual void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
-      rect = new RectangleF(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
-      using (Brush brush = CreateBrush(rect, e.ScaleX, e.ScaleY))
+      rect = new SkiaSharp.SKRect(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      using (var brush = CreateBrush(rect, e.ScaleX, e.ScaleY))
       {
         e.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
       }
@@ -106,13 +106,13 @@ namespace FastReport
   /// </summary>
   public class SolidFill : FillBase
   {
-    private Color color;
+    private SkiaSharp.SKColor color;
 
     /// <summary>
     /// Gets or sets the fill color.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color Color
+    
+    public SkiaSharp.SKColor Color
     {
       get { return color; }
       set { color = value; }
@@ -143,7 +143,7 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override Brush CreateBrush(RectangleF rect)
+    public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
       return new SolidBrush(Color);
     }
@@ -159,11 +159,11 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override void Draw(FRPaintEventArgs e, RectangleF rect)
+    public override void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
       if (Color == Color.Transparent)
         return;
-      Brush brush = e.Cache.GetBrush(Color);
+      /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(Color);
       e.Graphics.FillRectangle(brush, rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
     }
     
@@ -178,7 +178,7 @@ namespace FastReport
     /// Initializes the <see cref="SolidFill"/> class with specified color.
     /// </summary>
     /// <param name="color"></param>
-    public SolidFill(Color color)
+    public SolidFill(SkiaSharp.SKColor color)
     {
       Color = color;
     }
@@ -189,8 +189,8 @@ namespace FastReport
   /// </summary>
   public class LinearGradientFill : FillBase
   {
-    private Color startColor;
-    private Color endColor;
+    private SkiaSharp.SKColor startColor;
+    private SkiaSharp.SKColor endColor;
     private int angle;
     private float focus;
     private float contrast;
@@ -198,8 +198,8 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the start color of the gradient. 
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color StartColor
+    
+    public SkiaSharp.SKColor StartColor
     {
       get { return startColor; }
       set { startColor = value; }
@@ -208,8 +208,8 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the end color of the gradient. 
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color EndColor
+    
+    public SkiaSharp.SKColor EndColor
     {
       get { return endColor; }
       set { endColor = value; }
@@ -223,7 +223,7 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the angle of the gradient.
     /// </summary>
-    [Editor("FastReport.TypeEditors.AngleEditor, FastReport", typeof(UITypeEditor))]
+    
     public int Angle
     {
       get { return angle; }
@@ -290,7 +290,7 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override Brush CreateBrush(RectangleF rect)
+    public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
       // workaround the gradient bug
       rect.Inflate(1, 1);
@@ -321,7 +321,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="LinearGradientFill"/> class with default settings.
     /// </summary>
-    public LinearGradientFill() : this(Color.Black, Color.White, 0, 100, 100)
+    public LinearGradientFill() : this(SkiaSharp.SKColors.Black, Color.White, 0, 100, 100)
     {
     }
 
@@ -330,7 +330,7 @@ namespace FastReport
     /// </summary>
     /// <param name="startColor">Start color.</param>
     /// <param name="endColor">End color.</param>
-    public LinearGradientFill(Color startColor, Color endColor) : this(startColor, endColor, 0)
+    public LinearGradientFill(SkiaSharp.SKColor  startColor, SkiaSharp.SKColor endColor) : this(startColor, endColor, 0)
     {
     }
 
@@ -340,7 +340,7 @@ namespace FastReport
     /// <param name="startColor">Start color.</param>
     /// <param name="endColor">End color.</param>
     /// <param name="angle">Angle.</param>
-    public LinearGradientFill(Color startColor, Color endColor, int angle) : this(startColor, endColor, angle, 0, 100)
+    public LinearGradientFill(SkiaSharp.SKColor  startColor, SkiaSharp.SKColor endColor, int angle) : this(startColor, endColor, angle, 0, 100)
     {
     }
 
@@ -352,7 +352,7 @@ namespace FastReport
     /// <param name="angle">Angle.</param>
     /// <param name="focus">Focus.</param>
     /// <param name="contrast">Contrast.</param>
-    public LinearGradientFill(Color startColor, Color endColor, int angle, float focus, float contrast)
+    public LinearGradientFill(SkiaSharp.SKColor  startColor, SkiaSharp.SKColor endColor, int angle, float focus, float contrast)
     {
       StartColor = startColor;
       EndColor = endColor;
@@ -386,15 +386,15 @@ namespace FastReport
   /// </summary>
   public class PathGradientFill : FillBase
   {
-    private Color centerColor;
-    private Color edgeColor;
+    private SkiaSharp.SKColor centerColor;
+    private SkiaSharp.SKColor edgeColor;
     private PathGradientStyle style;
 
     /// <summary>
     /// Gets or sets the center color of the gradient.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color CenterColor
+    
+    public SkiaSharp.SKColor CenterColor
     {
       get { return centerColor; }
       set { centerColor = value; }
@@ -403,8 +403,8 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the edge color of the gradient.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color EdgeColor
+    
+    public SkiaSharp.SKColor EdgeColor
     {
       get { return edgeColor; }
       set { edgeColor = value; }
@@ -444,16 +444,16 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override Brush CreateBrush(RectangleF rect)
+    public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
-      GraphicsPath path = new GraphicsPath();
+      SkiaSharp.SKPath path = new GraphicsPath();
       if (Style == PathGradientStyle.Rectangular)
         path.AddRectangle(rect);
       else
       {
         float radius = (float)Math.Sqrt(rect.Width * rect.Width + rect.Height * rect.Height) / 2 + 1;
-        PointF center = new PointF(rect.Left + rect.Width / 2 - 1, rect.Top + rect.Height / 2 - 1);
-        RectangleF r = new RectangleF(center.X - radius, center.Y - radius, radius * 2, radius * 2);
+        SkiaSharp.SKPoint center = new SkiaSharp.SKPoint(rect.Left + rect.Width / 2 - 1, rect.Top + rect.Height / 2 - 1);
+        SkiaSharp.SKRect r = new SkiaSharp.SKRect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
         path.AddEllipse(r);
       }
       PathGradientBrush result = new PathGradientBrush(path);
@@ -480,7 +480,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="PathGradientFill"/> class with default settings.
     /// </summary>
-    public PathGradientFill() : this(Color.Black, Color.White, PathGradientStyle.Elliptic)
+    public PathGradientFill() : this(SkiaSharp.SKColors.Black, Color.White, PathGradientStyle.Elliptic)
     {
     }
 
@@ -490,7 +490,7 @@ namespace FastReport
     /// <param name="centerColor">Center color.</param>
     /// <param name="edgeColor">Edge color.</param>
     /// <param name="style">Gradient style.</param>
-    public PathGradientFill(Color centerColor, Color edgeColor, PathGradientStyle style)
+    public PathGradientFill(SkiaSharp.SKColor centerColor, SkiaSharp.SKColor edgeColor, PathGradientStyle style)
     {
       CenterColor = centerColor;
       EdgeColor = edgeColor;
@@ -503,15 +503,15 @@ namespace FastReport
   /// </summary>
   public class HatchFill : FillBase
   {
-    private Color foreColor;
-    private Color backColor;
+    private SkiaSharp.SKColor foreColor;
+    private SkiaSharp.SKColor backColor;
     private HatchStyle style;
 
     /// <summary>
     /// Gets or sets the foreground color.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color ForeColor
+    
+    public SkiaSharp.SKColor ForeColor
     {
       get { return foreColor; }
       set { foreColor = value; }
@@ -520,8 +520,8 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the background color.
     /// </summary>
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color BackColor
+    
+    public SkiaSharp.SKColor BackColor
     {
       get { return backColor; }
       set { backColor = value; }
@@ -561,7 +561,7 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override Brush CreateBrush(RectangleF rect)
+    public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
       return new HatchBrush(Style, ForeColor, BackColor);
     }
@@ -583,7 +583,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="HatchFill"/> class with default settings.
     /// </summary>
-    public HatchFill() : this(Color.Black, Color.White, HatchStyle.BackwardDiagonal)
+    public HatchFill() : this(SkiaSharp.SKColors.Black, Color.White, HatchStyle.BackwardDiagonal)
     {
     }
     
@@ -593,7 +593,7 @@ namespace FastReport
     /// <param name="foreColor">Foreground color.</param>
     /// <param name="backColor">Background color.</param>
     /// <param name="style">Hatch style.</param>
-    public HatchFill(Color foreColor, Color backColor, HatchStyle style)
+    public HatchFill(SkiaSharp.SKColor  foreColor, SkiaSharp.SKColor backColor, HatchStyle style)
     {
       ForeColor = foreColor;
       BackColor = backColor;
@@ -607,7 +607,7 @@ namespace FastReport
   /// </summary>
   public class GlassFill : FillBase
   {
-    private Color color;
+    private SkiaSharp.SKColor color;
     private float blend;
     private bool hatch;
 
@@ -615,8 +615,8 @@ namespace FastReport
     /// Gets or sets the fill color.
     /// </summary>
     
-    [Editor("FastReport.TypeEditors.ColorEditor, FastReport", typeof(UITypeEditor))]
-    public Color Color
+    
+    public SkiaSharp.SKColor Color
     {
       get { return color; }
       set { color = value; }
@@ -669,9 +669,9 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override void Draw(FRPaintEventArgs e, RectangleF rect)
+    public override void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
-      rect = new RectangleF(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      rect = new SkiaSharp.SKRect(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
 
       // draw fill
       using (SolidBrush b = new SolidBrush(Color))
@@ -697,7 +697,7 @@ namespace FastReport
     }
 
     /// <inheritdoc/>
-    public override Brush CreateBrush(RectangleF rect)
+    public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
       return new SolidBrush(Color);
     }
@@ -729,7 +729,7 @@ namespace FastReport
     /// <param name="color">Color.</param>
     /// <param name="blend">Blend ratio (0..1).</param>
     /// <param name="hatch">Display the hatch.</param>
-    public GlassFill(Color color, float blend, bool hatch)
+    public GlassFill(SkiaSharp.SKColor color, float blend, bool hatch)
     {
       Color = color;
       Blend = blend;
@@ -744,7 +744,7 @@ namespace FastReport
     {
         #region Fields
 
-        private Image image;
+        private SkiaSharp.SKImage  image;
         private int imageWidth;
         private int imageHeight;
         private bool preserveAspectRatio;
@@ -849,7 +849,7 @@ namespace FastReport
         }
 
         /// <summary>
-        /// Image left offset
+        /// SkiaSharp.SKImage  left offset
         /// </summary>
         public int ImageOffsetX
         {
@@ -858,7 +858,7 @@ namespace FastReport
         }
 
         /// <summary>
-        /// Image top offset
+        /// SkiaSharp.SKImage  top offset
         /// </summary>
         public int ImageOffsetY
         {
@@ -938,7 +938,7 @@ namespace FastReport
         /// Set image
         /// </summary>
         /// <param name="image">input image</param>
-        public void SetImage(Image image)
+        public void SetImage(SkiaSharp.SKImage image)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -981,7 +981,7 @@ namespace FastReport
         }
 
         /// <inheritdoc/>
-        public override Brush CreateBrush(RectangleF rect)
+        public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
         {
             if (image == null)
                 ForceLoadImage();          
@@ -991,7 +991,7 @@ namespace FastReport
         }
 
         /// <inheritdoc/>
-        public override Brush CreateBrush(RectangleF rect, float scaleX, float scaleY)
+        public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect, float scaleX, float scaleY)
         {
             if (image == null)
                 ForceLoadImage();
@@ -1034,7 +1034,7 @@ namespace FastReport
                         {
                             using (MemoryStream stream = new MemoryStream())
                             {
-                                ImageHelper.Save(image, stream, ImageFormat.Png);
+                                ImageHelper.Save(image, stream, SkiaSharp.SKEncodedImageFormat.Png);
                                 bytes = stream.ToArray();
                             }
                         }
@@ -1095,7 +1095,7 @@ namespace FastReport
         }
 
         /// <inheritdoc/>
-        public override void Draw(FRPaintEventArgs e, RectangleF rect)
+        public override void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
         {
             if (image == null)
                 ForceLoadImage();

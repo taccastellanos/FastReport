@@ -1,7 +1,7 @@
 using FastReport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -123,9 +123,10 @@ namespace FastReport.Barcode
         /// <param name="rect">Use left of rectangle for  to set start position x, top for top pos y, bottom for bottom pos y of strokes.</param>
         /// <param name="reversColor">Flag for reversing color by default first strokes white, disabled for separate line. </param>
         /// <param name="separatorLine">Flag separete line </param>
-        protected void DrawLineBars(string data, IGraphics g, float zoom, RectangleF rect, bool reversColor, bool separatorLine = false)
+        protected void DrawLineBars(string data, SkiaSharp.SKDrawable g, float zoom, SkiaSharp.SKRect rect, bool reversColor, bool separatorLine = false)
         {
-            using (Pen pen = new Pen(Color))
+            /* TODO
+            using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (Color))
             {
                 float currentWidth = rect.Left;
                 for (int x = 0; x < data.Length; x++)
@@ -142,19 +143,19 @@ namespace FastReport.Barcode
                     pen.Width = width;
 
                     if (reversColor)
-                        pen.Color = Color.Black;
+                        pen.Color = SkiaSharp.SKColors.Black;
                     else
                         pen.Color = Color.Transparent;
 
                     if (separatorLine)
                     {
                         if (data[x] != '0')
-                            pen.Color = Color.Black;
+                            pen.Color = SkiaSharp.SKColors.Black;
                     }
                     else
                     {
                         if ((x % 2 != 0 && !reversColor))
-                            pen.Color = Color.Black;
+                            pen.Color = SkiaSharp.SKColors.Black;
                         if ((x % 2 != 0 && reversColor))
                             pen.Color = Color.Transparent;
                     }
@@ -167,7 +168,7 @@ namespace FastReport.Barcode
 
                     currentWidth += width;
                 }
-            }
+            }*/
         }
 
         /// <inheritdoc />
@@ -371,9 +372,9 @@ namespace FastReport.Barcode
         }
 
         /// <inheritdoc />
-        internal override void DoLines(string data, IGraphics g, float zoom)
+        internal override void DoLines(string data, SkiaSharp.SKDrawable g, float zoom)
         {
-            DrawLineBars(EncodedData[0], g, zoom, new RectangleF(0, 0, 0, barArea.Height), false);
+            DrawLineBars(EncodedData[0], g, zoom, new SkiaSharp.SKRect(0, 0, 0, barArea.Height), false);
         }
     }
 
@@ -428,11 +429,11 @@ namespace FastReport.Barcode
         }
 
         /// <inheritdoc />
-        internal override void DoLines(string data, IGraphics g, float zoom)
+        internal override void DoLines(string data, SkiaSharp.SKDrawable g, float zoom)
         {
-            DrawLineBars(EncodedData[0], g, zoom, new RectangleF(0, 0, 0, barArea.Height * 5 / 13), false);
-            DrawLineBars(EncodedData[1], g, zoom, new RectangleF(0, barArea.Height * 5 / 13, 0, barArea.Height * 1 / 13), false, true);
-            DrawLineBars(EncodedData[2], g, zoom, new RectangleF(0, barArea.Height * 6 / 13, 0, barArea.Height * 7 / 13), true);
+            DrawLineBars(EncodedData[0], g, zoom, new SkiaSharp.SKRect(0, 0, 0, barArea.Height * 5 / 13), false);
+            DrawLineBars(EncodedData[1], g, zoom, new SkiaSharp.SKRect(0, barArea.Height * 5 / 13, 0, barArea.Height * 1 / 13), false, true);
+            DrawLineBars(EncodedData[2], g, zoom, new SkiaSharp.SKRect(0, barArea.Height * 6 / 13, 0, barArea.Height * 7 / 13), true);
         }
 
         internal override float GetWidth(string code)
@@ -533,13 +534,13 @@ namespace FastReport.Barcode
         }
 
         /// <inheritdoc />
-        internal override void DoLines(string data, IGraphics g, float zoom)
+        internal override void DoLines(string data, SkiaSharp.SKDrawable g, float zoom)
         {
-            DrawLineBars(EncodedData[0], g, zoom, new RectangleF(0, 0, 0, barArea.Height * 33 / 69), false);
-            DrawLineBars(EncodedData[1], g, zoom, new RectangleF(0, barArea.Height * 33 / 69 , 0, barArea.Height * 1 / 69), false, true);
-            DrawLineBars(EncodedData[2], g, zoom, new RectangleF(0, barArea.Height * 34 / 69 , 0, barArea.Height * 1 / 69), false, true);
-            DrawLineBars(EncodedData[3], g, zoom, new RectangleF(0, barArea.Height * 35 / 69 , 0, barArea.Height * 1 / 69), false, true);
-            DrawLineBars(EncodedData[4], g, zoom, new RectangleF(0, barArea.Height * 36 / 69 , 0, barArea.Height * 33 / 69), true);
+            DrawLineBars(EncodedData[0], g, zoom, new SkiaSharp.SKRect(0, 0, 0, barArea.Height * 33 / 69), false);
+            DrawLineBars(EncodedData[1], g, zoom, new SkiaSharp.SKRect(0, barArea.Height * 33 / 69 , 0, barArea.Height * 1 / 69), false, true);
+            DrawLineBars(EncodedData[2], g, zoom, new SkiaSharp.SKRect(0, barArea.Height * 34 / 69 , 0, barArea.Height * 1 / 69), false, true);
+            DrawLineBars(EncodedData[3], g, zoom, new SkiaSharp.SKRect(0, barArea.Height * 35 / 69 , 0, barArea.Height * 1 / 69), false, true);
+            DrawLineBars(EncodedData[4], g, zoom, new SkiaSharp.SKRect(0, barArea.Height * 36 / 69 , 0, barArea.Height * 33 / 69), true);
         }
     }
 
@@ -824,9 +825,9 @@ namespace FastReport.Barcode
         }
 
         /// <inheritdoc />
-        internal override void DoLines(string data, IGraphics g, float zoom)
+        internal override void DoLines(string data, SkiaSharp.SKDrawable g, float zoom)
         {
-            DrawLineBars(EncodedData[0], g, zoom, new RectangleF(0, 0, 0, barArea.Height), false);
+            DrawLineBars(EncodedData[0], g, zoom, new SkiaSharp.SKRect(0, 0, 0, barArea.Height), false);
         }
 
         internal override float GetWidth(string code)

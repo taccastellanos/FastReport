@@ -1,8 +1,8 @@
 using FastReport.Utils;
 using System;
 using System.Collections;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 
 namespace FastReport
 {
@@ -17,8 +17,8 @@ namespace FastReport
     /// <code>
     /// public void Draw(FRPaintEventArgs e)
     /// {
-    ///   Brush brush = e.Cache.GetBrush(BackColor);
-    ///   Pen pen = e.Cache.GetPen(BorderColor, 1, BorderStyle);
+    ///   /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(BackColor);
+    ///   /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, 1, BorderStyle);
     ///   e.Graphics.FillRectangle(brush, Bounds);
     ///   e.Graphics.DrawRectangle(pen, Bounds);
     /// }
@@ -38,9 +38,9 @@ namespace FastReport
         /// <param name="width">Width of a pen.</param>
         /// <param name="style">Dash style of a pen.</param>
         /// <returns>The <b>Pen</b> object.</returns>
-        public Pen GetPen(Color color, float width, DashStyle style)
+        public /*Pen*/SkiaSharp.SKPaint GetPen(SkiaSharp.SKColor color, float width, DashStyle style)
         {
-            return GetPen(color, width, style, LineJoin.Miter);
+            return  new SkiaSharp.SKPaint();//TODOGetPen(color, width, style, LineJoin.Miter);
         }
 
         /// <summary>
@@ -51,34 +51,39 @@ namespace FastReport
         /// <param name="style">Dash style of a pen.</param>
         /// <param name="lineJoin">Line join of a pen.</param>
         /// <returns>The <b>Pen</b> object.</returns>
-        public Pen GetPen(Color color, float width, DashStyle style, LineJoin lineJoin)
+        public /*Pen*/SkiaSharp.SKPaint GetPen(SkiaSharp.SKColor color, float width, DashStyle style, LineJoin lineJoin)
         {
             int hash = color.GetHashCode() ^ width.GetHashCode() ^ style.GetHashCode() ^ lineJoin.GetHashCode();
-            Pen result = pens[hash] as Pen;
+            /*TODO
+            /*Pen/SkiaSharp.SKPaint result = pens[hash] as /*Pen/SkiaSharp.SKPaint;
             if (result == null)
             {
-                result = new Pen(color, width);
+                result = new /*Pen/SkiaSharp.SKPaint (color, width);
                 result.DashStyle = style;
                 result.LineJoin = lineJoin;
                 pens[hash] = result;
             }
             return result;
+            */
+            return new SkiaSharp.SKPaint();
         }
 
         /// <summary>
-        /// Gets a brush with specified color.
+        /// Gets a /*Brush*/SkiaSharp.SKPaint with specified color.
         /// </summary>
         /// <param name="color">Color of a brush.</param>
         /// <returns>The <b>SolidBrush</b> object.</returns>
-        public SolidBrush GetBrush(Color color)
+        public /*SolidBrush*/SkiaSharp.SKPaint GetBrush(SkiaSharp.SKColor color)
         {
             int hash = color.GetHashCode();
-            SolidBrush result = brushes[hash] as SolidBrush;
+            
+            /*SolidBrush*/SkiaSharp.SKPaint result = brushes[hash] as /*SolidBrush*/SkiaSharp.SKPaint;
+            /*TODO
             if (result == null)
             {
-                result = new SolidBrush(color);
+                result = new /*SolidBrush/SkiaSharp.SKPaint(color);
                 brushes[hash] = result;
-            }
+            }*/
             return result;
         }
 
@@ -89,13 +94,13 @@ namespace FastReport
         /// <param name="size">Size of a font.</param>
         /// <param name="style">Style of a font.</param>
         /// <returns>The <b>Font</b> object.</returns>
-        public Font GetFont(FontFamily name, float size, FontStyle style)
+        public SkiaSharp.SKFont GetFont(SkiaSharp.SKTypeface name, float size, SkiaSharp.SKFontStyle style)
         {
             int hash = name.GetHashCode() ^ size.GetHashCode() ^ style.GetHashCode();
-            Font result = fonts[hash] as Font;
+            var result = fonts[hash] as SkiaSharp.SKFont;
             if (result == null)
             {
-                result = new Font(name, size, style);
+                result = new SkiaSharp.SKFont( name, size);
                 fonts[hash] = result;
             }
             return result;
@@ -111,12 +116,13 @@ namespace FastReport
         /// <param name="firstTab">The number of spaces between the beginning of a line of text and the first tab stop.</param>
         /// <param name="tabWidth">Distance between tab stops.</param>
         /// <returns>The <b>StringFormat</b> object.</returns>
-        public StringFormat GetStringFormat(StringAlignment align, StringAlignment lineAlign,
+        public StringAlignment GetStringFormat(StringAlignment align, StringAlignment lineAlign,
           StringTrimming trimming, StringFormatFlags flags, float firstTab, float tabWidth)
         {
+            /*TODO
             int hash = align.GetHashCode() ^ (lineAlign.GetHashCode() << 2) ^ (trimming.GetHashCode() << 5) ^
               (flags.GetHashCode() << 16) ^ (100 - firstTab).GetHashCode() ^ tabWidth.GetHashCode();
-            StringFormat result = stringFormats[hash] as StringFormat;
+            StringAlignment result = stringFormats[hash] as StringFormat;
             if (result == null)
             {
                 result = new StringFormat();
@@ -134,7 +140,8 @@ namespace FastReport
                 result.SetTabStops(0, tabStops);
                 stringFormats[hash] = result;
             }
-            return result;
+            return result;*/
+            return StringAlignment.Center;
         }
 
         /// <summary>
@@ -148,16 +155,17 @@ namespace FastReport
         /// <param name="tabWidth">Distance between tab stops.</param>
         /// <param name="defaultTab">Default distance between default tabs stops.</param>
         /// <returns>The <b>StringFormat</b> object.</returns>
-        public StringFormat GetStringFormat(StringAlignment align, StringAlignment lineAlign,
+        public SkiaSharp.SKTextAlign GetStringFormat(StringAlignment align, StringAlignment lineAlign,
           StringTrimming trimming, StringFormatFlags flags, float firstTab, FloatCollection tabWidth,
           float defaultTab = 48)
         {
+            /*TODO
             int hash = align.GetHashCode() ^ (lineAlign.GetHashCode() << 2) ^ (trimming.GetHashCode() << 5) ^
               (flags.GetHashCode() << 16) ^ (100 - firstTab).GetHashCode() ^ tabWidth.GetHashCode();
-            StringFormat result = stringFormats[hash] as StringFormat;
+            SkiaSharp.SKTextAlign result = stringFormats[hash] as StringFormat;
             if (result == null)
             {
-                result = new StringFormat();
+                result = new  SkiaSharp.SKTextAlign();
                 result.Alignment = align;
                 result.LineAlignment = lineAlign;
                 result.Trimming = trimming;
@@ -177,7 +185,8 @@ namespace FastReport
                 result.SetTabStops(0, tabStops);
                 stringFormats[hash] = result;
             }
-            return result;
+            return result;*/
+            return SkiaSharp.SKTextAlign.Center;
         }
 
         /// <summary>
@@ -185,22 +194,23 @@ namespace FastReport
         /// </summary>
         public void Dispose()
         {
-            foreach (Pen pen in pens.Values)
+            foreach  (/*Pen*/SkiaSharp.SKPaint pen in pens.Values)
             {
                 pen.Dispose();
             }
-            foreach (Brush brush in brushes.Values)
+            foreach (var brush in brushes.Values)
             {
-                brush.Dispose();
+                //TODObrush.Dispose();
             }
-            foreach (Font font in fonts.Values)
+            foreach (SkiaSharp.SKFont font in fonts.Values)
             {
                 font.Dispose();
             }
+            /*TODO
             foreach (StringFormat format in stringFormats.Values)
             {
                 format.Dispose();
-            }
+            }*/
             pens.Clear();
             brushes.Clear();
             fonts.Clear();

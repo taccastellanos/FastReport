@@ -2,8 +2,8 @@
 using FastReport.Utils;
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
+
+
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -266,19 +266,14 @@ namespace FastReport.Export
             return "";
         }
 
-        internal static string HTMLColor(Color color)
+        internal static string HTMLColor(SkiaSharp.SKColor color)
         {
-            return ColorTranslator.ToHtml(color);
+            return color.ToString();
         }
 
-        internal static string HTMLColorCode(Color color)
+        internal static string HTMLColorCode(SkiaSharp.SKColor color)
         {
-            return String.Join(String.Empty, new String[] {
-                "#",
-                color.R.ToString("X2"),
-                color.G.ToString("X2"),
-                color.B.ToString("X2")
-            });
+            return color.ToString();
         }
 
         internal static string ByteToHex(byte Byte)
@@ -665,7 +660,7 @@ namespace FastReport.Export
             return result.ToString();
         }
 
-        internal static Color GetColorFromFill(FillBase Fill)
+        internal static SkiaSharp.SKColor GetColorFromFill(FillBase Fill)
         {
             if (Fill is SolidFill)
                 return (Fill as SolidFill).Color;
@@ -678,15 +673,15 @@ namespace FastReport.Export
             else if (Fill is LinearGradientFill)
                 return GetMiddleColor((Fill as LinearGradientFill).StartColor, (Fill as LinearGradientFill).EndColor);
             else
-                return Color.White;
+                return SkiaSharp.SKColors.White;
         }
 
-        private static Color GetMiddleColor(Color color1, Color color2)
+        private static SkiaSharp.SKColor GetMiddleColor(SkiaSharp.SKColor color1, SkiaSharp.SKColor color2)
         {
-            return Color.FromArgb(255,
-                (color1.R + color2.R) / 2,
-                (color1.G + color2.G) / 2,
-                (color1.B + color2.B) / 2);
+            return new SkiaSharp.SKColor(
+                Convert.ToByte((color1.Red + color2.Red) / 2),
+                Convert.ToByte((color1.Green + color2.Green) / 2),
+                Convert.ToByte((color1.Blue + color2.Blue) / 2));
         }
 
         internal static string GetRFCDate(DateTime datetime)
@@ -704,26 +699,29 @@ namespace FastReport.Export
             }
         }
 
-        internal static ImageCodecInfo GetCodec(string codec)
+        internal static SkiaSharp.SKEncodedImageFormat GetCodec(string codec)
         {
-            foreach (ImageCodecInfo ice in ImageCodecInfo.GetImageEncoders())
+            /* TODO
+            foreach (ImageCodecInfo ice in SkiaSharp.SKEncodedImageFormat)
             {
                 if (ice.MimeType == codec)
                     return ice;
-            }
-            return null;
+            }*/
+            return SkiaSharp.SKEncodedImageFormat.Bmp ;
         }
 
         /// <summary>
         /// For developers only
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static void SaveJpeg(System.Drawing.Image image, Stream buff, int quality)
+        public static void SaveJpeg(SkiaSharp.SKImage image, Stream buff, int quality)
         {
+            /*TODO
             ImageCodecInfo ici = ExportUtils.GetCodec("image/jpeg");
             EncoderParameters ep = new EncoderParameters();
             ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
             image.Save(buff, ici, ep);
+            */
         }
 
         internal static string TruncLeadSlash(string line)

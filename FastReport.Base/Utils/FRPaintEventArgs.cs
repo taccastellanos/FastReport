@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 
 namespace FastReport.Utils
 {
@@ -10,7 +10,7 @@ namespace FastReport.Utils
     /// </summary>
     public class FRPaintEventArgs
     {
-        private IGraphics graphics;
+        private SkiaSharp.SKDrawable graphics;
         private float scaleX;
         private float scaleY;
         private GraphicCache cache;
@@ -18,7 +18,7 @@ namespace FastReport.Utils
         /// <summary>
         /// Gets a <b>Graphics</b> object to draw on.
         /// </summary>
-        public IGraphics Graphics
+        public SkiaSharp.SKDrawable Graphics
         {
             get { return graphics; }
         }
@@ -54,7 +54,7 @@ namespace FastReport.Utils
         /// <param name="scaleX">X scale factor.</param>
         /// <param name="scaleY">Y scale factor.</param>
         /// <param name="cache">Cache that contains graphics objects.</param>
-        public FRPaintEventArgs(IGraphics g, float scaleX, float scaleY, GraphicCache cache)
+        public FRPaintEventArgs(SkiaSharp.SKDrawable g, float scaleX, float scaleY, GraphicCache cache)
         {
             graphics = g;
             this.scaleX = scaleX;
@@ -62,17 +62,7 @@ namespace FastReport.Utils
             this.cache = cache;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <b>FRPaintEventArgs</b> class with specified settings.
-        /// </summary>
-        /// <param name="g"><b>Graphics</b> object to draw on.</param>
-        /// <param name="scaleX">X scale factor.</param>
-        /// <param name="scaleY">Y scale factor.</param>
-        /// <param name="cache">Cache that contains graphics objects.</param>
-        public FRPaintEventArgs(Graphics g, float scaleX, float scaleY, GraphicCache cache) :
-            this(GdiGraphics.FromGraphics(g), scaleX, scaleY, cache)
-        {
-        }
+       
     }
 
 }

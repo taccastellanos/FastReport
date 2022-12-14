@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using FastReport.Web.Controllers;
 using FastReport.Web.Application;
-using System.Drawing;
+
 
 namespace FastReport.Web
 {

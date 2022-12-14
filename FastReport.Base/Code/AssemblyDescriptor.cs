@@ -7,7 +7,7 @@ using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Drawing;
+
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -592,7 +592,7 @@ namespace FastReport.Code
                     {
                         TextObjectBase text = Report.FindObject(errObjName) as TextObjectBase;
                         text.CanGrow = true;
-                        text.FillColor = Color.Red;
+                        text.FillColor = SkiaSharp.SKColors.Red;
                         text.Text = "DIVISION BY ZERO!";
                         continue;
                     }

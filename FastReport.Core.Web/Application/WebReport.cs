@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using FastReport.Web.Controllers;
 using FastReport.Web.Application;
-using System.Drawing;
+
 
 namespace FastReport.Web
 {
@@ -163,7 +163,7 @@ namespace FastReport.Web
         public bool ShowBottomToolbar { get => Toolbar.ShowBottomToolbar; set => Toolbar.ShowBottomToolbar = value; }
 
         [Obsolete("Please, use Toolbar.Color")]
-        public Color ToolbarColor { get => Toolbar.Color; set => Toolbar.Color = value; }
+        public SkiaSharp.SKColor ToolbarColor { get => Toolbar.Color; set => Toolbar.Color = value; }
 
         /// <summary>
         /// Toolbar height in pixels

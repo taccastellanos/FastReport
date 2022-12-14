@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
-using System.Drawing;
+
 using FastReport.Utils;
 using FastReport.Barcode;
-using System.Drawing.Drawing2D;
+
 using FastReport.Format;
 using System.Xml;
 #if MSCHART
@@ -162,7 +162,7 @@ namespace FastReport.Import.StimulSoft
         /// </summary>
         /// <param name="str">The DevExpress Color value as string.</param>
         /// <returns>The Color value.</returns>
-        public static Color ConvertColor(string str)
+        public static SkiaSharp.SKColor ConvertColor(string str)
         {
             if (!String.IsNullOrEmpty(str))
             {
@@ -171,23 +171,23 @@ namespace FastReport.Import.StimulSoft
                     string[] rgb = str.Replace("[", "").Replace("]","").Split(':');
 
                     if(rgb.Length > 3)
-                        return Color.FromArgb(ConvertInt(rgb[0]), ConvertInt(rgb[1]), ConvertInt(rgb[2]), ConvertInt(rgb[3]));
+                        return new SkiaSharp.SKColor(byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2]), byte.Parse(rgb[3]));
 
-                    return Color.FromArgb(ConvertInt(rgb[0]), ConvertInt(rgb[1]), ConvertInt(rgb[2]));
+                    return new SkiaSharp.SKColor(byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2]));
                 }
                 else if (str.Contains(","))
                 {
                     string[] rgb = str.Replace(" ", "").Split(',');
 
-                    if (rgb.Length > 3)
-                        return Color.FromArgb(ConvertInt(rgb[0]), ConvertInt(rgb[1]), ConvertInt(rgb[2]), ConvertInt(rgb[3]));
+                    if(rgb.Length > 3)
+                        return new SkiaSharp.SKColor(byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2]), byte.Parse(rgb[3]));
 
-                    return Color.FromArgb(ConvertInt(rgb[0]), ConvertInt(rgb[1]), ConvertInt(rgb[2]));
+                    return new SkiaSharp.SKColor(byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2]));
                 }
                 else 
-                    return Color.FromName(str);
+                    return new SkiaSharp.SKColor();//TODO (SkiaSharp.SKColors).FromName(str);
             }
-            return Color.Black;
+            return SkiaSharp.SKColors.Black;
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace FastReport.Import.StimulSoft
 
 
         /// <summary>
-        /// Converts the StimulSoft Brush to FillBase object.
+        /// Converts the StimulSoft /*Brush*/SkiaSharp.SKPaint to FillBase object.
         /// </summary>
         /// <param name="brush"></param>
         /// <returns></returns>
@@ -754,7 +754,7 @@ namespace FastReport.Import.StimulSoft
         /// </summary>
         /// <param name="fill"></param>
         /// <returns></returns>
-        public static Color ConvertBrushToColor(FillBase fill)
+        public static SkiaSharp.SKColor ConvertBrushToColor(FillBase fill)
         {
             if (fill is HatchFill)
                 return (fill as HatchFill).ForeColor;
@@ -764,7 +764,7 @@ namespace FastReport.Import.StimulSoft
                 return (fill as GlassFill).Color;
             if (fill is SolidFill)
                 return (fill as SolidFill).Color;
-            return Color.Transparent;
+            return SkiaSharp.SKColors.Transparent;
         }
 
 #if MSCHART
@@ -814,10 +814,10 @@ namespace FastReport.Import.StimulSoft
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Point ConvertPoint(string value)
+        public static SkiaSharp.SKPoint ConvertPoint(string value)
         {
             string[] points = value.Split(',');
-            return new Point(ConvertInt(points[0]), ConvertInt(points[1]));
+            return new SkiaSharp.SKPoint(ConvertInt(points[0]), ConvertInt(points[1]));
         }
 
         /// <summary>
@@ -825,10 +825,10 @@ namespace FastReport.Import.StimulSoft
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Size ConvertSize(string value)
+        public static SkiaSharp.SKSize ConvertSize(string value)
         {
             string[] points = value.Split(',');
-            return new Size(ConvertInt(points[0]), ConvertInt(points[1]));
+            return new SkiaSharp.SKSize(ConvertInt(points[0]), ConvertInt(points[1]));
         }
 
 

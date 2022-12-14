@@ -1,6 +1,6 @@
 ﻿using FastReport.Utils;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.ComponentModel;
 
 namespace FastReport.Gauge.Simple.Progress
@@ -63,8 +63,9 @@ namespace FastReport.Gauge.Simple.Progress
 
         internal override void DrawHorz(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
 
             Left = (Parent.AbsLeft + Parent.Border.Width / 2 + HorizontalOffset) * e.ScaleX;
             Top = (Parent.AbsTop + Parent.Border.Width / 2 + (Parent.Height - Parent.Border.Width) / 2 - (Parent.Height - Parent.Border.Width) * PointerRatio / 2) * e.ScaleY;
@@ -83,14 +84,15 @@ namespace FastReport.Gauge.Simple.Progress
                     Left += prntWidth - widthSml;
                 Width = widthSml;
             }
-            Brush brush = Fill.CreateBrush(new RectangleF(Left, Top, Width, Height), e.ScaleX, e.ScaleY);
-            g.FillAndDrawRectangle(pen, brush, Left, Top, Width, Height);
+            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(new SkiaSharp.SKRect(Left, Top, Width, Height), e.ScaleX, e.ScaleY);
+            g.FillAndDrawRectangle(pen, brush, Left, Top, Width, Height);*/
         }
 
         internal override void DrawVert(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleY, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleY, DashStyle.Solid);
 
             Width = ((Parent.Width - Parent.Border.Width) * PointerRatio) * e.ScaleX;
             Height = (float)((Parent.Height - Parent.Border.Width - HorizontalOffset * 2) * (Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum) * e.ScaleY);
@@ -112,8 +114,8 @@ namespace FastReport.Gauge.Simple.Progress
                     Top = topSml;
                 Height = heightSml;
             }
-            Brush brush = Fill.CreateBrush(new RectangleF(Left, Top, Width, Height), e.ScaleX, e.ScaleY);
-            g.FillAndDrawRectangle(pen, brush, Left, Top, Width, Height);
+            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(new SkiaSharp.SKRect(Left, Top, Width, Height), e.ScaleX, e.ScaleY);
+            g.FillAndDrawRectangle(pen, brush, Left, Top, Width, Height);*/
         }
 
         /// <inheritdoc />

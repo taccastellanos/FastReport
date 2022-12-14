@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Text;
+
+
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -324,15 +324,16 @@ namespace FastReport.Utils
 
         private static void InitTextRenderingHint()
         {
+            /* TODO
             // init TextRenderingHint.SystemDefault
             // bug in .Net: if you use any other hint before SystemDefault, the SystemDefault will
             // look like SingleBitPerPixel
-            using (Bitmap bmp = new Bitmap(1, 1))
-            using (Graphics g = Graphics.FromImage(bmp))
+            using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
+            using (SkiaSharp.SKGraphics g = SkiaSharp.SKGraphics.FromImage(bmp))
             {
                 g.TextRenderingHint = TextRenderingHint.SystemDefault;
                 g.DrawString(" ", SystemFonts.DefaultFont, Brushes.Black, 0, 0);
-            }
+            }*/
         }
 
         private static void CheckWebMode()

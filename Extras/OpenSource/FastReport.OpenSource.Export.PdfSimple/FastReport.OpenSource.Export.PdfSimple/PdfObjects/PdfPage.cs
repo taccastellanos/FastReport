@@ -1,5 +1,5 @@
 ﻿using FastReport.Export.PdfSimple.PdfCore;
-using System.Drawing;
+
 
 namespace FastReport.Export.PdfSimple.PdfObjects
 {
@@ -16,7 +16,7 @@ namespace FastReport.Export.PdfSimple.PdfObjects
 
         #region Public Properties
 
-        public RectangleF MediaBox
+        public SkiaSharp.SKRect MediaBox
         {
             set
             {

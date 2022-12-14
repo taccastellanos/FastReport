@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;
+
 
 namespace FastReport.Utils
 {
@@ -12,11 +12,11 @@ namespace FastReport.Utils
 
     public static partial class DrawUtils
     {
-        private static Font FDefaultFont;
-        private static Font FDefault96Font;
-        private static Font FDefaultReportFont;
-        private static Font FDefaultTextObjectFont;
-        private static Font FFixedFont;
+        private static SkiaSharp.SKFont FDefaultFont;
+        private static SkiaSharp.SKFont FDefault96Font;
+        private static SkiaSharp.SKFont FDefaultReportFont;
+        private static SkiaSharp.SKFont FDefaultTextObjectFont;
+        private static SkiaSharp.SKFont FFixedFont;
         private static int FScreenDpi;
         private static float FDpiFX;
         private static MonoRendering FMonoRendering = MonoRendering.Undefined;
@@ -43,31 +43,35 @@ namespace FastReport.Utils
 
         private static int GetDpi()
         {
-            using (Bitmap bmp = new Bitmap(1, 1))
-            using (Graphics g = Graphics.FromImage(bmp))
+            /*TODO
+            using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
+            
+            using (var g = SkiaSharp.SKGraphics.FromImage(bmp))
             {
                 return (int)g.DpiX;
-            }
+            }*/
+            return 1;
         }
 
-        public static Font DefaultFont
+        public static SkiaSharp.SKFont DefaultFont
         {
             get
             {
                 if (FDefaultFont == null)
                 {
+                    
                     switch (System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
                     {
                         case "ja":
-                            FDefaultFont = new Font("MS UI Gothic", 9);
+                            FDefaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName( "MS UI Gothic"), 9);
                             break;
 
                         case "zh":
-                            FDefaultFont = new Font("SimSun", 9);
+                            FDefaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("SimSun"), 9);
                             break;
 
                         default:
-                            FDefaultFont = new Font("Tahoma", 8);
+                            FDefaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Tahoma"), 8);
                             break;
                     }
                 }
@@ -75,24 +79,25 @@ namespace FastReport.Utils
             }
         }
 
-        public static Font DefaultReportFont
+        public static SkiaSharp.SKFont DefaultReportFont
         {
             get
             {
                 if (FDefaultReportFont == null)
                 {
+                    
                     switch (System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
                     {
                         case "ja":
-                            FDefaultReportFont = new Font("MS UI Gothic", 9);
+                            FDefaultReportFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("MS UI Gothic"), 9);
                             break;
 
                         case "zh":
-                            FDefaultReportFont = new Font("SimSun", 9);
+                            FDefaultReportFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("SimSun"), 9);
                             break;
 
                         default:
-                            FDefaultReportFont = new Font("Arial", 10);
+                            FDefaultReportFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
                             break;
                     }
                 }
@@ -100,27 +105,29 @@ namespace FastReport.Utils
             }
         }
 
-        public static Font DefaultTextObjectFont
+        public static SkiaSharp.SKFont DefaultTextObjectFont
         {
             get
             {
                 if (FDefaultTextObjectFont == null)
-                    FDefaultTextObjectFont = new Font("Arial", 10);
+                    FDefaultTextObjectFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
                 return FDefaultTextObjectFont;
             }
         }
 
-        public static Font FixedFont
+        public static SkiaSharp.SKFont FixedFont
         {
             get
             {
+                
                 if (FFixedFont == null)
-                    FFixedFont = new Font("Courier New", 10);
+                    FFixedFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Courier New"), 10);
+                
                 return FFixedFont;
             }
         }
 
-        public static Font Default96Font
+        public static SkiaSharp.SKFont Default96Font
         {
             get
             {
@@ -130,15 +137,15 @@ namespace FastReport.Utils
                     switch (System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
                     {
                         case "ja":
-                            FDefault96Font = new Font("MS UI Gothic", 9 * sz);
+                            FDefault96Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("MS UI Gothic"), 9 * sz);
                             break;
 
                         case "zh":
-                            FDefault96Font = new Font("SimSun", 9 * sz);
+                            FDefault96Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("SimSun"), 9 * sz);
                             break;
 
                         default:
-                            FDefault96Font = new Font("Tahoma", 8 * sz);
+                            FDefault96Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Tahoma"), 8 * sz);
                             break;
                     }
                 }
@@ -146,42 +153,49 @@ namespace FastReport.Utils
             }
         }
 
-        public static SizeF MeasureString(string text)
+        public static SkiaSharp.SKSize MeasureString(string text)
         {
             return MeasureString(text, DefaultFont);
         }
 
-        public static SizeF MeasureString(string text, Font font)
+        public static SkiaSharp.SKSize MeasureString(string text, SkiaSharp.SKFont font)
         {
-            using (Bitmap bmp = new Bitmap(1, 1))
+            /*TODO
+            using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
+            
             using (StringFormat sf = new StringFormat())
             {
-                Graphics g = Graphics.FromImage(bmp);
+                SkiaSharp.SKGraphics g = Graphics.FromImage(bmp);
                 return MeasureString(g, text, font, sf);
-            }
+            }*/
+            return new SkiaSharp.SKSize(0,0);
         }
 
-        public static SizeF MeasureString(Graphics g, string text, Font font, StringFormat format)
+        public static SkiaSharp.SKSize MeasureString(SkiaSharp.SKDrawable g, string text, SkiaSharp.SKFont font, SkiaSharp.SKTextAlign format)
         {
-            return MeasureString(g, text, font, new RectangleF(0, 0, 10000, 10000), format);
+            return MeasureString(g, text, font, new SkiaSharp.SKRect(0, 0, 10000, 10000), format);
         }
 
-        public static SizeF MeasureString(Graphics g, string text, Font font, RectangleF layoutRect, StringFormat format)
+        public static SkiaSharp.SKSize MeasureString(SkiaSharp.SKDrawable g, string text, SkiaSharp.SKFont font, SkiaSharp.SKRect layoutRect, SkiaSharp.SKTextAlign format)
         {
+            
             if (String.IsNullOrEmpty(text))
-                return new SizeF(0, 0);
+                return new SkiaSharp.SKSize(0, 0);
+            /*TODO
             CharacterRange[] characterRanges = { new CharacterRange(0, text.Length) };
             StringFormatFlags saveFlags = format.FormatFlags;
             format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
             format.SetMeasurableCharacterRanges(characterRanges);
             Region[] regions = g.MeasureCharacterRanges(text, font, layoutRect, format);
             format.FormatFlags = saveFlags;
-            RectangleF rect = regions[0].GetBounds(g);
+            SkiaSharp.SKRect rect = regions[0].GetBounds(g);
             regions[0].Dispose();
-            return rect.Size;
+            return rect.Size;*/
+            return new SkiaSharp.SKSize(0,0);
+            
         }
 
-        public static void FloodFill(Bitmap bmp, int x, int y, Color color, Color replacementColor)
+        public static void FloodFill(SkiaSharp.SKBitmap bmp, int x, int y, SkiaSharp.SKColor color, SkiaSharp.SKColor replacementColor)
         {
             if (x < 0 || y < 0 || x >= bmp.Width || y >= bmp.Height || bmp.GetPixel(x, y) != color)
                 return;
@@ -192,10 +206,11 @@ namespace FastReport.Utils
             FloodFill(bmp, x, y + 1, color, replacementColor);
         }
 
-        internal static MonoRendering GetMonoRendering(Graphics printerGraphics)
+        internal static MonoRendering GetMonoRendering(SkiaSharp.SKDrawable printerGraphics)
         {
             if (FMonoRendering == MonoRendering.Undefined)
             {
+                /*TODO
                 GraphicsUnit savedUnit = printerGraphics.PageUnit;
                 printerGraphics.PageUnit = GraphicsUnit.Point;
 
@@ -203,7 +218,7 @@ namespace FastReport.Utils
                 float f1 = printerGraphics.MeasureString(s, DefaultReportFont).Width;
                 FMonoRendering = f1 > 200 ? MonoRendering.Pango : MonoRendering.Cairo;
 
-                printerGraphics.PageUnit = savedUnit;
+                printerGraphics.PageUnit = savedUnit;*/
             }
             return FMonoRendering;
         }

@@ -1,5 +1,5 @@
 ﻿using FastReport;
-using System.Drawing;
+
 
 namespace FastReport.ReportBuilder
 {
@@ -39,9 +39,9 @@ namespace FastReport.ReportBuilder
         /// <param name="emSize"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public ReportTitleBuilder<T> Font(string familyName, float emSize, FontStyle style)
+        public ReportTitleBuilder<T> Font(string familyName, float emSize, SkiaSharp.SKFontStyle style)
         {
-            _report._reportTitle.Font = new Font(familyName, emSize, style);
+            _report._reportTitle.Font = new SkiaSharp.SKFont(familyName, emSize, style);
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace FastReport.ReportBuilder
         /// <returns></returns>
         public ReportTitleBuilder<T> Font(string familyName, float emSize)
         {
-            return Font(familyName, emSize, FontStyle.Regular | FontStyle.Bold);
+            return Font(familyName, emSize, SkiaSharp.SKFontStyle.Regular | SkiaSharp.SKFontStyle.Bold);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace FastReport.ReportBuilder
         /// <returns></returns>
         public ReportTitleBuilder<T> Font(string familyName)
         {
-            return Font(familyName, 14, FontStyle.Regular | FontStyle.Bold);
+            return Font(familyName, 14, SkiaSharp.SKFontStyle.Regular | SkiaSharp.SKFontStyle.Bold);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace FastReport.ReportBuilder
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public ReportTitleBuilder<T> TextColor(Color color)
+        public ReportTitleBuilder<T> TextColor(SkiaSharp.SKColor color)
         {
             _report._reportTitle.TextColor = color;
             return this;
@@ -93,7 +93,7 @@ namespace FastReport.ReportBuilder
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public ReportTitleBuilder<T> FillColor(Color color)
+        public ReportTitleBuilder<T> FillColor(SkiaSharp.SKColor color)
         {
             _report._reportTitle.FillColor = color;
             return this;

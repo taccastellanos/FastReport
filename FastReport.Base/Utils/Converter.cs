@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Drawing;
+
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -33,11 +33,11 @@ namespace FastReport.Utils
         return ((double)value).ToString(CultureInfo.InvariantCulture.NumberFormat);
       if (value is Enum)
         return Enum.Format(value.GetType(), value, "G");
-      if (value is Image)
+      if (value is SkiaSharp.SKImage)
       {
         using (MemoryStream stream = new MemoryStream())
         {
-          ImageHelper.Save(value as Image, stream);
+          ImageHelper.Save(value as SkiaSharp.SKImage, stream);
           return Convert.ToBase64String(stream.ToArray());
         }
       }
@@ -75,7 +75,7 @@ namespace FastReport.Utils
         return type.AssemblyQualifiedName;
       }
 #if true// | CROSSPLATFORM
-            if (value is Font)
+            if (value is SkiaSharp.SKFont)
             {
                 return new TypeConverters.FontConverter().ConvertToInvariantString(value);
             }
@@ -119,7 +119,7 @@ namespace FastReport.Utils
         return double.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
       if (type == typeof(Enum))
         return Enum.Parse(type, value);
-      if (type == typeof(Image) || type == typeof(Bitmap))
+      if (type == typeof(SkiaSharp.SKImage) || type == typeof(SkiaSharp.SKBitmap))
         return ImageHelper.Load(Convert.FromBase64String(value));
       if (type == typeof(Stream))
         return new MemoryStream(Convert.FromBase64String(value));
@@ -133,13 +133,13 @@ namespace FastReport.Utils
         return value.Split('\r');
       }
 #if true //CROSSPLATFORM
-            if (type == typeof(Font))
+            if (type == typeof(SkiaSharp.SKFont))
             {
                 return new TypeConverters.FontConverter().ConvertFromInvariantString(value);
             }
 #endif
-      if (type == typeof(Color))
-        return new ColorConverter().ConvertFromInvariantString(value);
+      if (type == typeof(SkiaSharp.SKColor))
+        return value;
       return TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value);
     }
 

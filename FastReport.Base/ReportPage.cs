@@ -1,9 +1,9 @@
 using System;
-using System.Drawing;
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using FastReport.Utils;
-using System.Drawing.Design;
+
 
 namespace FastReport
 {
@@ -384,7 +384,7 @@ namespace FastReport
         /// Gets or sets the page background fill.
         /// </summary>
         [Category("Appearance")]
-        [Editor("FastReport.TypeEditors.FillEditor, FastReport", typeof(UITypeEditor))]
+        
         public FillBase Fill
         {
             get { return fill; }
@@ -434,7 +434,7 @@ namespace FastReport
         /// For more information, see <see cref="BandBase.OutlineExpression"/> property.
         /// </remarks>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string OutlineExpression
         {
             get { return outlineExpression; }
@@ -686,15 +686,15 @@ namespace FastReport
         #endregion
 
         #region Private Methods
-        private void DrawBackground(FRPaintEventArgs e, RectangleF rect)
+        private void DrawBackground(FRPaintEventArgs e, SkiaSharp.SKRect rect)
         {
             rect.Width *= e.ScaleX;
             rect.Height *= e.ScaleY;
-            Brush brush = null;
+            /*Brush*/SkiaSharp.SKPaint brush = null;
             if (Fill is SolidFill)
-                brush = e.Cache.GetBrush((Fill as SolidFill).Color);
+                /*Brush*/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
             else
-                brush = Fill.CreateBrush(rect, e.ScaleX, e.ScaleY);
+                /*Brush*/SkiaSharp.SKPaint = Fill.CreateBrush(rect, e.ScaleX, e.ScaleY);
 
             e.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
             if (!(Fill is SolidFill))
@@ -950,9 +950,9 @@ namespace FastReport
                 return;
 
             IGraphics g = e.Graphics;
-            RectangleF pageRect = new RectangleF(0, 0,
+            SkiaSharp.SKRect pageRect = new SkiaSharp.SKRect(0, 0,
               WidthInPixels - 1 / e.ScaleX, HeightInPixels - 1 / e.ScaleY);
-            RectangleF printableRect = new RectangleF(
+            SkiaSharp.SKRect printableRect = new SkiaSharp.SKRect(
               LeftMargin * Units.Millimeters,
               TopMargin * Units.Millimeters,
               (PaperWidth - LeftMargin - RightMargin) * Units.Millimeters,

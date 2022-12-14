@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+
 
 namespace FastReport.Web
 {
@@ -18,15 +18,15 @@ namespace FastReport.Web
         /// <summary>
         /// Used to change font family, style in export settings.
         /// </summary>
-        public Font FontSettings { get; set; } = null;
+        public SkiaSharp.SKFont FontSettings { get; set; } = null;
         /// <summary>
         /// Used to change font color in export settings.
         /// </summary>
-        public Color FontColor { get; set; } = Color.White;
+        public SkiaSharp.SKColor FontColor { get; set; } = SkiaSharp.SKColors.White;
         /// <summary>
         /// Used to change window, buttons color in export settings.
         /// </summary>
-        public Color Color { get; set; } = Color.Maroon;
+        public SkiaSharp.SKColor Color { get; set; } = SkiaSharp.SKColors.Maroon;
 
         /// <summary>
         /// Used to on/off export settings.
@@ -39,7 +39,7 @@ namespace FastReport.Web
             {
                 if (FontSettings != null)
                 {
-                    return  FontSettings.Style + " ";
+                    return  FontSettings.Typeface.FontStyle + " ";
                 }
                 else
                     return "";
@@ -53,7 +53,7 @@ namespace FastReport.Web
             {
                 if (FontSettings != null)
                 {
-                    return " " + FontSettings.OriginalFontName;
+                    return " " + FontSettings.Typeface.FamilyName;
                 }
                 else
                     return "Verdana,Arial";
@@ -249,7 +249,7 @@ namespace FastReport.Web
             set => SetExport(value, Exports.LaTeX);
         }
         /// <summary>
-        /// Switches a visibility of Image export in toolbar.
+        /// Switches a visibility of SkiaSharp.SKImage  export in toolbar.
         /// </summary>
         //public bool ShowImageExport
         //{

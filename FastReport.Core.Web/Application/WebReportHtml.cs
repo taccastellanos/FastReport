@@ -528,7 +528,7 @@ namespace FastReport.Web
                     if (page != null)
                     {
                         ObjectCollection allObjects = page.AllObjects;
-                        System.Drawing.PointF point = new System.Drawing.PointF(left + 1, top + 1);
+                        var point = new SkiaSharp.SKPoint(left + 1, top + 1);
                         foreach (Base obj in allObjects)
                         {
                             if (obj is ReportComponentBase)
@@ -544,8 +544,8 @@ namespace FastReport.Web
                                             TableCell textcell = table[j, i];
                                             if (textcell.Name == objectName)
                                             {
-                                                System.Drawing.RectangleF rect =
-                                                    new System.Drawing.RectangleF(table.Columns[j].AbsLeft,
+                                                SkiaSharp.SKRect rect =
+                                                    new SkiaSharp.SKRect(table.Columns[j].AbsLeft,
                                                     table.Rows[i].AbsTop,
                                                     textcell.Width,
                                                     textcell.Height);

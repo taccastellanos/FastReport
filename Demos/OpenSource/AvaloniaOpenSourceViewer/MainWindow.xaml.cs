@@ -20,7 +20,7 @@ namespace Viewer
         }
 
         private Button OpenBtn;
-        private Image img;
+        private SkiaSharp.SKImage  img;
         private TextBox PageNumber;
 
         private void InitializeComponent()
@@ -140,7 +140,7 @@ namespace Viewer
         private async void OpenFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog myDialog = new OpenFileDialog();
-            myDialog.Filters.Add(new FileDialogFilter() { Name = "Подготовленные отчёты(*.FPX)", Extensions = new List<string> { "fpx" } });
+            myDialog.Filters.Add(new FileDialogFilter() { Name = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ(*.FPX)", Extensions = new List<string> { "fpx" } });
             myDialog.AllowMultiple = false;
 
             var result = await myDialog.ShowAsync(this);

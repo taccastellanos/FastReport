@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Drawing;
+
 using System.Globalization;
 
 namespace FastReport.Web
@@ -56,17 +56,17 @@ namespace FastReport.Web
         /// Use to change ToolbarColor,
         /// Default value Color.WhiteSmoke
         /// </summary>
-        public Color Color { get; set; } = Color.WhiteSmoke;
+        public SkiaSharp.SKColor Color { get; set; } = SkiaSharp.SKColors.WhiteSmoke;
         /// <summary>
         /// Use to change Toolbar DropDownMenuColor,
         /// Default value Color.White
         /// </summary>
-        public Color DropDownMenuColor { get; set; } = Color.White;
+        public SkiaSharp.SKColor DropDownMenuColor { get; set; } = SkiaSharp.SKColors.White;
         /// <summary>
         /// Use to change Toolbar DropDownMenuText Color,
-        /// Default value Color.Black
+        /// Default value SkiaSharp.SKColors.Black
         /// </summary>
-        public Color DropDownMenuTextColor { get; set; } = Color.Black;
+        public SkiaSharp.SKColor DropDownMenuTextColor { get; set; } = SkiaSharp.SKColors.Black;
         /// <summary>
         /// Use to change Toolbar Position in report,
         /// Default value Position.Top
@@ -95,9 +95,9 @@ namespace FastReport.Web
         /// <summary>
         /// Use to change Font in Toolbar,
         /// Default value null
-        /// <para>Example syntax : new Font("Arial", 14 , FontStyle.Bold)</para>
+        /// <para>Example syntax : new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14 , SkiaSharp.SKFontStyle.Bold)</para>
         /// </summary>
-        public Font FontSettings { get; set; } = null;
+        public SkiaSharp.SKFont FontSettings { get; set; } = null;
 
         public int Height { get; set; } = 40;
 
@@ -141,7 +141,7 @@ namespace FastReport.Web
             {
                 if (FontSettings != null)
                 {
-                    return FontSettings.Size + "em " + FontSettings.OriginalFontName + " " + FontSettings.Style;
+                    return FontSettings.Size + "em " + FontSettings.Typeface.FamilyName + " " + FontSettings.Typeface.FontStyle;
                 }
                 else
                     return "15em Verdana,Arial sans-serif Regular";

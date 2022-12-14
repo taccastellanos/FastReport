@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Drawing;
+
+
 using System.Globalization;
 using System.Text;
 using System.Net;
@@ -50,11 +50,11 @@ namespace FastReport.Utils
         private List<Paragraph> paragraphs;
         private string text;
         private IGraphics graphics;
-        private Font font;
-        private Brush brush;
-        private Pen outlinePen;
-        private RectangleF displayRect;
-        private StringFormat format;
+        private SkiaSharp.SKFont font;
+        private /*Brush*/SkiaSharp.SKPaint brush;
+        private /*Pen*/SkiaSharp.SKPaint outlinePen;
+        private SkiaSharp.SKRect displayRect;
+        private SkiaSharp.SKTextAlign format;
         private HorzAlign horzAlign;
         private VertAlign vertAlign;
         private float lineHeight;
@@ -82,32 +82,32 @@ namespace FastReport.Utils
             get { return graphics; }
         }
 
-        public Font Font
+        public SkiaSharp.SKFont Font
         {
             get { return font; }
         }
 
-        public Brush Brush
+        public /*Brush*/SkiaSharp.SKPaint Brush
         {
             get { return brush; }
         }
 
-        public Pen OutlinePen
+        public /*Pen*/SkiaSharp.SKPaint OutlinePen
         {
             get { return outlinePen; }
         }
 
-        public Color BrushColor
+        public SkiaSharp.SKColor BrushColor
         {
-            get { return brush is SolidBrush ? (brush as SolidBrush).Color : Color.Black; }
+            get { return /*Brush*/SkiaSharp.SKPaint is /*SolidBrush*/SkiaSharp.SKPaint ? (brush as SolidBrush).Color : SkiaSharp.SKColors.Black; }
         }
 
-        public RectangleF DisplayRect
+        public SkiaSharp.SKRect DisplayRect
         {
             get { return displayRect; }
         }
 
-        public StringFormat Format
+        public SkiaSharp.SKTextAlign Format
         {
             get { return format; }
         }
@@ -225,7 +225,7 @@ namespace FastReport.Utils
         const string ab = "abcdefabcdef";
         const string a40b = "abcdef                                        abcdef";
 
-        internal static float CalculateSpaceSize(IGraphics g, Font f)
+        internal static float CalculateSpaceSize(IGraphics g, SkiaSharp.SKFont f)
         {
             float w_ab = g.MeasureString(ab, f).Width;
             float w_a40b = g.MeasureString(a40b, f).Width;
@@ -388,8 +388,8 @@ namespace FastReport.Utils
         }
         #endregion
 
-        public AdvancedTextRenderer(string text, IGraphics g, Font font, Brush brush, Pen outlinePen,
-          RectangleF rect, StringFormat format, HorzAlign horzAlign, VertAlign vertAlign,
+        public AdvancedTextRenderer(string text, IGraphics g, SkiaSharp.SKFont font, /*Brush*/SkiaSharp.SKPaint brush, /*Pen*/SkiaSharp.SKPaint outlinePen,
+          SkiaSharp.SKRect rect, SkiaSharp.SKTextAlign format, HorzAlign horzAlign, VertAlign vertAlign,
           float lineHeight, int angle, float widthRatio,
           bool forceJustify, bool wysiwyg, bool htmlTags, bool pdfMode,
           float scale, float fontScale, InlineImageCache cache, bool isPrinting = false)
@@ -450,7 +450,7 @@ namespace FastReport.Utils
 
                 // rotate displayrect if angle is 90 or 270
                 if ((Angle >= 90 && Angle < 180) || (Angle >= 270 && Angle < 360))
-                    displayRect = new RectangleF(DisplayRect.Y, DisplayRect.X, DisplayRect.Height, DisplayRect.Width);
+                    displayRect = new SkiaSharp.SKRect(DisplayRect.Y, DisplayRect.X, DisplayRect.Height, DisplayRect.Width);
             }
 
             displayRect.X /= WidthRatio;
@@ -626,7 +626,7 @@ namespace FastReport.Utils
                 Word word = new Word("", line);
                 line.Words.Add(word);
                 //    for img
-                //RunImage img = null;
+                //RunSkiaSharp.SKImage img = null;
                 //end     img
                 string text = this.text;
                 StringBuilder currentWord = new StringBuilder(100);
@@ -698,11 +698,11 @@ namespace FastReport.Utils
                             match = true;
                             tag = text.Substring(i, 3).ToLower();
                             if (tag == "<b>")
-                                newStyle.FontStyle |= FontStyle.Bold;
+                                newStyle.FontStyle |= SkiaSharp.SKFontStyle.Bold;
                             else if (tag == "<i>")
-                                newStyle.FontStyle |= FontStyle.Italic;
+                                newStyle.FontStyle |= SkiaSharp.SKFontStyle.Italic;
                             else if (tag == "<u>")
-                                newStyle.FontStyle |= FontStyle.Underline;
+                                newStyle.FontStyle |= SkiaSharp.SKFontStyle.Underline;
                             else
                                 match = false;
 
@@ -901,7 +901,7 @@ namespace FastReport.Utils
                         // <strike>
                         if (!match && i + 8 <= text.Length && text.Substring(i, 8).ToLower() == "<strike>")
                         {
-                            newStyle.FontStyle |= FontStyle.Strikeout;
+                            newStyle.FontStyle |= SkiaSharp.SKFontStyle.Strikeout;
                             match = true;
                             i += 8;
                         }
@@ -1119,8 +1119,8 @@ namespace FastReport.Utils
             private float top;
             private float width;
             private int originalCharIndex;
-            private List<RectangleF> underlines;
-            private List<RectangleF> strikeouts;
+            private List<SkiaSharp.SKRect> underlines;
+            private List<SkiaSharp.SKRect> strikeouts;
             #endregion
 
             #region Properties
@@ -1181,19 +1181,19 @@ namespace FastReport.Utils
                 get { return paragraph.Lines[paragraph.Lines.Count - 1] == this; }
             }
 
-            public List<RectangleF> Underlines
+            public List<SkiaSharp.SKRect> Underlines
             {
                 get { return underlines; }
             }
 
-            public List<RectangleF> Strikeouts
+            public List<SkiaSharp.SKRect> Strikeouts
             {
                 get { return strikeouts; }
             }
             #endregion
 
             #region Private Methods
-            private void PrepareUnderlines(List<RectangleF> list, FontStyle style)
+            private void PrepareUnderlines(List<SkiaSharp.SKRect> list, SkiaSharp.SKFontStyle style)
             {
                 list.Clear();
                 if (Words.Count == 0)
@@ -1223,14 +1223,14 @@ namespace FastReport.Utils
                                 if ((fnt.Style & style) == 0 && styleOn)
                                 {
                                     styleOn = false;
-                                    list.Add(new RectangleF(left, Top, right - left, 1));
+                                    list.Add(new SkiaSharp.SKRect(left, Top, right - left, 1));
                                 }
                             }
                         }
                     }
                     // close the style
                     if (styleOn)
-                        list.Add(new RectangleF(left, Top, right - left, 1));
+                        list.Add(new SkiaSharp.SKRect(left, Top, right - left, 1));
                 }
                 else if ((Renderer.Font.Style & style) > 0)
                 {
@@ -1238,7 +1238,7 @@ namespace FastReport.Utils
                     if (Renderer.HorzAlign == HorzAlign.Justify && (!Last || (paragraph.Last && Renderer.ForceJustify)))
                         lineWidth = Renderer.DisplayRect.Width - Renderer.SpaceWidth;
 
-                    list.Add(new RectangleF(Left, Top, lineWidth, 1));
+                    list.Add(new SkiaSharp.SKRect(Left, Top, lineWidth, 1));
                 }
             }
             #endregion
@@ -1320,8 +1320,8 @@ namespace FastReport.Utils
 
             public void MakeUnderlines()
             {
-                PrepareUnderlines(underlines, FontStyle.Underline);
-                PrepareUnderlines(strikeouts, FontStyle.Strikeout);
+                PrepareUnderlines(underlines, SkiaSharp.SKFontStyle.Underline);
+                PrepareUnderlines(strikeouts, SkiaSharp.SKFontStyle.Strikeout);
             }
 
             public void Draw()
@@ -1333,7 +1333,7 @@ namespace FastReport.Utils
 
                 if (Underlines.Count > 0 || Strikeouts.Count > 0)
                 {
-                    using (Pen pen = new Pen(Renderer.Brush, Renderer.Font.Size * 0.1f))
+                    using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (Renderer.Brush, Renderer.Font.Size * 0.1f))
                     {
                         float h = Renderer.FontLineHeight;
                         float w = h * 0.1f; // to match .net char X offset
@@ -1342,13 +1342,13 @@ namespace FastReport.Utils
                             w = -w;
 
                         // emulate underline & strikeout
-                        foreach (RectangleF rect in Underlines)
+                        foreach (SkiaSharp.SKRect rect in Underlines)
                         {
                             Renderer.Graphics.DrawLine(pen, rect.Left + w, rect.Top + h - w, rect.Right + w, rect.Top + h - w);
                         }
 
                         h /= 2;
-                        foreach (RectangleF rect in Strikeouts)
+                        foreach (SkiaSharp.SKRect rect in Strikeouts)
                         {
                             Renderer.Graphics.DrawLine(pen, rect.Left + w, rect.Top + h, rect.Right + w, rect.Top + h);
                         }
@@ -1375,8 +1375,8 @@ namespace FastReport.Utils
                 this.text = text;
                 this.paragraph = paragraph;
                 this.originalCharIndex = originalCharIndex;
-                underlines = new List<RectangleF>();
-                strikeouts = new List<RectangleF>();
+                underlines = new List<SkiaSharp.SKRect>();
+                strikeouts = new List<SkiaSharp.SKRect>();
                 hasTabs = text.Contains("\t");
 
                 // split text by spaces
@@ -1547,11 +1547,11 @@ namespace FastReport.Utils
                 else
                 {
                     // don't draw underlines & strikeouts because they are drawn in the Line.Draw method
-                    Font font = Renderer.Font;
+                    SkiaSharp.SKFont font = Renderer.Font;
                     bool disposeFont = false;
-                    if ((Renderer.Font.Style & FontStyle.Underline) > 0 || (Renderer.Font.Style & FontStyle.Strikeout) > 0)
+                    if ((Renderer.Font.Style & SkiaSharp.SKFontStyle.Underline) > 0 || (Renderer.Font.Style & SkiaSharp.SKFontStyle.Strikeout) > 0)
                     {
-                        font = new Font(Renderer.Font, Renderer.Font.Style & ~FontStyle.Underline & ~FontStyle.Strikeout);
+                        font = new SkiaSharp.SKFont(Renderer.Font, Renderer.Font.Style & ~FontStyle.Underline & ~FontStyle.Strikeout);
                         disposeFont = true;
                     }
 
@@ -1561,8 +1561,8 @@ namespace FastReport.Utils
                     }
                     else
                     {
-                        GraphicsPath path = new GraphicsPath();
-                        path.AddString(Text, font.FontFamily, Convert.ToInt32(font.Style), Renderer.Graphics.DpiY * font.Size / 72, new PointF(Left - 1, Top - 1), Renderer.Format);
+                        SkiaSharp.SKPath path = new GraphicsPath();
+                        path.AddString(Text, font.FontFamily, Convert.ToInt32(font.Style), Renderer.Graphics.DpiY * font.Size / 72, new SkiaSharp.SKPoint(Left - 1, Top - 1), Renderer.Format);
                         Renderer.Graphics.FillAndDrawPath(Renderer.OutlinePen, Renderer.Brush, path);
                     }
 
@@ -1664,15 +1664,15 @@ namespace FastReport.Utils
         public class StyleDescriptor
         {
             #region Fields
-            private FontStyle fontStyle;
-            private Color color;
+            private SkiaSharp.SKFontStyle fontStyle;
+            private SkiaSharp.SKColor color;
             private BaseLine baseLine;
             private string font;
             private float size;
             #endregion
 
             #region Properties
-            public FontStyle FontStyle
+            public SkiaSharp.SKFontStyle FontStyle
             {
                 get { return fontStyle; }
                 set { fontStyle = value; }
@@ -1689,7 +1689,7 @@ namespace FastReport.Utils
                 get { return size; }
                 set { size = value; }
             }
-            public Color Color
+            public SkiaSharp.SKColor Color
             {
                 get { return color; }
                 set { color = value; }
@@ -1707,14 +1707,15 @@ namespace FastReport.Utils
             {
                 string result = "";
 
-                if ((FontStyle & FontStyle.Bold) != 0)
+                if ((FontStyle & SkiaSharp.SKFontStyle.Bold) != 0)
                     result += "<b>";
-                if ((FontStyle & FontStyle.Italic) != 0)
+                if ((FontStyle & SkiaSharp.SKFontStyle.Italic) != 0)
                     result += "<i>";
-                if ((FontStyle & FontStyle.Underline) != 0)
+                /*TODO
+                if ((FontStyle & SkiaSharp.SKFontStyleSlant.Underline) != 0)
                     result += "<u>";
-                if ((FontStyle & FontStyle.Strikeout) != 0)
-                    result += "<strike>";
+                if ((FontStyle & SkiaSharp.SKFontStyleWeight.Strikeout) != 0)
+                    result += "<strike>";*/
                 if (BaseLine == BaseLine.Subscript)
                     result += "<sub>";
                 if (BaseLine == BaseLine.Superscript)
@@ -1722,9 +1723,9 @@ namespace FastReport.Utils
 
                 result += "<font color=\"";
                 if (ColorExt.IsKnownColor(Color))
-                    result += Color.Name;
+                    result += Color.ToString();
                 else
-                    result += "#" + Color.ToArgb().ToString("x");
+                    result += "#" + Color.ToString();
                 result += "\"";
                 if (Font != null)
                     result += " face=\"" + Font + "\"";
@@ -1736,7 +1737,7 @@ namespace FastReport.Utils
             }
             #endregion
 
-            public StyleDescriptor(FontStyle fontStyle, Color color, BaseLine baseLine)
+            public StyleDescriptor(SkiaSharp.SKFontStyle fontStyle, SkiaSharp.SKColor color, BaseLine baseLine)
             {
                 this.fontStyle = fontStyle;
                 this.color = color;
@@ -1806,7 +1807,7 @@ namespace FastReport.Utils
                 {
                     if (baseLine < 0)
                     {
-                        Font ff = GetFont();
+                        SkiaSharp.SKFont ff = GetFont();
                         float lineSpace = ff.FontFamily.GetLineSpacing(Style.FontStyle);
                         float ascent = ff.FontFamily.GetCellAscent(Style.FontStyle);
                         baseLine = FontLineHeight * ascent / lineSpace;
@@ -1822,7 +1823,7 @@ namespace FastReport.Utils
                 {
                     if (underBaseLine < 0)
                     {
-                        Font ff = GetFont();
+                        SkiaSharp.SKFont ff = GetFont();
                         float lineSpace = ff.FontFamily.GetLineSpacing(Style.FontStyle);
                         float ascent = ff.FontFamily.GetCellAscent(Style.FontStyle);
                         baseLine = FontLineHeight * ascent / lineSpace;
@@ -1889,7 +1890,7 @@ namespace FastReport.Utils
             #endregion
 
             #region Private Methods
-            private Font GetFont(bool disableUnderlinesStrikeouts)
+            private SkiaSharp.SKFont GetFont(bool disableUnderlinesStrikeouts)
             {
                 float fontSize = Renderer.Font.Size;
                 if (Style.Size != 0)
@@ -1897,30 +1898,30 @@ namespace FastReport.Utils
                 if (Style.BaseLine != BaseLine.Normal)
                     fontSize *= 0.6f;
 
-                FontStyle fontStyle = Style.FontStyle;
+                SkiaSharp.SKFontStyle fontStyle = Style.FontStyle;
                 if (disableUnderlinesStrikeouts)
                     fontStyle = fontStyle & ~FontStyle.Underline & ~FontStyle.Strikeout;
                 if (Style.Font != null)
-                    return new Font(Style.Font, fontSize, fontStyle);
-                return new Font(Renderer.Font.FontFamily, fontSize, fontStyle);
+                    return new SkiaSharp.SKFont(Style.Font, fontSize, fontStyle);
+                return new SkiaSharp.SKFont(Renderer.Font.FontFamily, fontSize, fontStyle);
             }
             #endregion
 
             #region Public Methods
-            public Font GetFont()
+            public SkiaSharp.SKFont GetFont()
             {
                 return GetFont(false);
             }
 
-            public Brush GetBrush()
+            public /*Brush*/SkiaSharp.SKPaint GetBrush()
             {
                 return new SolidBrush(Style.Color);
             }
 
             public virtual void Draw()
             {
-                using (Font font = GetFont(true))
-                using (Brush brush = GetBrush())
+                using (SkiaSharp.SKFont font = GetFont(true))
+                using (var brush = GetBrush())
                 {
                     Renderer.Graphics.DrawString(text, font, brush, Left, Top, Renderer.Format);
                 }
@@ -1938,7 +1939,7 @@ namespace FastReport.Utils
                 this.word = word;
                 spaceWidth = -1;
 
-                using (Font font = GetFont())
+                using (var font = GetFont())
                 {
                     width = Renderer.Graphics.MeasureString(text, font, 10000, StringFormat.GenericTypographic).Width;
                 }
@@ -1950,7 +1951,7 @@ namespace FastReport.Utils
         /// </summary>
         internal class RunImage : Run
         {
-            public Image Image { get { return image; } }
+            public SkiaSharp.SKImage  Image { get { return image; } }
             override public float Width
             {
                 get
@@ -1991,7 +1992,7 @@ namespace FastReport.Utils
                 }
             }
 
-            private Image image;
+            private SkiaSharp.SKImage  image;
 
             override public void Draw()
             {
@@ -2003,14 +2004,14 @@ namespace FastReport.Utils
                 Renderer.Graphics.DrawImage(Image, Left, Top);// (FText, font, brush, Left, Top, Renderer.Format);
             }
 
-            public static Bitmap ResizeImage(Image image, float scale)
+            public static SkiaSharp.SKBitmap ResizeImage(SkiaSharp.SKImage image, float scale)
             {
                 int width = (int)(image.Width * scale);
                 int height = (int)(image.Height * scale);
                 if (width == 0) width = 1;
                 if (height == 0) height = 1;
                 Rectangle destRect = new Rectangle(0, 0, width, height);
-                Bitmap destImage = new Bitmap(width, height);
+                SkiaSharp.SKBitmap destImage = new Bitmap(width, height);
 
                 destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
@@ -2050,8 +2051,8 @@ namespace FastReport.Utils
     /// </summary>
     internal class StandardTextRenderer
     {
-        public static void Draw(string text, IGraphics g, Font font, Brush brush, Pen outlinePen,
-          RectangleF rect, StringFormat format, int angle, float widthRatio)
+        public static void Draw(string text, IGraphics g, SkiaSharp.SKFont font, /*Brush*/SkiaSharp.SKPaint brush, /*Pen*/SkiaSharp.SKPaint outlinePen,
+          SkiaSharp.SKRect rect, SkiaSharp.SKTextAlign format, int angle, float widthRatio)
         {
             IGraphicsState state = g.Save();
             g.SetClip(rect, CombineMode.Intersect);
@@ -2061,7 +2062,7 @@ namespace FastReport.Utils
             rect.Y = -rect.Height / 2;
 
             if ((angle >= 90 && angle < 180) || (angle >= 270 && angle < 360))
-                rect = new RectangleF(rect.Y, rect.X, rect.Height, rect.Width);
+                rect = new SkiaSharp.SKRect(rect.Y, rect.X, rect.Height, rect.Width);
 
             g.ScaleTransform(widthRatio, 1);
             rect.X /= widthRatio;
@@ -2073,7 +2074,7 @@ namespace FastReport.Utils
             }
             else
             {
-                GraphicsPath path = new GraphicsPath();
+                SkiaSharp.SKPath path = new GraphicsPath();
                 path.AddString(text, font.FontFamily, Convert.ToInt32(font.Style), g.DpiY * font.Size / 72, rect, format);
                 g.FillAndDrawPath(outlinePen, brush, path);
             }
@@ -2201,7 +2202,7 @@ namespace FastReport.Utils
         /// </summary>
         /// <param name="src"></param>
         /// <returns></returns>
-        public Image Load(string src)
+        public SkiaSharp.SKImage  Load(string src)
         {
             CacheItem item = null;
             if (String.IsNullOrEmpty(src))
@@ -2284,11 +2285,11 @@ namespace FastReport.Utils
 
         #region Internal Methods
 
-        static internal Image Load(InlineImageCache cache, string src)
+        static internal SkiaSharp.SKImage  Load(InlineImageCache cache, string src)
         {
             LoadEventArgs args = new LoadEventArgs(cache, src);
             if (BeforeLoad != null) BeforeLoad(null, args);
-            Image result = null;
+            SkiaSharp.SKImage  result = null;
             if (!args.Handled) result = cache.Load(src);
             args.Handled = false;
             if (AfterLoad != null) AfterLoad(null, args);
@@ -2331,7 +2332,7 @@ namespace FastReport.Utils
 
             private bool error;
 
-            private Image image;
+            private SkiaSharp.SKImage  image;
 
             //private int FId;
             private string src;
@@ -2387,7 +2388,7 @@ namespace FastReport.Utils
             /// <summary>
             /// Get Image
             /// </summary>
-            public Image Image
+            public SkiaSharp.SKImage  Image
             {
                 get
                 {
@@ -2459,7 +2460,7 @@ namespace FastReport.Utils
             /// Return error image and set true to error property
             /// </summary>
             /// <returns></returns>
-            public Image GetErrorImage()
+            public SkiaSharp.SKImage  GetErrorImage()
             {
                 error = true;
                 base64 = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAFdJREFUOE9jbGlq+c9AIqipq2GEawEZQAo4dvgYqoXD0QAGhv9ATyKCBY1PXBjANKEbBjSWOANA9mPRDBImzgCKXECVMMCTsojzwtAzAOQvUjCJmRe/cgDt6ZAkZx23LwAAAABJRU5ErkJggg==";
@@ -2485,7 +2486,7 @@ namespace FastReport.Utils
             /// Set value for cache item
             /// </summary>
             /// <param name="img">Image</param>
-            public void Set(Image img)
+            public void Set(SkiaSharp.SKImage img)
             {
                 base64 = null;
                 image = img;

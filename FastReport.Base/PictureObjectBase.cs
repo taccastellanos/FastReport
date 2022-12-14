@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Design;
+
+
 using System.IO;
 using System.Windows.Forms;
 using FastReport.Utils;
@@ -112,7 +112,7 @@ namespace FastReport
         /// Gets or sets the data column name to get the image from.
         /// </summary>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.DataColumnEditor, FastReport", typeof(UITypeEditor))]
+        
         public string DataColumn
         {
             get { return dataColumn; }
@@ -175,7 +175,7 @@ namespace FastReport
         /// The path will be savetd to the <see cref="ImageLocation"/> property.
         /// </remarks>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string ImageSourceExpression
         {
             get { return imageSourceExpression; }
@@ -421,7 +421,7 @@ namespace FastReport
             base.Draw(e);
             DrawImage(e);
             DrawMarkers(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
             DrawDesign(e);
         }
 
@@ -440,9 +440,9 @@ namespace FastReport
         /// <param name="upperLeft">out start of vectors</param>
         /// <param name="upperRight">out end of frist vector</param>
         /// <param name="lowerLeft">out end of second vector</param>
-        public void GetImageAngleTransform(RectangleF drawRect, float imageWidth, float imageHeight, float scaleX, float scaleY, float offsetX, float offsetY, out PointF upperLeft, out PointF upperRight, out PointF lowerLeft)
+        public void GetImageAngleTransform(SkiaSharp.SKRect drawRect, float imageWidth, float imageHeight, float scaleX, float scaleY, float offsetX, float offsetY, out SkiaSharp.SKPoint upperLeft, out SkiaSharp.SKPoint upperRight, out SkiaSharp.SKPoint lowerLeft)
         {
-            RectangleF rect = drawRect;
+            SkiaSharp.SKRect rect = drawRect;
             switch (SizeMode)
             {
                 case PictureBoxSizeMode.Normal:
@@ -488,9 +488,9 @@ namespace FastReport
 
             rect.Offset(gridCompensationX, gridCompensationY);
 
-            upperLeft = new PointF(0, 0);
-            upperRight = new PointF(rect.Width, 0);
-            lowerLeft = new PointF(0, rect.Height);
+            upperLeft = new SkiaSharp.SKPoint(0, 0);
+            upperRight = new SkiaSharp.SKPoint(rect.Width, 0);
+            lowerLeft = new SkiaSharp.SKPoint(0, rect.Height);
             float angle = Angle;
 
             switch (SizeMode)
@@ -498,10 +498,10 @@ namespace FastReport
                 case PictureBoxSizeMode.Normal:
                     {
                         upperLeft = MovePointOnAngle(drawRect.Location, drawRect.Size, Angle);
-                        PointF ur = rotateVector(upperRight, angle);
-                        PointF ll = rotateVector(lowerLeft, angle);
-                        upperRight = PointF.Add(upperLeft, new SizeF(ur));
-                        lowerLeft = PointF.Add(upperLeft, new SizeF(ll));
+                        SkiaSharp.SKPoint ur = rotateVector(upperRight, angle);
+                        SkiaSharp.SKPoint ll = rotateVector(lowerLeft, angle);
+                        upperRight = SkiaSharp.SKPoint.Add(upperLeft, new SizeF(ur));
+                        lowerLeft = SkiaSharp.SKPoint.Add(upperLeft, new SizeF(ll));
                     }
                     break;
 
@@ -520,29 +520,29 @@ namespace FastReport
 
                 case PictureBoxSizeMode.CenterImage:
                     {
-                        PointF rotatedVector;
+                        SkiaSharp.SKPoint rotatedVector;
                         float w = rect.Left - (drawRect.Left + drawRect.Width / 2);
                         float h = rect.Top - (drawRect.Top + drawRect.Height / 2);
-                        rotatedVector = rotateVector(new PointF(w, h), Angle);
-                        upperLeft = new PointF(rect.Left + rotatedVector.X - w, rect.Top + rotatedVector.Y - h);
-                        rotatedVector = rotateVector(new PointF(rect.Width, 0), Angle);
-                        upperRight = new PointF(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
-                        rotatedVector = rotateVector(new PointF(0, rect.Height), Angle);
-                        lowerLeft = new PointF(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
+                        rotatedVector = rotateVector(new SkiaSharp.SKPoint(w, h), Angle);
+                        upperLeft = new SkiaSharp.SKPoint(rect.Left + rotatedVector.X - w, rect.Top + rotatedVector.Y - h);
+                        rotatedVector = rotateVector(new SkiaSharp.SKPoint(rect.Width, 0), Angle);
+                        upperRight = new SkiaSharp.SKPoint(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
+                        rotatedVector = rotateVector(new SkiaSharp.SKPoint(0, rect.Height), Angle);
+                        lowerLeft = new SkiaSharp.SKPoint(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
                     }
                     break;
 
                 case PictureBoxSizeMode.AutoSize:
                 case PictureBoxSizeMode.Zoom:
                     {
-                        rect = new RectangleF(0, 0, imageWidth * 100f, imageHeight * 100f);
-                        PointF center = new PointF(drawRect.Left + drawRect.Width / 2,
+                        rect = new SkiaSharp.SKRect(0, 0, imageWidth * 100f, imageHeight * 100f);
+                        SkiaSharp.SKPoint center = new SkiaSharp.SKPoint(drawRect.Left + drawRect.Width / 2,
                             drawRect.Top + drawRect.Height / 2);
-                        PointF[] p = new PointF[4];
-                        p[0] = new PointF(-rect.Width / 2, -rect.Height / 2);
-                        p[1] = new PointF(rect.Width / 2, -rect.Height / 2);
-                        p[2] = new PointF(rect.Width / 2, rect.Height / 2);
-                        p[3] = new PointF(-rect.Width / 2, rect.Height / 2);
+                        SkiaSharp.SKSkiaSharp.SKPoint[] p = new SkiaSharp.SKPoint[4];
+                        p[0] = new SkiaSharp.SKPoint(-rect.Width / 2, -rect.Height / 2);
+                        p[1] = new SkiaSharp.SKPoint(rect.Width / 2, -rect.Height / 2);
+                        p[2] = new SkiaSharp.SKPoint(rect.Width / 2, rect.Height / 2);
+                        p[3] = new SkiaSharp.SKPoint(-rect.Width / 2, rect.Height / 2);
 
                         float scaleToMin = 1;
 
@@ -561,9 +561,9 @@ namespace FastReport
                             if (p[i].Y * scaleToMin > drawRect.Height / 2)
                                 scaleToMin = drawRect.Height / 2 / p[i].Y;
                         }
-                        upperLeft = PointF.Add(center, new SizeF(p[0].X * scaleToMin, p[0].Y * scaleToMin));
-                        upperRight = PointF.Add(center, new SizeF(p[1].X * scaleToMin, p[1].Y * scaleToMin));
-                        lowerLeft = PointF.Add(center, new SizeF(p[3].X * scaleToMin, p[3].Y * scaleToMin));
+                        upperLeft = SkiaSharp.SKPoint.Add(center, new SizeF(p[0].X * scaleToMin, p[0].Y * scaleToMin));
+                        upperRight = SkiaSharp.SKPoint.Add(center, new SizeF(p[1].X * scaleToMin, p[1].Y * scaleToMin));
+                        lowerLeft = SkiaSharp.SKPoint.Add(center, new SizeF(p[3].X * scaleToMin, p[3].Y * scaleToMin));
                     }
                     break;
             }
@@ -574,46 +574,46 @@ namespace FastReport
             /*switch (Angle)
           {
               case 90:
-                  upperLeft = new PointF(rect.Right, rect.Top);
-                  upperRight = new PointF(rect.Right, rect.Bottom);
-                  lowerLeft = new PointF(rect.Left, rect.Top);
+                  upperLeft = new SkiaSharp.SKPoint(rect.Right, rect.Top);
+                  upperRight = new SkiaSharp.SKPoint(rect.Right, rect.Bottom);
+                  lowerLeft = new SkiaSharp.SKPoint(rect.Left, rect.Top);
                   break;
 
               case 180:
-                  upperLeft = new PointF(rect.Right, rect.Bottom);
-                  upperRight = new PointF(rect.Left, rect.Bottom);
-                  lowerLeft = new PointF(rect.Right, rect.Top);
+                  upperLeft = new SkiaSharp.SKPoint(rect.Right, rect.Bottom);
+                  upperRight = new SkiaSharp.SKPoint(rect.Left, rect.Bottom);
+                  lowerLeft = new SkiaSharp.SKPoint(rect.Right, rect.Top);
                   break;
 
               case 270:
-                  upperLeft = new PointF(rect.Left, rect.Bottom);
-                  upperRight = new PointF(rect.Left, rect.Top);
-                  lowerLeft = new PointF(rect.Right, rect.Bottom);
+                  upperLeft = new SkiaSharp.SKPoint(rect.Left, rect.Bottom);
+                  upperRight = new SkiaSharp.SKPoint(rect.Left, rect.Top);
+                  lowerLeft = new SkiaSharp.SKPoint(rect.Right, rect.Bottom);
                   break;
 
               default:
-                  upperLeft = new PointF(rect.Left, rect.Top);
-                  upperRight = new PointF(rect.Right, rect.Top);
-                  lowerLeft = new PointF(rect.Left, rect.Bottom);
+                  upperLeft = new SkiaSharp.SKPoint(rect.Left, rect.Top);
+                  upperRight = new SkiaSharp.SKPoint(rect.Right, rect.Top);
+                  lowerLeft = new SkiaSharp.SKPoint(rect.Left, rect.Bottom);
                   break;
           }*/
             /* default:
-                         PointF rotatedVector;
+                         SkiaSharp.SKPoint rotatedVector;
                          float w = rect.Left - (drawRect.Left + drawRect.Width / 2) ;
                          float h = rect.Top - (drawRect.Top + drawRect.Height/2);
-                         rotatedVector = rotateVector(new PointF(w, h), Angle);
-                         upperLeft = new PointF(rect.Left + rotatedVector.X - w, rect.Top + rotatedVector.Y - h);
-                         rotatedVector = rotateVector(new PointF(rect.Width, 0), Angle);
-                         upperRight = new PointF(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
-                         rotatedVector = rotateVector(new PointF(0, rect.Height), Angle);
-                         lowerLeft = new PointF(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
+                         rotatedVector = rotateVector(new SkiaSharp.SKPoint(w, h), Angle);
+                         upperLeft = new SkiaSharp.SKPoint(rect.Left + rotatedVector.X - w, rect.Top + rotatedVector.Y - h);
+                         rotatedVector = rotateVector(new SkiaSharp.SKPoint(rect.Width, 0), Angle);
+                         upperRight = new SkiaSharp.SKPoint(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
+                         rotatedVector = rotateVector(new SkiaSharp.SKPoint(0, rect.Height), Angle);
+                         lowerLeft = new SkiaSharp.SKPoint(upperLeft.X + rotatedVector.X, upperLeft.Y + rotatedVector.Y);
                          break;
                  }*/
         }
 
-        private void UpdateAlign(RectangleF drawRect, ref PointF upperLeft, ref PointF upperRight, ref PointF lowerLeft)
+        private void UpdateAlign(SkiaSharp.SKRect drawRect, ref SkiaSharp.SKPoint upperLeft, ref SkiaSharp.SKPoint upperRight, ref SkiaSharp.SKPoint lowerLeft)
         {
-            PointF lowerRight = new PointF(upperRight.X + lowerLeft.X - upperLeft.X,
+            SkiaSharp.SKPoint lowerRight = new SkiaSharp.SKPoint(upperRight.X + lowerLeft.X - upperLeft.X,
                 upperRight.Y + lowerLeft.Y - upperLeft.Y);
             float top = Math.Min(Math.Min(upperLeft.Y, Math.Min(upperRight.Y, lowerLeft.Y)), lowerRight.Y);
             float botom = Math.Max( Math.Max(upperLeft.Y, Math.Max(upperRight.Y, lowerLeft.Y)), lowerRight.Y);
@@ -682,7 +682,7 @@ namespace FastReport
         /// <param name="size"></param>
         /// <param name="fangle"></param>
         /// <returns></returns>
-        public PointF MovePointOnAngle(PointF p, SizeF size, float fangle)
+        public SkiaSharp.SKPoint MovePointOnAngle(SkiaSharp.SKPoint p, SkiaSharp.SKSize size, float fangle)
         {
             while (fangle >= 360) fangle -= 360;
             while (fangle < 0) fangle += 360;
@@ -708,7 +708,7 @@ namespace FastReport
                 y = size.Height - (fangle - 270f) / 90f * size.Height;
             }
 
-            return PointF.Add(p, new SizeF(x, y));
+            return SkiaSharp.SKPoint.Add(p, new SizeF(x, y));
         }
 
         /// <inheritdoc/>
@@ -725,7 +725,7 @@ namespace FastReport
         /// <param name="p"></param>
         /// <param name="fangle"></param>
         /// <returns></returns>
-        public PointF rotateVector(PointF p, float fangle)
+        public SkiaSharp.SKPoint rotateVector(SkiaSharp.SKPoint p, float fangle)
         {
             float angle = (float)(fangle / 180.0 * Math.PI);
             float ax = p.X;
@@ -734,7 +734,7 @@ namespace FastReport
             float bx = ax * (float)Math.Cos(angle) - ay * (float)Math.Sin(angle);
             float by = ax * (float)Math.Sin(angle) + ay * (float)Math.Cos(angle);
 
-            return new PointF(bx, by);
+            return new SkiaSharp.SKPoint(bx, by);
         }
 
         /// <inheritdoc/>
@@ -786,15 +786,15 @@ namespace FastReport
         /// </summary>
         /// <param name="e"></param>
         /// <param name="drawRect"></param>
-        internal virtual void DrawImageInternal(FRPaintEventArgs e, RectangleF drawRect)
+        internal virtual void DrawImageInternal(FRPaintEventArgs e, SkiaSharp.SKRect drawRect)
         {
             bool rotate = Angle == 90 || Angle == 270;
             float imageWidth = ImageWidth;//rotate ? Image.Height : Image.Width;
             float imageHeight = ImageHeight;//rotate ? Image.Width : Image.Height;
 
-            PointF upperLeft;
-            PointF upperRight;
-            PointF lowerLeft;
+            SkiaSharp.SKPoint upperLeft;
+            SkiaSharp.SKPoint upperRight;
+            SkiaSharp.SKPoint lowerLeft;
             System.Drawing.Drawing2D.Matrix matrix = e.Graphics.Transform;
             GetImageAngleTransform(drawRect, imageWidth, imageHeight, e.ScaleX, e.ScaleY, matrix.OffsetX, matrix.OffsetY, out upperLeft, out upperRight, out lowerLeft);
             DrawImageInternal2(e.Graphics, upperLeft, upperRight, lowerLeft);
@@ -803,7 +803,7 @@ namespace FastReport
 
         #region Protected Methods
 
-        protected abstract void DrawImageInternal2(IGraphics graphics, PointF upperLeft, PointF upperRight, PointF lowerLeft);
+        protected abstract void DrawImageInternal2(IGraphics graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft);
 
         /// <summary>
         /// Reset index of image
@@ -831,11 +831,11 @@ namespace FastReport
                     //Width = (rotate ? Image.Height : Image.Width) + Padding.Horizontal;
                     //Height = (rotate ? Image.Width : Image.Height) + Padding.Vertical;
 
-                    PointF[] p = new PointF[4];
-                    p[0] = new PointF(-ImageWidth / 2, -ImageHeight / 2);
-                    p[1] = new PointF(ImageWidth / 2, -ImageHeight / 2);
-                    p[2] = new PointF(ImageWidth / 2, ImageHeight / 2);
-                    p[3] = new PointF(-ImageWidth / 2, ImageHeight / 2);
+                    SkiaSharp.SKSkiaSharp.SKPoint[] p = new SkiaSharp.SKPoint[4];
+                    p[0] = new SkiaSharp.SKPoint(-ImageWidth / 2, -ImageHeight / 2);
+                    p[1] = new SkiaSharp.SKPoint(ImageWidth / 2, -ImageHeight / 2);
+                    p[2] = new SkiaSharp.SKPoint(ImageWidth / 2, ImageHeight / 2);
+                    p[3] = new SkiaSharp.SKPoint(-ImageWidth / 2, ImageHeight / 2);
 
                     float minX = float.MaxValue;
                     float maxX = float.MinValue;

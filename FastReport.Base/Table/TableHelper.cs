@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 
 namespace FastReport.Table
 {
@@ -223,8 +223,8 @@ namespace FastReport.Table
 
                         spanData.originalCell = cell;
                         spanData.resultCell = cellTo;
-                        spanData.originalCellOrigin = new Point(originalColumnIndex, originalRowIndex);
-                        spanData.resultCellOrigin = new Point(resultColumnIndex, resultRowIndex);
+                        spanData.originalCellOrigin = new SkiaSharp.SKPoint(originalColumnIndex, originalRowIndex);
+                        spanData.resultCellOrigin = new SkiaSharp.SKPoint(resultColumnIndex, resultRowIndex);
                     }
 
                     // now check the row cells. Do this once for each row.
@@ -274,8 +274,8 @@ namespace FastReport.Table
 
                         spanData.originalCell = cell;
                         spanData.resultCell = cellTo;
-                        spanData.originalCellOrigin = new Point(originalColumnIndex, originalRowIndex);
-                        spanData.resultCellOrigin = new Point(resultColumnIndex, resultRowIndex);
+                        spanData.originalCellOrigin = new SkiaSharp.SKPoint(originalColumnIndex, originalRowIndex);
+                        spanData.resultCellOrigin = new SkiaSharp.SKPoint(resultColumnIndex, resultRowIndex);
                     }
                 }
                 else
@@ -309,8 +309,8 @@ namespace FastReport.Table
 
                         spanData.originalCell = cell;
                         spanData.resultCell = cellTo;
-                        spanData.originalCellOrigin = new Point(originalColumnIndex, originalRowIndex);
-                        spanData.resultCellOrigin = new Point(resultColumnIndex, resultRowIndex);
+                        spanData.originalCellOrigin = new SkiaSharp.SKPoint(originalColumnIndex, originalRowIndex);
+                        spanData.resultCellOrigin = new SkiaSharp.SKPoint(resultColumnIndex, resultRowIndex);
                     }
 
                     // now check the column cells. Do this once for each column.
@@ -360,8 +360,8 @@ namespace FastReport.Table
 
                         spanData.originalCell = cell;
                         spanData.resultCell = cellTo;
-                        spanData.originalCellOrigin = new Point(originalColumnIndex, originalRowIndex);
-                        spanData.resultCellOrigin = new Point(resultColumnIndex, resultRowIndex);
+                        spanData.originalCellOrigin = new SkiaSharp.SKPoint(originalColumnIndex, originalRowIndex);
+                        spanData.resultCellOrigin = new SkiaSharp.SKPoint(resultColumnIndex, resultRowIndex);
                     }
                 }
             }
@@ -397,8 +397,8 @@ namespace FastReport.Table
         {
             public TableCell originalCell;
             public TableCellData resultCell;
-            public Point originalCellOrigin;
-            public Point resultCellOrigin;
+            public SkiaSharp.SKPoint originalCellOrigin;
+            public SkiaSharp.SKPoint resultCellOrigin;
             public bool finishFlag;
         }
     }

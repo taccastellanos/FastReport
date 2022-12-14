@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FastReport.Engine;
 using FastReport.Preview;
-using System.Drawing;
+
 using FastReport.Utils;
 
 namespace FastReport.Table
@@ -162,7 +162,7 @@ namespace FastReport.Table
             return columnsFit;
         }
 
-        private void ProcessDuplicates(TableCell cell, int startX, int startY, List<Rectangle> list)
+        private void ProcessDuplicates(TableCell cell, int startX, int startY, List<SkiaSharp.SKRect> list)
         {
             string cellAlias = cell.Alias;
             TableCellData cellData = cell.CellData;
@@ -214,13 +214,13 @@ namespace FastReport.Table
                 cellData.RowSpan = rowSpan;
             }
 
-            list.Add(new Rectangle(startX, startY, colSpan, rowSpan));
+            list.Add(new SkiaSharp.SKRect(startX, startY, colSpan, rowSpan));
         }
 
-        private bool IsInsideSpan(TableCell cell, List<Rectangle> list)
+        private bool IsInsideSpan(TableCell cell, List<SkiaSharp.SKRect> list)
         {
-            Point address = cell.Address;
-            foreach (Rectangle span in list)
+            var address = cell.Address;
+            foreach (var span in list)
             {
                 if (span.Contains(address))
                     return true;
@@ -230,7 +230,7 @@ namespace FastReport.Table
 
         private void ProcessDuplicates()
         {
-            List<Rectangle> list = new List<Rectangle>();
+            List<SkiaSharp.SKRect> list = new List<SkiaSharp.SKRect>();
             for (int x = 0; x < ColumnCount; x++)
             {
                 for (int y = 0; y < RowCount; y++)
@@ -280,7 +280,7 @@ namespace FastReport.Table
                     ReportEngine engine = Report.Engine;
                     TableLayoutInfo info = new TableLayoutInfo();
                     info.startPage = engine.CurPage;
-                    info.tableSize = new Size(1, 1);
+                    info.tableSize = new SkiaSharp.SKSize(1, 1);
                     info.startX = tables.Values[0].Left;
 
                     int startPage = info.startPage;
@@ -297,7 +297,7 @@ namespace FastReport.Table
                         // render using the down-then-across mode
                         table.Layout = TableLayout.DownThenAcross;
 
-                        engine.CurPage = info.startPage + (info.tableSize.Width - 1) * info.tableSize.Height;
+                        engine.CurPage = info.startPage + (Convert.ToInt32(info.tableSize.Width) - 1) * Convert.ToInt32(info.tableSize.Height);
                         engine.CurY = saveCurY;
                         float addLeft = 0;
                         if (i > 0)
@@ -415,7 +415,7 @@ namespace FastReport.Table
             preparedPages.CanUploadToCache = false;
             preparedPages.AddPageAction = AddPageAction.WriteOver;
 
-            List<Rectangle> spans = GetSpanList();
+            List<SkiaSharp.SKRect> spans = GetSpanList();
             int startRow = 0;
             bool addNewPage = false;
             float freeSpace = engine.FreeSpace;
@@ -457,7 +457,7 @@ namespace FastReport.Table
 
                         engine.CurY = saveCurY;
                         curY = GeneratePage(startColumn, startRow, columnsFit, rowsFit,
-                            new RectangleF(0, 0, engine.PageWidth, CanBreak ? freeSpace : Height), spans) + saveCurY;
+                            new SkiaSharp.SKRect(0, 0, engine.PageWidth, CanBreak ? freeSpace : Height), spans) + saveCurY;
 
                         Left = 0;
                         startColumn += columnsFit;
@@ -497,7 +497,7 @@ namespace FastReport.Table
 
             TableLayoutInfo info = new TableLayoutInfo();
             info.startPage = engine.CurPage;
-            List<Rectangle> spans = GetSpanList();
+            List<SkiaSharp.SKRect> spans = GetSpanList();
             int startColumn = 0;
             bool addNewPage = false;
             float saveCurY = engine.CurY;
@@ -536,7 +536,7 @@ namespace FastReport.Table
                             rowsFit = 1;
 
                         engine.CurY += GeneratePage(startColumn, startRow, columnsFit, rowsFit,
-                          new RectangleF(0, 0, engine.PageWidth, engine.FreeSpace), spans);
+                          new SkiaSharp.SKRect(0, 0, engine.PageWidth, engine.FreeSpace), spans);
                         info.tableSize.Height++;
 
                         startRow += rowsFit;
@@ -583,7 +583,7 @@ namespace FastReport.Table
             PreparedPages preparedPages = Report.PreparedPages;
             preparedPages.CanUploadToCache = false;
 
-            List<Rectangle> spans = GetSpanList();
+            List<SkiaSharp.SKRect> spans = GetSpanList();
             int startColumn = 0;
             Top = 0;
 
@@ -611,7 +611,7 @@ namespace FastReport.Table
                     }
 
                     engine.CurY += GeneratePage(startColumn, startRow, columnsFit, rowsFit,
-                      new RectangleF(0, 0, engine.PageWidth, engine.FreeSpace), spans);
+                      new SkiaSharp.SKRect(0, 0, engine.PageWidth, engine.FreeSpace), spans);
 
                     startRow += rowsFit;
 
@@ -637,55 +637,55 @@ namespace FastReport.Table
             float columnsWidth = 0;
             for (int i = 0; i < cell.ColSpan; i++)
             {
-                columnsWidth += Columns[cell.Address.X + i].Width;
+                columnsWidth += Columns[Convert.ToInt32(cell.Address.X) + i].Width;
             }
             // if cell is bigger than sum of column width, increase the last column width
             float cellWidth = cell.CalcWidth();
             if (columnsWidth < cellWidth)
-                Columns[cell.Address.X + cell.ColSpan - 1].Width += cellWidth - columnsWidth;
+                Columns[Convert.ToInt32(cell.Address.X) + cell.ColSpan - 1].Width += cellWidth - columnsWidth;
         }
 
         private float GeneratePage(int startColumn, int startRow, int columnsFit, int rowsFit,
-          RectangleF bounds, List<Rectangle> spans)
+          SkiaSharp.SKRect bounds, List<SkiaSharp.SKRect> spans)
         {
             // break spans
-            foreach (Rectangle span in spans)
+            foreach (var span in spans)
             {
-                TableCellData spannedCell = GetCellData(span.Left, span.Top);
+                TableCellData spannedCell = GetCellData(Convert.ToInt32(span.Left), Convert.ToInt32(span.Top));
                 TableCellData newSpannedCell = null;
                 if (span.Left < startColumn && span.Right > startColumn)
                 {
                     if ((RepeatHeaders || RepeatRowHeaders) && span.Left < FixedColumns)
                     {
-                        spannedCell.ColSpan = Math.Min(span.Right, startColumn + columnsFit) - startColumn + FixedColumns;
+                        spannedCell.ColSpan = Math.Min(Convert.ToInt32(span.Right), startColumn + columnsFit) - startColumn + FixedColumns;
                     }
                     else
                     {
-                        newSpannedCell = GetCellData(startColumn, span.Top);
+                        newSpannedCell = GetCellData(startColumn, Convert.ToInt32(span.Top));
                         newSpannedCell.RunTimeAssign(spannedCell.Cell, true);
-                        newSpannedCell.ColSpan = Math.Min(span.Right, startColumn + columnsFit) - startColumn;
+                        newSpannedCell.ColSpan = Math.Min(Convert.ToInt32(span.Right), startColumn + columnsFit) - startColumn;
                         newSpannedCell.RowSpan = spannedCell.RowSpan;
                         AdjustSpannedCellWidth(newSpannedCell);
                     }
                 }
                 if (span.Left < startColumn + columnsFit && span.Right > startColumn + columnsFit)
                 {
-                    spannedCell.ColSpan = startColumn + columnsFit - span.Left;
+                    spannedCell.ColSpan = startColumn + columnsFit - Convert.ToInt32(span.Left);
                     AdjustSpannedCellWidth(spannedCell);
                 }
                 if (span.Top < startRow && span.Bottom > startRow)
                 {
                     if ((RepeatHeaders || RepeatColumnHeaders) && span.Top < FixedRows)
-                        spannedCell.RowSpan = Math.Min(span.Bottom, startRow + rowsFit) - startRow + FixedRows;
+                        spannedCell.RowSpan = Math.Min(Convert.ToInt32(span.Bottom), startRow + rowsFit) - startRow + FixedRows;
                 }
                 if (span.Top < startRow + rowsFit && span.Bottom > startRow + rowsFit)
                 {
-                    spannedCell.RowSpan = startRow + rowsFit - span.Top;
+                    spannedCell.RowSpan = startRow + rowsFit - Convert.ToInt32(span.Top);
 
-                    newSpannedCell = GetCellData(span.Left, startRow + rowsFit);
+                    newSpannedCell = GetCellData(Convert.ToInt32(span.Left), startRow + rowsFit);
                     newSpannedCell.RunTimeAssign(spannedCell.Cell, true);
                     newSpannedCell.ColSpan = spannedCell.ColSpan;
-                    newSpannedCell.RowSpan = span.Bottom - (startRow + rowsFit);
+                    newSpannedCell.RowSpan = Convert.ToInt32(span.Bottom) - (startRow + rowsFit);
 
                     // break the cell text
                     TableCell cell = spannedCell.Cell;
@@ -781,11 +781,11 @@ namespace FastReport.Table
             {
                 if (Report.Engine.UnlimitedHeight)
                 {
-                    bounds.Height = tableEndY;
+                    //TODObounds.Height = tableEndY;
                 }
                 if (Report.Engine.UnlimitedWidth)
                 {
-                    bounds.Width = tableEndX;
+                    //TODObounds.Width = tableEndX;
                 }
             }
 
@@ -831,7 +831,7 @@ namespace FastReport.Table
         private class TableLayoutInfo
         {
             public int startPage;
-            public Size tableSize;
+            public SkiaSharp.SKSize tableSize;
             public float startX;
         }
     }

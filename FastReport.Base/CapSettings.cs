@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using System.Drawing.Drawing2D;
-using System.Drawing;
+
+
 using FastReport.Utils;
 
 namespace FastReport
@@ -77,15 +77,15 @@ namespace FastReport
             set { style = value; }
         }
 
-        internal void GetCustomCapPath(out GraphicsPath path, out float inset)
+        internal void GetCustomCapPath(out SkiaSharp.SKPath path, out float inset)
         {
             path = new GraphicsPath();
             inset = 0;
             switch (Style)
             {
                 case CapStyle.Arrow:
-                    path.AddLine(new PointF(0, 0), new PointF(-Width, -Height));
-                    path.AddLine(new PointF(0, 0), new PointF(Width, -Height));
+                    path.AddLine(new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(-Width, -Height));
+                    path.AddLine(new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(Width, -Height));
                     break;
 
                 case CapStyle.Circle:
@@ -94,15 +94,15 @@ namespace FastReport
                     break;
 
                 case CapStyle.Square:
-                    path.AddRectangle(new RectangleF(-Width / 2, -Height / 2, Width, Height));
+                    path.AddRectangle(new SkiaSharp.SKRect(-Width / 2, -Height / 2, Width, Height));
                     inset = Height / 2;
                     break;
 
                 case CapStyle.Diamond:
-                    path.AddLine(new PointF(0, -Height / 1.4f), new PointF(-Width / 1.4f, 0));
-                    path.AddLine(new PointF(-Width / 1.4f, 0), new PointF(0, Height / 1.4f));
-                    path.AddLine(new PointF(0, Height / 1.4f), new PointF(Width / 1.4f, 0));
-                    path.AddLine(new PointF(Width / 1.4f, 0), new PointF(0, -Height / 1.4f));
+                    path.AddLine(new SkiaSharp.SKPoint(0, -Height / 1.4f), new SkiaSharp.SKPoint(-Width / 1.4f, 0));
+                    path.AddLine(new SkiaSharp.SKPoint(-Width / 1.4f, 0), new SkiaSharp.SKPoint(0, Height / 1.4f));
+                    path.AddLine(new SkiaSharp.SKPoint(0, Height / 1.4f), new SkiaSharp.SKPoint(Width / 1.4f, 0));
+                    path.AddLine(new SkiaSharp.SKPoint(Width / 1.4f, 0), new SkiaSharp.SKPoint(0, -Height / 1.4f));
                     inset = Height / 1.4f;
                     break;
             }

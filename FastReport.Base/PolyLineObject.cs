@@ -3,8 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.Globalization;
 using System.Text;
 
@@ -30,7 +30,7 @@ namespace FastReport
 
         #region Private Fields
 
-        private PointF center;
+        private SkiaSharp.SKPoint center;
         private PolyPointCollection pointsCollection;
 
         #endregion Private Fields
@@ -67,14 +67,14 @@ namespace FastReport
         /// </summary>
         [Browsable(false)]
         [Obsolete]
-        public PointF[] PointsArray
+        public SkiaSharp.SKPoint[] PointsArray
         {
             get
             {
-                List<PointF> result = new List<PointF>();
+                List<SkiaSharp.SKPoint> result = new List<SkiaSharp.SKPoint>();
                 foreach (PolyPoint point in pointsCollection)
                 {
-                    result.Add(new PointF(point.X, point.Y));
+                    result.Add(new SkiaSharp.SKPoint(point.X, point.Y));
                 }
                 return result.ToArray();
             }
@@ -110,7 +110,7 @@ namespace FastReport
             FlagSimpleBorder = true;
             FlagUseFill = false;
             pointsCollection = new PolyPointCollection();
-            center = PointF.Empty;
+            center = SkiaSharp.SKPoint.Empty;
             InitDesign();
         }
 
@@ -194,7 +194,7 @@ namespace FastReport
         }
 
         /// <summary>
-        /// Calculate GraphicsPath for draw to page
+        /// Calculate SkiaSharp.SKPath for draw to page
         /// </summary>
         /// <param name="pen">Pen for lines</param>
         /// <param name="left">Left boundary</param>
@@ -204,17 +204,17 @@ namespace FastReport
         /// <param name="scaleX">scale by width</param>
         /// <param name="scaleY">scale by height</param>
         /// <returns>Always returns a non-empty path</returns>
-        public GraphicsPath GetPath(Pen pen, float left, float top, float right, float bottom, float scaleX, float scaleY)
+        public SkiaSharp.SKPath GetPath (/*Pen*/SkiaSharp.SKPaint pen, float left, float top, float right, float bottom, float scaleX, float scaleY)
         {
             if (pointsCollection.Count == 0)
             {
-                GraphicsPath result = new GraphicsPath();
+                SkiaSharp.SKPath result = new GraphicsPath();
                 result.AddLine(left * scaleX, top * scaleX, (right + 1) * scaleX, (bottom + 1) * scaleX);
                 return result;
             }
             else if (pointsCollection.Count == 1)
             {
-                GraphicsPath result = new GraphicsPath();
+                SkiaSharp.SKPath result = new GraphicsPath();
                 left = left + CenterX + pointsCollection[0].X;
                 top = top + CenterY + pointsCollection[0].Y;
                 result.AddLine(left * scaleX, top * scaleX, (left + 1) * scaleX, (top + 1) * scaleX);
@@ -227,7 +227,7 @@ namespace FastReport
             PolyPoint prev = null;
             PolyPoint point = pointsCollection[0];
 
-            aPoints.Add(new PointF((point.X + left + center.X) * scaleX, (point.Y + top + center.Y) * scaleY));
+            aPoints.Add(new SkiaSharp.SKPoint((point.X + left + center.X) * scaleX, (point.Y + top + center.Y) * scaleY));
             pointTypes.Add(0);
 
             int count = pointsCollection.Count;
@@ -246,34 +246,34 @@ namespace FastReport
                 {
                     if (prev.RightCurve != null)
                     {
-                        aPoints.Add(new PointF((prev.X + left + center.X + prev.RightCurve.X) * scaleX, (prev.Y + top + center.Y + prev.RightCurve.Y) * scaleY));
+                        aPoints.Add(new SkiaSharp.SKPoint((prev.X + left + center.X + prev.RightCurve.X) * scaleX, (prev.Y + top + center.Y + prev.RightCurve.Y) * scaleY));
                         pointTypes.Add(3);
                     }
                     else
                     {
                         PolyPoint pseudo = GetPseudoPoint(prev, point);
-                        aPoints.Add(new PointF((pseudo.X + left + center.X) * scaleX, (pseudo.Y + top + center.Y) * scaleY));
+                        aPoints.Add(new SkiaSharp.SKPoint((pseudo.X + left + center.X) * scaleX, (pseudo.Y + top + center.Y) * scaleY));
                         pointTypes.Add(3);
                     }
 
                     if (point.LeftCurve != null)
                     {
-                        aPoints.Add(new PointF((point.X + left + center.X + point.LeftCurve.X) * scaleX, (point.Y + top + center.Y + point.LeftCurve.Y) * scaleY));
+                        aPoints.Add(new SkiaSharp.SKPoint((point.X + left + center.X + point.LeftCurve.X) * scaleX, (point.Y + top + center.Y + point.LeftCurve.Y) * scaleY));
                         pointTypes.Add(3);
                     }
                     else
                     {
                         PolyPoint pseudo = GetPseudoPoint(point, prev);
-                        aPoints.Add(new PointF((pseudo.X + left + center.X) * scaleX, (pseudo.Y + top + center.Y) * scaleY));
+                        aPoints.Add(new SkiaSharp.SKPoint((pseudo.X + left + center.X) * scaleX, (pseudo.Y + top + center.Y) * scaleY));
                         pointTypes.Add(3);
                     }
 
-                    aPoints.Add(new PointF((point.X + left + center.X) * scaleX, (point.Y + top + center.Y) * scaleY));
+                    aPoints.Add(new SkiaSharp.SKPoint((point.X + left + center.X) * scaleX, (point.Y + top + center.Y) * scaleY));
                     pointTypes.Add(3);
                 }
                 else
                 {
-                    aPoints.Add(new PointF((point.X + left + center.X) * scaleX, (point.Y + top + center.Y) * scaleY));
+                    aPoints.Add(new SkiaSharp.SKPoint((point.X + left + center.X) * scaleX, (point.Y + top + center.Y) * scaleY));
                     pointTypes.Add(1);
                 }
             }
@@ -479,14 +479,14 @@ namespace FastReport
             writer.WriteFloat("CenterY", center.Y);
         }
 
-        public void SetPolyLine(PointF[] newPoints)
+        public void SetPolyLine(SkiaSharp.SKPoint[] newPoints)
         {
             pointsCollection.Clear();
             if (newPoints != null)
             {
                 CenterX = 0;
                 CenterY = 0;
-                foreach (PointF point in newPoints)
+                foreach (SkiaSharp.SKPoint point in newPoints)
                 {
                     pointsCollection.Add(new PolyPoint(point.X, point.Y));
                 }
@@ -560,7 +560,7 @@ namespace FastReport
         /// <param name="e">Event arguments</param>
         protected virtual void drawPoly(FRPaintEventArgs e)
         {
-            Pen pen;
+            /*Pen*/SkiaSharp.SKPaint pen;
             if (polygonSelectionMode == PolygonSelectionMode.MoveAndScale)
                 pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
             else pen = e.Cache.GetPen(Border.Color, 1, DashStyle.Solid);

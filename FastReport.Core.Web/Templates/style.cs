@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿
 
 namespace FastReport.Web
 {
@@ -60,7 +60,7 @@ namespace FastReport.Web
 .{template_FR}-toolbar {{
     flex-shrink: 1;
     font:{Toolbar.UserFontSettings};
-    background-color: {ColorTranslator.ToHtml(Toolbar.Color)};
+    background-color: {Toolbar.Color.ToString()};
     /* {(Tabs.Count > 1 ? "" : "box-shadow: 0px 3px 4px -2px rgba(0, 0, 0, 0.2);")} */
     display: flex;
     flex-direction: {Toolbar.RowOrColumn};
@@ -90,7 +90,7 @@ namespace FastReport.Web
 }}
 
 .{template_FR}-toolbar-item:hover {{
-    background-color: {ColorTranslator.ToHtml(Toolbar.Color)};
+    background-color: {Toolbar.Color.ToString()};
 }}
 
 .{template_FR}-toolbar-item > img {{
@@ -126,7 +126,7 @@ namespace FastReport.Web
 .{template_FR}-toolbar-dropdown-content {{
     display: none;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    background-color: {ColorTranslator.ToHtml(Toolbar.DropDownMenuColor)};
+    background-color: {Toolbar.DropDownMenuColor.ToString()};
     min-width: 50px;
     z-index: 2;
     position: absolute;
@@ -141,7 +141,7 @@ namespace FastReport.Web
 
 .{template_FR}-toolbar-dropdown-content > a {{
     float: none;
-    color: {ColorTranslator.ToHtml(Toolbar.DropDownMenuTextColor)};
+    color: {Toolbar.DropDownMenuTextColor.ToString()};
     padding: 6px 12px 6px 8px;
     text-decoration: none;
     display: block;
@@ -152,7 +152,7 @@ namespace FastReport.Web
 }}
 
 .{template_FR}-toolbar-dropdown-content > a:hover {{
-    background-color: {ColorTranslator.ToHtml(Toolbar.DropDownMenuColor)};
+    background-color: {Toolbar.DropDownMenuColor.ToString()};
     opacity: 0.5;
     cursor: pointer;
     border-radius: 0px 0px 10px 10px;
@@ -274,7 +274,7 @@ namespace FastReport.Web
 
 .fr-webreport-popup-content-title input {{
     background-color: white;
-    border: 3px solid  {ColorTranslator.ToHtml(Toolbar.Exports.Color)};
+    border: 3px solid  {Toolbar.Exports.Color.ToString()};
     color: black;
     max-height: 9.8px;
     border-radius: 3px;
@@ -387,10 +387,10 @@ input[type=range]::-webkit-slider-thumb {{
     height: 100%;
     width: 5%;
     border-radius: 0px;
-    background: linear-gradient(gray,5%, {ColorTranslator.ToHtml(Toolbar.Exports.Color)});
+    background: linear-gradient(gray,5%, {Toolbar.Exports.Color.ToString()});
     cursor: pointer;
     -webkit-appearance: none;
-    box-shadow: -100vw 0vw 0vw 100vw {ColorTranslator.ToHtml(Toolbar.Exports.Color)};
+    box-shadow: -100vw 0vw 0vw 100vw {Toolbar.Exports.Color.ToString()};
     margin-top: 0px;
 }}
 
@@ -400,7 +400,7 @@ label{{
 .fr-webreport-popup-content-export-parameters-col input[type=text] {{
     background-color: white;
     color: #000000;
-    border: 2px solid  {ColorTranslator.ToHtml(Toolbar.Exports.Color)};
+    border: 2px solid  {Toolbar.Exports.Color.ToString()};
     max-height: 11px;
 }}
 .fr-webreport-popup-content-export-parameters-button {{
@@ -437,7 +437,7 @@ label{{
     border-radius: 3px;
     padding: 3px;
     font: {Toolbar.Exports.UserFontSettingsStyle} 14px {Toolbar.Exports.UserFontSettingsFamily};
-    color: {ColorTranslator.ToHtml(Toolbar.Exports.FontColor)};
+    color: {Toolbar.Exports.FontColor.ToString()};
     min-width: 70px;
     width: fit-content;
     height: 30px;

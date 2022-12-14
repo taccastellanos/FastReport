@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
-using System.Drawing;
+
 using FastReport.Utils;
 using System.Windows.Forms;
 
@@ -43,7 +43,7 @@ namespace FastReport.Table
     /// <code>
     /// TableCell cell1;
     /// PictureObject picture1 = new PictureObject();
-    /// picture1.Bounds = new RectangleF(0, 0, 32, 32);
+    /// picture1.Bounds = new SkiaSharp.SKRect(0, 0, 32, 32);
     /// picture1.Name = "Picture1";
     /// cell1.Objects.Add(picture1);
     /// </code>
@@ -153,9 +153,9 @@ namespace FastReport.Table
         /// Gets the address of this cell.
         /// </summary>
         [Browsable(false)]
-        public Point Address
+        public SkiaSharp.SKPoint Address
         {
-            get { return CellData == null ? new Point() : CellData.Address; }
+            get { return CellData == null ? new SkiaSharp.SKPoint() : CellData.Address; }
         }
 
         /// <summary>

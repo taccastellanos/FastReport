@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using SkiaSharp;
+
 using FastReport.Utils;
 using System.ComponentModel;
 
@@ -47,13 +47,14 @@ namespace FastReport.Gauge.Radial
 
         private void DrawHorz(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
 
-            PointF center = (Parent as RadialGauge).Center;
+            SkiaSharp.SKPoint center = (Parent as RadialGauge).Center;
             float circleWidth = Parent.Width / 16f;
             float circleHeight = Parent.Height / 16f;
-            RectangleF pointerCircle = new RectangleF(center.X - circleWidth/2 * e.ScaleX, center.Y - circleHeight/2 * e.ScaleY, circleWidth * e.ScaleX, circleHeight * e.ScaleY);
+            SkiaSharp.SKRect pointerCircle = new SkiaSharp.SKRect(center.X - circleWidth/2 * e.ScaleX, center.Y - circleHeight/2 * e.ScaleY, circleWidth * e.ScaleX, circleHeight * e.ScaleY);
 
             //double rotateTo = (scale.AverageValue - Parent.Minimum);
             double startAngle = -135 * RadialGauge.Radians;
@@ -93,22 +94,22 @@ namespace FastReport.Gauge.Radial
             float ptrLineY = center.Y - pointerCircle.Width / 2 - pointerCircle.Width / 5;
             float ptrLineY1 = scale.AvrTick.Y + scale.MinorTicks.Length * 1.7f;
             float ptrLineWidth = circleWidth / 3 * e.ScaleX;
-            PointF[] pointerPerpStrt = new PointF[2];
-            pointerPerpStrt[0] = new PointF(center.X - ptrLineWidth, ptrLineY);
-            pointerPerpStrt[1] = new PointF(center.X + ptrLineWidth, ptrLineY);
+            SkiaSharp.SKSkiaSharp.SKPoint[] pointerPerpStrt = new SkiaSharp.SKPoint[2];
+            pointerPerpStrt[0] = new SkiaSharp.SKPoint(center.X - ptrLineWidth, ptrLineY);
+            pointerPerpStrt[1] = new SkiaSharp.SKPoint(center.X + ptrLineWidth, ptrLineY);
 
-            PointF[] pointerPerpEnd = new PointF[2];
-            pointerPerpEnd[0] = new PointF(center.X - ptrLineWidth / 3, ptrLineY1);
-            pointerPerpEnd[1] = new PointF(center.X + ptrLineWidth / 3, ptrLineY1);
+            SkiaSharp.SKSkiaSharp.SKPoint[] pointerPerpEnd = new SkiaSharp.SKPoint[2];
+            pointerPerpEnd[0] = new SkiaSharp.SKPoint(center.X - ptrLineWidth / 3, ptrLineY1);
+            pointerPerpEnd[1] = new SkiaSharp.SKPoint(center.X + ptrLineWidth / 3, ptrLineY1);
 
 
             pointerPerpStrt = RadialUtils.RotateVector(pointerPerpStrt, startAngle, center);
             pointerPerpEnd = RadialUtils.RotateVector(pointerPerpEnd, startAngle, center);
 
-            PointF[] rotatedPointerPerpStrt = RadialUtils.RotateVector(pointerPerpStrt, angle, center); 
-            PointF[] rotatedPointerPerpEnd = RadialUtils.RotateVector(pointerPerpEnd, angle, center);
+            SkiaSharp.SKSkiaSharp.SKPoint[] rotatedPointerPerpStrt = RadialUtils.RotateVector(pointerPerpStrt, angle, center); 
+            SkiaSharp.SKSkiaSharp.SKPoint[] rotatedPointerPerpEnd = RadialUtils.RotateVector(pointerPerpEnd, angle, center);
 
-            //calc brush rect
+            //calc /*Brush/SkiaSharp.SKPaint rect
             float x = 0, y = 0, dx = 0, dy = 0;
             if(angle / RadialGauge.Radians >= 0 && angle / RadialGauge.Radians < 45)
             {
@@ -145,27 +146,27 @@ namespace FastReport.Gauge.Radial
                 dx = rotatedPointerPerpEnd[0].X - pointerCircle.X;
                 dy = rotatedPointerPerpEnd[1].Y - pointerCircle.Y;
             }
-            RectangleF brushRect = new RectangleF(x, y, dx, dy);
+            SkiaSharp.SKRect brushRect = new SkiaSharp.SKRect(x, y, dx, dy);
             if (gradAutoRotate && Fill is LinearGradientFill)
             {
                 (Fill as LinearGradientFill).Angle = (int)(startAngle / RadialGauge.Radians + angle / RadialGauge.Radians) + 90;
             }
-            Brush brush = Fill.CreateBrush(brushRect, e.ScaleX, e.ScaleY);
+            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(brushRect, e.ScaleX, e.ScaleY);
 
-            PointF[] p = new PointF[]
+            SkiaSharp.SKSkiaSharp.SKPoint[] p = new SkiaSharp.SKSkiaSharp.SKPoint[]
             {
                 rotatedPointerPerpStrt[0],
                 rotatedPointerPerpStrt[1],
                 rotatedPointerPerpEnd[1],
                 rotatedPointerPerpEnd[0],
             };
-            GraphicsPath path = new GraphicsPath();
+            SkiaSharp.SKPath path = new GraphicsPath();
             path.AddLines(p);
             path.AddLine(p[3], p[0]);
 
             g.FillAndDrawEllipse(pen, brush, pointerCircle);
 
-            g.FillAndDrawPath(pen, brush, path);
+            g.FillAndDrawPath(pen, brush, path);*/
         }
 
         #endregion // Private Methods

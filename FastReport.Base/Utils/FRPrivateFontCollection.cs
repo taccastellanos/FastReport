@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Drawing.Text;
-using System.Drawing;
+
+
 
 namespace FastReport.Utils
 {
@@ -12,14 +12,14 @@ namespace FastReport.Utils
     /// </summary>
     public class FRPrivateFontCollection
     {
-        private PrivateFontCollection collection = TypeConverters.FontConverter.PrivateFontCollection;
+        //TODOprivate PrivateFontCollection collection = TypeConverters.FontConverter.PrivateFontCollection;
         private Dictionary<string, string> FontFiles = new Dictionary<string, string>();
         private Dictionary<string, MemoryFont> MemoryFonts = new Dictionary<string, MemoryFont>();
 
         /// <summary>
-        /// Gets the array of FontFamily objects associated with this collection.
+        /// Gets the array of SkiaSharp.SKTypeface objects associated with this collection.
         /// </summary>
-        public FontFamily[] Families { get { return collection.Families; } }
+        public SkiaSharp.SKTypeface[] Families { get ; }
 
         /// <summary>
         /// Checks if the font name is contained in this collection.
@@ -59,8 +59,8 @@ namespace FastReport.Utils
         /// <param name="filename">A System.String that contains the file name of the font to add.</param>
         public void AddFontFile(string filename)
         {
-            collection.AddFontFile(filename);
-            string fontName = Families[Families.Length - 1].Name;
+            //TODOcollection.AddFontFile(filename);
+            string fontName = Families[Families.Length - 1].FamilyName;
             if (!FontFiles.ContainsKey(fontName))
                 FontFiles.Add(fontName, filename);
         }
@@ -72,8 +72,8 @@ namespace FastReport.Utils
         /// <param name="length">The memory length of the font to add.</param>
         public void AddMemoryFont(IntPtr memory, int length)
         {
-            collection.AddMemoryFont(memory, length);
-            string fontName = Families[Families.Length - 1].Name;
+            //TODOcollection.AddMemoryFont(memory, length);
+            string fontName = Families[Families.Length - 1].FamilyName;
             if (!FontFiles.ContainsKey(fontName))
                 MemoryFonts.Add(fontName, new MemoryFont(memory, length));
         }

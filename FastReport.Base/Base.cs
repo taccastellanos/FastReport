@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 #if NETSTANDARD || NETCOREAPP
@@ -10,7 +10,7 @@ using FastReport.Code.CodeDom.Compiler;
 #else
 using System.CodeDom.Compiler;
 #endif
-using System.Drawing.Design;
+
 
 namespace FastReport
 {
@@ -218,7 +218,7 @@ namespace FastReport
         [DefaultValue(Restrictions.None)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Category("Design")]
-        [Editor("FastReport.TypeEditors.FlagsEditor, FastReport", typeof(UITypeEditor))]
+        
         public Restrictions Restrictions
         {
             get { return restrictions; }

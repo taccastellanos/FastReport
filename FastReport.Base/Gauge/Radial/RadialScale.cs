@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -22,9 +22,9 @@ namespace FastReport.Gauge.Radial
         private float width;
         private float majorTicksOffset;
         private float minorTicksOffset;
-        private PointF avrTick;
+        private SkiaSharp.SKPoint avrTick;
         private double stepValue;
-        private PointF center;
+        private SkiaSharp.SKPoint center;
         private double avrValue;
         private float majorStep;
         private float minorStep;
@@ -52,7 +52,7 @@ namespace FastReport.Gauge.Radial
         #region Properties
 
         [Browsable(false)]
-        internal PointF AvrTick
+        internal SkiaSharp.SKPoint AvrTick
         {
             get { return avrTick; }
         }
@@ -86,8 +86,8 @@ namespace FastReport.Gauge.Radial
         /// <param name="parent">The parent gauge object.</param>
         public RadialScale(RadialGauge parent) : base(parent)
         {
-            MajorTicks = new ScaleTicks(5, 2, Color.Black, 11);
-            MinorTicks = new ScaleTicks(2, 1, Color.Black, 4);
+            MajorTicks = new ScaleTicks(5, 2, SkiaSharp.SKColors.Black, 11);
+            MinorTicks = new ScaleTicks(2, 1, SkiaSharp.SKColors.Black, 4);
             majorStep = 27; //degree, 135/5
             minorStep = 5.4f; // degree, 27/5
             drawRight = true;
@@ -139,11 +139,12 @@ namespace FastReport.Gauge.Radial
                 return false;
             else return true;
         }
-        private void DrawText(FRPaintEventArgs e, string text, Brush brush, float x, float y, HorAlign hAlign, VertAlign vAlign)
+        private void DrawText(FRPaintEventArgs e, string text, /*Brush*/SkiaSharp.SKPaint brush, float x, float y, HorAlign hAlign, VertAlign vAlign)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Font font = RadialUtils.GetFont(e, Parent, Font);
-            SizeF strSize = RadialUtils.GetStringSize(e, Parent, Font, text);
+            SkiaSharp.SKFont font = RadialUtils.GetFont(e, Parent, Font);
+            SkiaSharp.SKSize strSize = RadialUtils.GetStringSize(e, Parent, Font, text);
             float dx = 0;
             float dy = 0;
             if (hAlign == HorAlign.Middle)
@@ -159,10 +160,10 @@ namespace FastReport.Gauge.Radial
                 dy = -strSize.Height / 2;
             else if (vAlign == VertAlign.Top)
                 dy = 0;
-            g.DrawString(text, font, brush, x + dx, y + dy);
+            g.DrawString(text, font, brush, x + dx, y + dy);*/
         }
 
-        private PointF GetTextPoint(PointF[] tick, float txtOffset, bool negativ, bool isRight)
+        private SkiaSharp.SKPoint GetTextPoint(SkiaSharp.SKPoint[] tick, float txtOffset, bool negativ, bool isRight)
         {
             float dx = Math.Abs(tick[1].X - tick[0].X);
             float dy = Math.Abs(tick[1].Y - tick[0].Y);
@@ -182,11 +183,12 @@ namespace FastReport.Gauge.Radial
                 pointX = tick[1].X + dx1;
             else
                 pointX = tick[1].X - dx1;
-            return new PointF(pointX, pointY);
+            return new SkiaSharp.SKPoint(pointX, pointY);
         }
 
         private void DrawMajorTicks(FRPaintEventArgs e)
         {
+            /*TODO
             center = (Parent as RadialGauge).Center;
             stepValue = (Parent.Maximum - Parent.Minimum) / (MajorTicks.Count - 1);
             if (RadialUtils.IsQuadrant(Parent))
@@ -196,26 +198,26 @@ namespace FastReport.Gauge.Radial
 
             bool isRightPart = true;
             bool isLeftPart = false;
-            PointF txtPoint;
+            SkiaSharp.SKPoint txtPoint;
 
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(MajorTicks.Color, MajorTicks.Width * e.ScaleX, DashStyle.Solid);
-            Brush brush = TextFill.CreateBrush(new RectangleF(Parent.AbsLeft * e.ScaleX, Parent.AbsTop * e.ScaleY,
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(MajorTicks.Color, MajorTicks.Width * e.ScaleX, DashStyle.Solid);
+            /*Brush/SkiaSharp.SKPaint brush = TextFill.CreateBrush(new SkiaSharp.SKRect(Parent.AbsLeft * e.ScaleX, Parent.AbsTop * e.ScaleY,
     Parent.Width * e.ScaleX, Parent.Height * e.ScaleY), e.ScaleX, e.ScaleY);
             sideTicksCount = (MajorTicks.Count - 1) / 2;
             MajorTicks.Length = width / 12;
 
-            SizeF maxTxt = RadialUtils.GetStringSize(e, Parent, Font, Parent.Maximum.ToString());
-            SizeF minTxt = RadialUtils.GetStringSize(e, Parent, Font, Parent.Minimum.ToString());
+            SkiaSharp.SKSize maxTxt = RadialUtils.GetStringSize(e, Parent, Font, Parent.Maximum.ToString());
+            SkiaSharp.SKSize minTxt = RadialUtils.GetStringSize(e, Parent, Font, Parent.Minimum.ToString());
             float maxTxtOffset = maxTxt.Height > maxTxt.Width ? maxTxt.Height : maxTxt.Width;
             float minTxtOffset = minTxt.Height > minTxt.Width ? minTxt.Height : minTxt.Width;
             majorTicksOffset = maxTxtOffset > minTxtOffset ? maxTxtOffset : minTxtOffset;       
 
-            PointF[] tick0 = new PointF[2];
-            avrTick = new PointF(left + width / 2, top + majorTicksOffset);
+            SkiaSharp.SKSkiaSharp.SKPoint[] tick0 = new SkiaSharp.SKPoint[2];
+            avrTick = new SkiaSharp.SKPoint(left + width / 2, top + majorTicksOffset);
             //first tick
             tick0[0] = avrTick;
-            tick0[1] = new PointF(tick0[0].X, tick0[0].Y + MajorTicks.Length);
+            tick0[1] = new SkiaSharp.SKPoint(tick0[0].X, tick0[0].Y + MajorTicks.Length);
 
             double angle = 0;
             HorAlign horAlign = HorAlign.Middle;
@@ -323,7 +325,7 @@ namespace FastReport.Gauge.Radial
             DrawText(e, text, brush, tick0[0].X, tick0[0].Y, horAlign, vertAlign);
 
             //rest of ticks
-            PointF[] tick = new PointF[2];
+            SkiaSharp.SKSkiaSharp.SKPoint[] tick = new SkiaSharp.SKPoint[2];
             angle = majorStep * RadialGauge.Radians;
 
             for (int i = 0; i < sideTicksCount; i++)
@@ -503,22 +505,23 @@ namespace FastReport.Gauge.Radial
                 }
 
                 angle += majorStep * RadialGauge.Radians;
-            }
+            }*/
         }
 
         private void DrawMinorTicks(FRPaintEventArgs e)
         { 
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(MinorTicks.Color, MinorTicks.Width * e.ScaleX, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(MinorTicks.Color, MinorTicks.Width * e.ScaleX, DashStyle.Solid);
 
             MinorTicks.Length = width / 24;
             minorTicksOffset = majorTicksOffset + MajorTicks.Length / 2 - MinorTicks.Length / 2;
-            PointF center = new PointF(left + width / 2, top + height / 2);
+            SkiaSharp.SKPoint center = new SkiaSharp.SKPoint(left + width / 2, top + height / 2);
 
-            PointF[] tick0 = new PointF[2];
+            SkiaSharp.SKSkiaSharp.SKPoint[] tick0 = new SkiaSharp.SKPoint[2];
             //first tick
-            tick0[0] = new PointF(left + width / 2, top + minorTicksOffset);
-            tick0[1] = new PointF(tick0[0].X, tick0[0].Y + MinorTicks.Length);
+            tick0[0] = new SkiaSharp.SKPoint(left + width / 2, top + minorTicksOffset);
+            tick0[1] = new SkiaSharp.SKPoint(tick0[0].X, tick0[0].Y + MinorTicks.Length);
 
             double angle = 0;
             if (RadialUtils.IsSemicircle(Parent) || RadialUtils.IsQuadrant(Parent) )
@@ -553,7 +556,7 @@ namespace FastReport.Gauge.Radial
             tick0 = RadialUtils.RotateVector(tick0, angle, center);
 
             //rest of ticks
-            PointF[] tick = new PointF[2];
+            SkiaSharp.SKSkiaSharp.SKPoint[] tick = new SkiaSharp.SKPoint[2];
             angle = minorStep * RadialGauge.Radians;
             for (int i = 0; i < MajorTicks.Count / 2 * (MinorTicks.Count + 1); i++)
             {
@@ -573,7 +576,7 @@ namespace FastReport.Gauge.Radial
                     }
                 }
                 angle += minorStep * RadialGauge.Radians;
-            }
+            }*/
         }
         
         #endregion // Private Methods

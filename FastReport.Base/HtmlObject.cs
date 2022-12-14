@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
+
+
 using System.ComponentModel;
 using FastReport.Utils;
 using FastReport.Code;
@@ -63,15 +63,15 @@ namespace FastReport
         #endregion
 
         #region Public Methods
-        internal StringFormat GetStringFormat(GraphicCache cache, StringFormatFlags flags)
+        internal SkiaSharp.SKTextAlign GetStringFormat(GraphicCache cache, StringFormatFlags flags)
         {
             return GetStringFormat(cache, flags, 1);
         }
 
-        internal StringFormat GetStringFormat(GraphicCache cache, StringFormatFlags flags, float scale)
+        internal SkiaSharp.SKTextAlign GetStringFormat(GraphicCache cache, StringFormatFlags flags, float scale)
         {
             if (RightToLeft)
-                flags |= StringFormatFlags.DirectionRightToLeft;
+                flags |= SkiaSharp.SKEncodedImageFormat.DirectionRightToLeft;
 
             return cache.GetStringFormat(StringAlignment.Near, StringAlignment.Near, StringTrimming.None, flags, 0 * scale, 0 * scale);
         }
@@ -95,17 +95,17 @@ namespace FastReport
             if (!String.IsNullOrEmpty(text))
             {
                 IGraphics g = e.Graphics;
-                RectangleF textRect = new RectangleF(
+                SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(
                   (AbsLeft + Padding.Left) * e.ScaleX,
                   (AbsTop + Padding.Top) * e.ScaleY,
                   (Width - Padding.Horizontal) * e.ScaleX,
                   (Height - Padding.Vertical) * e.ScaleY);
 
-                StringFormat format = GetStringFormat(e.Cache, 0, e.ScaleX);
+                SkiaSharp.SKTextAlign format = GetStringFormat(e.Cache, 0, e.ScaleX);
 
-                Font font = DrawUtils.DefaultTextObjectFont;
+                SkiaSharp.SKFont font = DrawUtils.DefaultTextObjectFont;
 
-                Brush textBrush = e.Cache.GetBrush(Color.Black);
+                /*Brush*/SkiaSharp.SKPaint textBrush = e.Cache.GetBrush(SkiaSharp.SKColors.Black);
 
                 Report report = Report;
                 if (report != null)
@@ -126,7 +126,7 @@ namespace FastReport
             base.Draw(e);
             DrawText(e);
             DrawMarkers(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
             DrawDesign(e);
         }
 

@@ -1,7 +1,7 @@
 ﻿using FastReport.Format;
 using FastReport.Utils;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Linq;
 
 namespace FastReport.ReportBuilder
@@ -53,7 +53,7 @@ namespace FastReport.ReportBuilder
             TextObject titleText = new TextObject();
             titleText.Parent = page.ReportTitle;
             titleText.CreateUniqueName();
-            titleText.Bounds = new RectangleF(Units.Centimeters * 5, 0, Units.Centimeters * 10, Units.Centimeters * 1);
+            titleText.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 5, 0, Units.Centimeters * 10, Units.Centimeters * 1);
             titleText.Font = reportBuilder._reportTitle.Font;
             titleText.Text = reportBuilder._reportTitle.Text;
             titleText.TextColor = reportBuilder._reportTitle.TextColor;
@@ -82,9 +82,9 @@ namespace FastReport.ReportBuilder
                 {
                     TextObject textGroupHeader = new TextObject();
                     textGroupHeader.CreateUniqueName();
-                    textGroupHeader.Bounds = new RectangleF(0, 0, Units.Centimeters * 2, Units.Centimeters * 0.5f);
+                    textGroupHeader.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 2, Units.Centimeters * 0.5f);
                     textGroupHeader.Text = $"[{groupHeader.Condition}]";
-                    textGroupHeader.Font = new Font("Tahoma", 10, FontStyle.Bold);
+                    textGroupHeader.Font = new SkiaSharp.SKFont("Tahoma", 10, SkiaSharp.SKFontStyle.Bold);
                     textGroupHeader.Parent = groupHeader;
                 }
             }
@@ -112,7 +112,7 @@ namespace FastReport.ReportBuilder
                 {
                     TextObject headerText = new TextObject();
                     headerText.CreateUniqueName();
-                    headerText.Bounds = new RectangleF(leftCm, 0f * Units.Centimeters, cellWidth * Units.Centimeters * size, 0.1f * Units.Centimeters);
+                    headerText.Bounds = new SkiaSharp.SKRect(leftCm, 0f * Units.Centimeters, cellWidth * Units.Centimeters * size, 0.1f * Units.Centimeters);
                     headerText.VertAlign = reportBuilder._reportTitle.VertAlign ?? reportBuilder._report.VertAlign;
                     headerText.HorzAlign = reportBuilder._reportTitle.HorzAlign ?? reportBuilder._report.HorzAlign;
                     headerText.Font = reportBuilder._dataHeader.Font;
@@ -127,12 +127,12 @@ namespace FastReport.ReportBuilder
                 TextObject text = new TextObject();
                 text.Parent = dataBand;
                 text.CreateUniqueName();
-                text.Bounds = new RectangleF(leftCm, 0, Units.Centimeters * cellWidth * size, Units.Centimeters * 0.5f);
+                text.Bounds = new SkiaSharp.SKRect(leftCm, 0, Units.Centimeters * cellWidth * size, Units.Centimeters * 0.5f);
                 text.Text = string.IsNullOrEmpty(item.Expression)
                     ? $"[{name}.{item.Name}]"
                     : string.Format($"[{item.Expression}]", $"[{name}.{item.Name}]");
                 text.Border.Lines = BorderLines.All;
-                text.TextColor = Color.Black;
+                text.TextColor = SkiaSharp.SKColors.Black;
                 text.VertAlign = item.VertAlign ?? reportBuilder._report.VertAlign;
                 text.HorzAlign = item.HorzAlign ?? reportBuilder._report.HorzAlign;
 

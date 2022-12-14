@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Drawing;
+
 using System.Data;
 using FastReport;
 using FastReport.Matrix;
@@ -237,7 +237,7 @@ namespace FastReport
         else if(cell.IsBomb)
         {
           
-          table[x,y].Font = new Font(table[x,y].Font.FontFamily, 0.1f);
+          table[x,y].Font = new SkiaSharp.SKFont(table[x,y].Font.FontFamily, 0.1f);
           table[x,y].Text = BOMB;
           
         }

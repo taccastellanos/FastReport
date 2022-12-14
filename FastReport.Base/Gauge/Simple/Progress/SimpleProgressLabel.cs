@@ -2,7 +2,7 @@
 using FastReport.Utils;
 using System;
 using System.ComponentModel;
-using System.Drawing;
+
 
 namespace FastReport.Gauge.Simple.Progress
 {
@@ -55,12 +55,14 @@ namespace FastReport.Gauge.Simple.Progress
             float dx = (Parent.Width - Parent.Border.Width) * e.ScaleX;
             float dy = (Parent.Height - Parent.Border.Width) * e.ScaleY;
 
-            PointF lblPt = new PointF(x + dx / 2, y + dy/2);
-            SizeF txtSize = RadialUtils.GetStringSize(e, Parent, Font, Text);
-            Font font = RadialUtils.GetFont(e, Parent, Font);
-            Brush brush = e.Cache.GetBrush(Color);
+            SkiaSharp.SKPoint lblPt = new SkiaSharp.SKPoint(x + dx / 2, y + dy/2);
+            SkiaSharp.SKSize txtSize = RadialUtils.GetStringSize(e, Parent, Font, Text);
+            SkiaSharp.SKFont font = RadialUtils.GetFont(e, Parent, Font);
+            /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(Color);
             Text = Math.Round((Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum) * 100, decimals) + "%";
+            /*TODO
             e.Graphics.DrawString(Text, font, brush, lblPt.X - txtSize.Width / 2, lblPt.Y - txtSize.Height / 2);
+            */
         }
     }
 }

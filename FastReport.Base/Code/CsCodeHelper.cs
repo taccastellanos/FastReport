@@ -90,7 +90,7 @@ namespace FastReport.Code
         public override string EmptyScript()
         {
             return "using System;\r\nusing System.Collections;\r\nusing System.Collections.Generic;\r\n" +
-              "using System.ComponentModel;\r\nusing System.Windows.Forms;\r\nusing System.Drawing;\r\n" +
+              "using System.ComponentModel;\r\nusing System.Windows.Forms;\r\n\r\n" +
               "using System.Data;\r\nusing FastReport;\r\nusing FastReport.Data;\r\nusing FastReport.Dialog;\r\n" +
               "using FastReport.Barcode;\r\nusing FastReport.Table;\r\nusing FastReport.Utils;\r\n\r\n" +
               "namespace FastReport\r\n{\r\n  public class ReportScript\r\n  {\r\n  }\r\n}\r\n";

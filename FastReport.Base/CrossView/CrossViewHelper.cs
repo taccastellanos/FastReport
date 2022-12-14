@@ -1,6 +1,6 @@
 ﻿using FastReport.Table;
 using FastReport.Utils;
-using System.Drawing;
+
 
 namespace FastReport.CrossView
 {
@@ -210,7 +210,7 @@ namespace FastReport.CrossView
             cell.Assign(CrossView.Styles.DefaultStyle);
             cell.Text = text;
             cell.Font = DrawUtils.DefaultReportFont;
-            cell.TextFill = new SolidFill(Color.Gray);
+            cell.TextFill = new SolidFill(SkiaSharp.SKColors.Gray);
             cell.HorzAlign = HorzAlign.Center;
             cell.VertAlign = VertAlign.Center;
             cell.SetFlags(Flags.CanEdit, false);

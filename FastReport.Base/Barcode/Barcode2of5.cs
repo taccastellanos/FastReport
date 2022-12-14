@@ -1,7 +1,7 @@
 using FastReport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Text;
 
 namespace FastReport.Barcode
@@ -390,7 +390,7 @@ namespace FastReport.Barcode
             return result;
         }
 
-        internal override void DrawText(IGraphics g, string data)
+        internal override void DrawText(SkiaSharp.SKDrawable g, string data)
         {
             data = StripControlCodes(data);
             DrawString(g, 0, drawArea.Width, data.Insert(1, " ").Insert(4, " ").Insert(10, " ").Insert(16, " "));
@@ -417,11 +417,12 @@ namespace FastReport.Barcode
             DrawVerticalBearerBars = src.DrawVerticalBearerBars;
         }
 
-        public override void DrawBarcode(IGraphics g, RectangleF displayRect)
+        public override void DrawBarcode(SkiaSharp.SKDrawable g, SkiaSharp.SKRect displayRect)
         {
             base.DrawBarcode(g, displayRect);
             float bearerWidth = WideBarRatio * 2 * zoom;
-            using (Pen pen = new Pen(Color, bearerWidth))
+            /* TODO
+            using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (Color, bearerWidth))
             {
                 float x0 = displayRect.Left;
                 float x01 = displayRect.Left + bearerWidth / 2;
@@ -439,7 +440,7 @@ namespace FastReport.Barcode
                     g.DrawLine(pen, x01 - 0.5F, y0, x01 - 0.5F, y1);
                     g.DrawLine(pen, x11, y0, x11, y1);
                 }
-            }
+            }*/
         }
 
         #endregion

@@ -4,7 +4,7 @@ using System.Text;
 using FastReport.Data;
 using FastReport.Table;
 using FastReport.Utils;
-using System.Drawing;
+
 using System.Collections;
 
 namespace FastReport.Matrix
@@ -279,17 +279,17 @@ namespace FastReport.Matrix
             cell.Assign(Matrix.Styles.DefaultStyle);
             cell.Text = text;
             cell.Font = DrawUtils.DefaultReportFont;
-            cell.TextFill = new SolidFill(Color.Gray);
+            cell.TextFill = new SolidFill(SkiaSharp.SKColors.Gray);
             cell.HorzAlign = HorzAlign.Center;
             cell.VertAlign = VertAlign.Center;
             cell.SetFlags(Flags.CanEdit, false);
         }
 
-        private Point GetBodyLocation()
+        private SkiaSharp.SKPoint GetBodyLocation()
         {
             // determine the template's body location. Do not rely on HeaderWidth, HeaderHeight - 
             // the template may be empty
-            Point result = new Point();
+            var result = new SkiaSharp.SKPoint();
 
             foreach (MatrixHeaderDescriptor descr in Matrix.Data.Columns)
             {
@@ -343,7 +343,7 @@ namespace FastReport.Matrix
             }
 
             // determine the body location
-            Point bodyLocation = GetBodyLocation();
+            var bodyLocation = GetBodyLocation();
 
             // create columns
             foreach (MatrixHeaderItem item in columnTerminalItems)
@@ -352,7 +352,7 @@ namespace FastReport.Matrix
                 {
                     TableColumn column = new TableColumn();
                     if (item.TemplateColumn != null && descr.TemplateColumn != null)
-                        column.Assign(Matrix.Columns[item.TemplateColumn.Index + (descr.TemplateColumn.Index - bodyLocation.X)]);
+                        column.Assign(Matrix.Columns[item.TemplateColumn.Index + (descr.TemplateColumn.Index - Convert.ToInt32(bodyLocation.X))]);
                     ResultTable.Columns.Add(column);
 
                     if (!Matrix.CellsSideBySide)
@@ -367,7 +367,7 @@ namespace FastReport.Matrix
                 {
                     TableRow row = new TableRow();
                     if (item.TemplateRow != null && descr.TemplateRow != null)
-                        row.Assign(Matrix.Rows[item.TemplateRow.Index + (descr.TemplateRow.Index - bodyLocation.Y)]);
+                        row.Assign(Matrix.Rows[item.TemplateRow.Index + (descr.TemplateRow.Index - Convert.ToInt32(bodyLocation.Y))]);
                     ResultTable.Rows.Add(row);
 
                     if (Matrix.CellsSideBySide)
@@ -783,7 +783,7 @@ namespace FastReport.Matrix
             List<MatrixHeaderItem> rowTerminalItems = Matrix.Data.Rows.RootItem.GetTerminalItems();
             int dataCount = Matrix.Data.Cells.Count;
             int top = HeaderHeight;
-            Point bodyLocation = GetBodyLocation();
+            var bodyLocation = GetBodyLocation();
             bool firstTimePrintingData = true;
             cellValues = new object[dataCount];
             Matrix.RowIndex = 0;
@@ -809,7 +809,7 @@ namespace FastReport.Matrix
                             if (columnItem.TemplateColumn != null && rowItem.TemplateRow != null && descr.TemplateColumn != null)
                             {
                                 templateCell = Matrix[
-                                  columnItem.TemplateColumn.Index + (descr.TemplateColumn.Index - bodyLocation.X),
+                                  columnItem.TemplateColumn.Index + (descr.TemplateColumn.Index - Convert.ToInt32(bodyLocation.X)),
                                   rowItem.TemplateRow.Index];
                             }
                             else
@@ -822,7 +822,7 @@ namespace FastReport.Matrix
                             if (columnItem.TemplateColumn != null && rowItem.TemplateRow != null && descr.TemplateColumn != null)
                             {
                                 templateCell = Matrix[columnItem.TemplateColumn.Index,
-                                  rowItem.TemplateRow.Index + (descr.TemplateRow.Index - bodyLocation.Y)];
+                                  rowItem.TemplateRow.Index + (descr.TemplateRow.Index - Convert.ToInt32(bodyLocation.Y))];
                             }
                             else
                                 templateCell = CreateDataCell();

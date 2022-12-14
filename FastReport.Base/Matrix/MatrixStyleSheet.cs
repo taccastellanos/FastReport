@@ -1,32 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 
 namespace FastReport.Matrix
 {
   internal class MatrixStyleSheet : StyleSheet
   {
-    public Bitmap GetStyleBitmap(int index)
+    public SkiaSharp.SKBitmap GetStyleBitmap(int index)
     {
       StyleCollection styleCollection = this[index];
       Style style = styleCollection[styleCollection.IndexOf("Header")];
       
-      Color headerColor = Color.White;
+      var headerColor = SkiaSharp.SKColors.White;
       if (style.Fill is SolidFill)
         headerColor = (style.Fill as SolidFill).Color;
       else if (style.Fill is LinearGradientFill)
         headerColor = (style.Fill as LinearGradientFill).StartColor;
 
       style = styleCollection[styleCollection.IndexOf("Body")];
-      Color bodyColor = Color.White;
+      var bodyColor = SkiaSharp.SKColors.White;
       if (style.Fill is SolidFill)
         bodyColor = (style.Fill as SolidFill).Color;
       else if (style.Fill is LinearGradientFill)
         bodyColor = (style.Fill as LinearGradientFill).StartColor;
         
       // draw style picture
-      Bitmap result = new Bitmap(16, 16);
+      var result = new SkiaSharp.SKBitmap(16, 16);
+      /*TODO
       using (Graphics g = Graphics.FromImage(result))
       {
         g.FillRectangle(Brushes.White, 0, 0, 16, 16);
@@ -41,7 +42,7 @@ namespace FastReport.Matrix
         }
         
         g.DrawRectangle(Pens.Silver, 0, 0, 14, 14);
-      }
+      }*/
       
       return result;
     }

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using FastReport.Table;
 using FastReport.Data;
 using FastReport.Utils;
-using System.Drawing.Design;
+
 
 namespace FastReport.Matrix
 {
@@ -264,7 +264,7 @@ namespace FastReport.Matrix
         /// the corresponding data row will be skipped.
         /// </remarks>
         [Category("Data")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string Filter
         {
             get { return filter; }
@@ -291,7 +291,7 @@ namespace FastReport.Matrix
         /// Gets or sets a matrix style.
         /// </summary>
         [Category("Appearance")]
-        [Editor("FastReport.TypeEditors.MatrixStyleEditor, FastReport", typeof(UITypeEditor))]
+        
         public new string Style
         {
             get { return style; }

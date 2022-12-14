@@ -2,7 +2,7 @@ using FastReport.Engine;
 using FastReport.Utils;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,7 +14,7 @@ namespace FastReport.Preview
 
         private XmlItem xmlItem;
         private PreparedPages preparedPages;
-        private SizeF pageSize;
+        private SkiaSharp.SKSize pageSize;
         private long tempFilePosition;
         private bool uploaded;
         private PreparedPagePosprocessor posprocessor;
@@ -43,7 +43,7 @@ namespace FastReport.Preview
             }
         }
 
-        public SizeF PageSize
+        public SkiaSharp.SKSize PageSize
         {
             get
             {
@@ -316,7 +316,7 @@ namespace FastReport.Preview
                             page.UnlimitedWidthValue = maxWidth + (page.LeftMargin + page.RightMargin) * Units.Millimeters;
 
                     }
-                    pageSize = new SizeF(page.WidthInPixels, page.HeightInPixels);
+                    pageSize = new SkiaSharp.SKSize(page.WidthInPixels, page.HeightInPixels);
 
                     using (FRWriter writer = new FRWriter(item))
                     {
@@ -348,7 +348,7 @@ namespace FastReport.Preview
                     writer.Write(page);
                 }
 
-                pageSize = new SizeF(page.WidthInPixels, page.HeightInPixels);
+                pageSize = new SkiaSharp.SKSize(page.WidthInPixels, page.HeightInPixels);
             }
         }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Drawing;
+
 using FastReport.Barcode;
 using FastReport.Table;
 using FastReport.Utils;
@@ -357,7 +357,7 @@ namespace FastReport.Import.DevExpress
             }
         }
 
-        private Font LoadFont(string description)
+        private SkiaSharp.SKFont LoadFont(string description)
         {
             string font = GetPropertyValue("Font", description);
             if (!String.IsNullOrEmpty(font))
@@ -371,24 +371,25 @@ namespace FastReport.Import.DevExpress
                 {
                     string str = font.Substring(comma + 2, secondComma - comma - 2);
                     fontSize = UnitsConverter.SizeFToPixelsFont(font.Substring(comma + 2, secondComma - comma - 2));
-                    FontStyle fontStyle = FontStyle.Regular;
+                    SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+                    /*TODO
                     if (font.Contains("Bold"))
                     {
-                        fontStyle |= FontStyle.Bold;
+                        fontStyle |= SkiaSharp.SKFontStyle.Bold;
                     }
                     if (font.Contains("Italic"))
                     {
-                        fontStyle |= FontStyle.Italic;
+                        fontStyle |= SkiaSharp.SKFontStyleSlant.Italic;
                     }
                     if (font.Contains("Underline"))
                     {
-                        fontStyle |= FontStyle.Underline;
+                        fontStyle |= SkiaSharp.SKFontStyle.Underline;
                     }
                     if (font.Contains("Strikeout"))
                     {
-                        fontStyle |= FontStyle.Strikeout;
-                    }
-                    return new Font(fontFamily, fontSize, fontStyle);
+                        fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
+                    }*/
+                    return new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontFamily), fontSize);
                 }
                 else
                 {
@@ -396,7 +397,7 @@ namespace FastReport.Import.DevExpress
                     fontSize = UnitsConverter.SizeFToPixelsFont(font.Substring(comma + 2, font.IndexOf(")") - comma - 2));
                 }
             }
-            return new Font("Arial", 10.0f, FontStyle.Regular);
+            return new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10.0f);
         }
 
         private void LoadLabel(string name, Base parent)
@@ -701,7 +702,7 @@ namespace FastReport.Import.DevExpress
             {
                 if(subStyle.Name == styleName)
                 {
-                    Font f = new Font("Arial", 10, FontStyle.Regular);
+                    SkiaSharp.SKFont f = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
                     if (component is TextObject)
                     {
                         f = (component as TextObject).Font;

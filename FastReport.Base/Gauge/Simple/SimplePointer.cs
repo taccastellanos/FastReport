@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using FastReport.Utils;
 
 namespace FastReport.Gauge.Simple
@@ -107,30 +107,32 @@ namespace FastReport.Gauge.Simple
 
         internal virtual void DrawHorz(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
 
             left = (Parent.AbsLeft + Parent.Border.Width / 2 + horizontalOffset) * e.ScaleX;
             top = (Parent.AbsTop + Parent.Border.Width / 2 + (Parent.Height - Parent.Border.Width) / 2 - (Parent.Height - Parent.Border.Width) * ptrRatio / 2) * e.ScaleY;
             height = ((Parent.Height - Parent.Border.Width) * ptrRatio) * e.ScaleY;
             width = (float)((Parent.Width - Parent.Border.Width - horizontalOffset * 2) * (Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum) * e.ScaleX);
 
-            Brush brush = Fill.CreateBrush(new RectangleF(left, top, width, height), e.ScaleX, e.ScaleY);
-            g.FillAndDrawRectangle(pen, brush, left, top, width, height);
+            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(new SkiaSharp.SKRect(left, top, width, height), e.ScaleX, e.ScaleY);
+            g.FillAndDrawRectangle(pen, brush, left, top, width, height);*/
         }
 
         internal virtual void DrawVert(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
-            Pen pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleY, DashStyle.Solid);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleY, DashStyle.Solid);
 
             width = ((Parent.Width - Parent.Border.Width) * ptrRatio) * e.ScaleX;
             height = (float)((Parent.Height - Parent.Border.Width -  horizontalOffset * 2) * (Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum) * e.ScaleY);
             left = (Parent.AbsLeft + Parent.Border.Width / 2 + (Parent.Width - Parent.Border.Width) / 2 - (Parent.Width - Parent.Border.Width) * ptrRatio / 2) * e.ScaleX;
             top = (Parent.AbsTop + Parent.Border.Width / 2 + Parent.Height - Parent.Border.Width - horizontalOffset) * e.ScaleY - height;
 
-            Brush brush = Fill.CreateBrush(new RectangleF(left, top, width, height), e.ScaleX, e.ScaleY);
-            g.FillAndDrawRectangle(pen, brush, left, top, width, height);
+            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(new SkiaSharp.SKRect(left, top, width, height), e.ScaleX, e.ScaleY);
+            g.FillAndDrawRectangle(pen, brush, left, top, width, height);*/
         }
 
         #endregion // Internal Methods

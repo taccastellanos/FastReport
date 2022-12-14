@@ -1,4 +1,4 @@
-using System.Drawing;
+
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -30,9 +30,10 @@ namespace FastReport.Import.RDL
         /// </summary>
         /// <param name="colorName">The RDL Color value.</param>
         /// <returns>The Color value.</returns>
-        public static Color ConvertColor(string colorName)
+        public static SkiaSharp.SKColor ConvertColor(string colorName)
         {
-            return Color.FromName(colorName);
+            
+            return SkiaSharp.SKColor.Parse(colorName);
         }
 
         /// <summary>
@@ -120,17 +121,17 @@ namespace FastReport.Import.RDL
         }
 
         /// <summary>
-        /// Converts the RDL FontStyle to FontStyle.
+        /// Converts the RDL SkiaSharp.SKFontStyle to SkiaSharp.SKFontStyle.
         /// </summary>
-        /// <param name="fontStyle">The RDL FontStyle value.</param>
-        /// <returns>The FontStyle value.</returns>
-        public static FontStyle ConvertFontStyle(string fontStyle)
+        /// <param name="fontStyle">The RDL SkiaSharp.SKFontStyle value.</param>
+        /// <returns>The SkiaSharp.SKFontStyle value.</returns>
+        public static SkiaSharp.SKFontStyle ConvertFontStyle(string fontStyle)
         {
             if (fontStyle == "Italic")
             {
-                return FontStyle.Italic;
+                return SkiaSharp.SKFontStyle.Italic;
             }
-            return FontStyle.Regular;
+            return SkiaSharp.SKFontStyle.Normal;
         }
 
         /// <summary>

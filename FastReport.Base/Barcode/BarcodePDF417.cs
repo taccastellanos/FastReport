@@ -8,8 +8,8 @@
 using System;
 using System.Collections;
 using System.Text;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -124,7 +124,7 @@ namespace FastReport.Barcode
     private PDF417CompactionMode compactionMode;
     private byte[] bytes;
     private float aspectRatio;
-    private Size pixelSize;
+    private SkiaSharp.SKSize pixelSize;
     private int codePage;
     private int bitPtr;
     private int cwPtr;
@@ -679,7 +679,7 @@ namespace FastReport.Barcode
     /// <summary>
     /// Gets or sets the size of the pixel.
     /// </summary>
-    public Size PixelSize
+    public SkiaSharp.SKSize PixelSize
     {
       get { return pixelSize; }
       set { pixelSize = value; }
@@ -1512,16 +1512,17 @@ namespace FastReport.Barcode
       PaintCode();
     }
 
-    internal override SizeF CalcBounds()
+    internal override SkiaSharp.SKSize CalcBounds()
     {
       int textAdd = showText ? 18 : 0;
-      return new SizeF(bitColumns * PixelSize.Width, codeRows * PixelSize.Height + textAdd);
+      return new SkiaSharp.SKSize(bitColumns * PixelSize.Width, codeRows * PixelSize.Height + textAdd);
     }
     
-    internal override void Draw2DBarcode(IGraphics g, float kx, float ky)
+    internal override void Draw2DBarcode(SkiaSharp.SKDrawable g, float kx, float ky)
     {
-      Brush light = Brushes.White;
-      Brush dark = new SolidBrush(Color);
+      /* TODO
+      /*Brush/SkiaSharp.SKPaint light = Brushes.White;
+      /*Brush/SkiaSharp.SKPaint dark = new SolidBrush(Color);
       int stride = (bitColumns + 7) / 8;
 
       for (int k = 0; k < codeRows; ++k)
@@ -1531,13 +1532,14 @@ namespace FastReport.Barcode
         {
           int b = outBits[p + (j / 8)] & 0xff;
           b <<= j % 8;
-          Brush brush = /*(b & 0x80) == 0 ? light :*/ dark;
+          /*Brush/SkiaSharp.SKPaint brush = /*(b & 0x80) == 0 ? light :/ dark;
           if ((b & 0x80) != 0)
             g.FillRectangle(brush, j * PixelSize.Width * kx, k * PixelSize.Height * ky,
             PixelSize.Width * kx, PixelSize.Height * ky);
         }
       }
       dark.Dispose();
+      */
     }
     #endregion
 
@@ -1548,7 +1550,7 @@ namespace FastReport.Barcode
     {
       outBits = null;
       bytes = new byte[0];
-      pixelSize = new Size(2, 8);
+      pixelSize = new SkiaSharp.SKSize(2, 8);
       aspectRatio = 0.5f;
       codePage = 437;
     }

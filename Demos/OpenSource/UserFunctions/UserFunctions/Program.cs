@@ -2,7 +2,7 @@
 using FastReport.Export.Image;
 using FastReport.Utils;
 using System;
-using System.Drawing;
+
 using System.IO;
 using System.Reflection;
 using UserFunctions;
@@ -62,8 +62,8 @@ namespace UserFunctions
             TextObject titleText1 = new TextObject();
             titleText1.Parent = page.ReportTitle;
             titleText1.CreateUniqueName();
-            titleText1.Bounds = new RectangleF(0, 0, Units.Centimeters * 8, Units.Centimeters * 1);
-            titleText1.Font = new Font("Arial", 14, FontStyle.Bold);
+            titleText1.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 1);
+            titleText1.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
             titleText1.HorzAlign = HorzAlign.Center;
 
             // !!! use our function

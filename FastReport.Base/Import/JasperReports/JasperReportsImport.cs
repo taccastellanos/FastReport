@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Xml;
-using System.Drawing;
+
 using System.Windows.Forms;
 using FastReport.Table;
 using FastReport.Barcode;
@@ -774,7 +774,7 @@ namespace FastReport.Import.JasperReports
                 if (node["reportElement"].Attributes["x"] != null && node["reportElement"].Attributes["y"] != null &&
                     node["reportElement"].Attributes["width"] != null && node["reportElement"].Attributes["height"] != null)
                 {
-                    RectangleF rect = new RectangleF(
+                    SkiaSharp.SKRect rect = new SkiaSharp.SKRect(
                         (float)Math.Ceiling(UnitsConverter.ConvertFloat(node["reportElement"].Attributes["x"].Value) * DrawUtils.ScreenDpi / 96f),
                         (float)Math.Ceiling(UnitsConverter.ConvertFloat(node["reportElement"].Attributes["y"].Value) * DrawUtils.ScreenDpi / 96f),
                         (float)Math.Floor(UnitsConverter.ConvertFloat(node["reportElement"].Attributes["width"].Value) * DrawUtils.ScreenDpi / 96f),
@@ -949,34 +949,34 @@ namespace FastReport.Import.JasperReports
             return (ReportComponentBase)(band as ReportComponentBase).ChildObjects[(band as ReportComponentBase).ChildObjects.Count - 1];
         }
 
-        private Font ParseFont(XmlNode font)
+        private SkiaSharp.SKFont ParseFont(XmlNode font)
         { 
             float size = 10;
             if (font.Attributes["size"] != null)
                 size = UnitsConverter.ConvertFloat(font.Attributes["size"].Value);
-
-            FontStyle fontStyle = FontStyle.Regular;
+            /*TODO
+            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Regular;
             if (font.Attributes["isBold"] != null && UnitsConverter.ConvertBool(font.Attributes["isBold"].Value))
             {
-                fontStyle |= FontStyle.Bold;
+                fontStyle |= SkiaSharp.SKFontStyle.Bold;
             }
             if (font.Attributes["isItalic"] != null && UnitsConverter.ConvertBool(font.Attributes["isItalic"].Value))
             {
-                fontStyle |= FontStyle.Italic;
+                fontStyle |= SkiaSharp.SKFontStyle.Italic;
             }
             if (font.Attributes["isUnderline"] != null && UnitsConverter.ConvertBool(font.Attributes["isUnderline"].Value))
             {
-                fontStyle |= FontStyle.Underline;
+                fontStyle |= SkiaSharp.SKFontStyle.Underline;
             }
             if (font.Attributes["isStrikeThrough"] != null && UnitsConverter.ConvertBool(font.Attributes["isStrikeThrough"].Value))
             {
-                fontStyle |= FontStyle.Strikeout;
+                fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
             }
 
             if(font.Attributes["fontName"] == null)
-                return new Font(DrawUtils.DefaultReportFont.FontFamily, size, fontStyle); 
-
-            return new Font(font.Attributes["fontName"].Value, size, fontStyle);
+                return new SkiaSharp.SKFont(DrawUtils.DefaultReportFont.FontFamily, size, fontStyle); 
+            */
+            return new SkiaSharp.SKFont();//font.Attributes["fontName"].Value, size, fontStyle);
         }
 
         private void LoadStyles()

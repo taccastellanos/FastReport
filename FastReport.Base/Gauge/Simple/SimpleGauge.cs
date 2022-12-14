@@ -1,5 +1,5 @@
-using System.Drawing;
-using System.Drawing.Drawing2D;
+
+
 using FastReport.Utils;
 using System.ComponentModel;
 
@@ -42,10 +42,11 @@ namespace FastReport.Gauge.Simple
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
+            /*TODO
             base.Draw(e);
             Scale.Draw(e);
             Pointer.Draw(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
             IGraphics g = e.Graphics;
 
             if (Report != null && Report.SmoothGraphics)
@@ -56,7 +57,7 @@ namespace FastReport.Gauge.Simple
 
             Scale.Draw(e);
             Pointer.Draw(e);
-            Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));*/
         }
 
         #endregion // Public Methods

@@ -2,8 +2,8 @@ using FastReport.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Design;
+
+
 using System.Windows.Forms;
 
 namespace FastReport
@@ -45,9 +45,9 @@ namespace FastReport
         /// Gets the absolute bounding rectangle of the object.
         /// </summary>
         [Browsable(false)]
-        public RectangleF AbsBounds
+        public SkiaSharp.SKRect AbsBounds
         {
-            get { return new RectangleF(AbsLeft, AbsTop, Width, Height); }
+            get { return new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height); }
         }
 
         /// <summary>
@@ -118,9 +118,9 @@ namespace FastReport
         /// <see cref="Top"/>, <see cref="Width"/>, <see cref="Height"/> properties.
         /// </remarks>
         [Browsable(false)]
-        public RectangleF Bounds
+        public SkiaSharp.SKRect Bounds
         {
-            get { return new RectangleF(Left, Top, Width, Height); }
+            get { return new SkiaSharp.SKRect(Left, Top, Width, Height); }
             set
             {
                 Left = value.Left;
@@ -137,7 +137,7 @@ namespace FastReport
         /// This property is used in the <see cref="FastReport.Dialog.DialogPage"/> class.
         /// </remarks>
         [Browsable(false)]
-        public virtual SizeF ClientSize
+        public virtual SkiaSharp.SKSize ClientSize
         {
             get { return new SizeF(Width, Height); }
             set
@@ -342,7 +342,7 @@ namespace FastReport
         /// </summary>
         [DefaultValue("")]
         [Category("Behavior")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public virtual string VisibleExpression
         {
             get { return visibleExpression; }
@@ -369,7 +369,7 @@ namespace FastReport
         /// </summary>
         [DefaultValue("")]
         [Category("Behavior")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string PrintableExpression
         {
             get { return printableExpression; }

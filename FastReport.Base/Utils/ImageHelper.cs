@@ -1,6 +1,6 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+
+
 using System.IO;
 using System.Net;
 
@@ -8,12 +8,12 @@ namespace FastReport.Utils
 {
     internal static class ImageHelper
     {
-        public static Bitmap CloneBitmap(Image source)
+        public static SkiaSharp.SKBitmap CloneBitmap(SkiaSharp.SKImage source)
         {
             if (source == null)
                 return null;
 
-            Bitmap image = new Bitmap(source.Width, source.Height);
+            SkiaSharp.SKBitmap image = new Bitmap(source.Width, source.Height);
             image.SetResolution(source.HorizontalResolution, source.VerticalResolution);
             using (Graphics g = Graphics.FromImage(image))
             {
@@ -25,12 +25,12 @@ namespace FastReport.Utils
             //      return source.Clone() as Bitmap;
         }
 
-        public static void Save(Image image, Stream stream)
+        public static void Save(SkiaSharp.SKImage image, Stream stream)
         {
             Save(image, stream, image.GetImageFormat());
         }
 
-        public static void Save(Image image, string fileName, ImageFormat format)
+        public static void Save(SkiaSharp.SKImage image, string fileName, SkiaSharp.SKEncodedImageFormat format)
         {
             using (FileStream stream = new FileStream(fileName, FileMode.Create))
             {
@@ -38,13 +38,13 @@ namespace FastReport.Utils
             }
         }
 
-        public static void Save(Image image, Stream stream, ImageFormat format)
+        public static void Save(SkiaSharp.SKImage image, Stream stream, SkiaSharp.SKEncodedImageFormat format)
         {
             if (image == null)
                 return;
             if (image is Bitmap)
             {
-                if (format == ImageFormat.Icon)
+                if (format == SkiaSharp.SKEncodedImageFormat.Icon)
                     SaveAsIcon(image, stream, true);
                 else
                     image.Save(stream, format);
@@ -52,7 +52,7 @@ namespace FastReport.Utils
             else if (image is Metafile)
             {
                 Metafile emf = null;
-                using (Bitmap bmp = new Bitmap(1, 1))
+                using (SkiaSharp.SKBitmap bmp = new Bitmap(1, 1))
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     IntPtr hdc = g.GetHdc();
@@ -66,25 +66,25 @@ namespace FastReport.Utils
             }
         }
 
-        public static bool SaveAndConvert(Image image, Stream stream, ImageFormat format)
+        public static bool SaveAndConvert(SkiaSharp.SKImage image, Stream stream, SkiaSharp.SKEncodedImageFormat format)
         {
             if (image == null)
                 return false;
-            if (format == ImageFormat.Jpeg || format == ImageFormat.Gif
-                || format == ImageFormat.Tiff || format == ImageFormat.Bmp
-                || format == ImageFormat.Png
-                || format == ImageFormat.MemoryBmp)
+            if (format == SkiaSharp.SKEncodedImageFormat.Jpeg || format == SkiaSharp.SKEncodedImageFormat.Gif
+                || format == SkiaSharp.SKEncodedImageFormat.Tiff || format == SkiaSharp.SKEncodedImageFormat.Bmp
+                || format == SkiaSharp.SKEncodedImageFormat.Png
+                || format == SkiaSharp.SKEncodedImageFormat.MemoryBmp)
             {
                 if (image is Bitmap)
                 {
-                    if (format == ImageFormat.MemoryBmp)
+                    if (format == SkiaSharp.SKEncodedImageFormat.MemoryBmp)
                         throw new Exception(Res.Get("Export,Image,ImageParceFormatException"));
                     image.Save(stream, format);
                     return true;
                 }
                 //from mf to bitmap
                 using (Metafile metafile = image as Metafile)
-                using (Bitmap bitmap = new Bitmap(image.Width, image.Height))
+                using (SkiaSharp.SKBitmap bitmap = new Bitmap(image.Width, image.Height))
                 {
                     bitmap.SetResolution(96F, 96F);
                     using (Graphics g = Graphics.FromImage(bitmap))
@@ -98,16 +98,16 @@ namespace FastReport.Utils
                 return true;
 
             }
-            else if (format == ImageFormat.Icon)
+            else if (format == SkiaSharp.SKEncodedImageFormat.Icon)
             {
                 return SaveAsIcon(image, stream, true);
             }
-            else if (format == ImageFormat.Wmf || format == ImageFormat.Emf)
+            else if (format == SkiaSharp.SKEncodedImageFormat.Wmf || format == SkiaSharp.SKEncodedImageFormat.Emf)
             {
                 if (image is Metafile)
                 {
                     Metafile emf = null;
-                    using (Bitmap bmp = new Bitmap(1, 1))
+                    using (SkiaSharp.SKBitmap bmp = new Bitmap(1, 1))
                     using (Graphics g = Graphics.FromImage(bmp))
                     {
                         IntPtr hdc = g.GetHdc();
@@ -132,7 +132,7 @@ namespace FastReport.Utils
             return null;
         }
 
-        public static Image Load(byte[] bytes)
+        public static SkiaSharp.SKImage  Load(byte[] bytes)
         {
             if (bytes != null && bytes.Length > 0)
             {
@@ -148,7 +148,7 @@ namespace FastReport.Utils
                 }
                 catch
                 {
-                    Bitmap errorBmp = new Bitmap(10, 10);
+                    SkiaSharp.SKBitmap errorBmp = new Bitmap(10, 10);
                     using (Graphics g = Graphics.FromImage(errorBmp))
                     {
                         g.DrawLine(Pens.Red, 0, 0, 10, 10);
@@ -173,7 +173,7 @@ namespace FastReport.Utils
             return null;
         }
 
-        public static Bitmap GetTransparentBitmap(Image source, float transparency)
+        public static SkiaSharp.SKBitmap GetTransparentBitmap(SkiaSharp.SKImage source, float transparency)
         {
             if (source == null)
                 return null;
@@ -188,7 +188,7 @@ namespace FastReport.Utils
 
             int width = source.Width;
             int height = source.Height;
-            Bitmap image = new Bitmap(width, height);
+            SkiaSharp.SKBitmap image = new Bitmap(width, height);
             image.SetResolution(source.HorizontalResolution, source.VerticalResolution);
 
             using (Graphics g = Graphics.FromImage(image))
@@ -204,9 +204,9 @@ namespace FastReport.Utils
             return image;
         }
 
-        public static Bitmap GetGrayscaleBitmap(Image source)
+        public static SkiaSharp.SKBitmap GetGrayscaleBitmap(SkiaSharp.SKImage source)
         {
-            Bitmap grayscaleBitmap = new Bitmap(source.Width, source.Height, source.PixelFormat);
+            SkiaSharp.SKBitmap grayscaleBitmap = new Bitmap(source.Width, source.Height, source.PixelFormat);
 
             // Red should be converted to (R*.299)+(G*.587)+(B*.114)
             // Green should be converted to (R*.299)+(G*.587)+(B*.114)
@@ -222,7 +222,7 @@ namespace FastReport.Utils
             ImageAttributes attributes = new ImageAttributes();
             attributes.SetColorMatrix(grayscaleMatrix);
 
-            // Use a Graphics object from the new image
+            // Use a SkiaSharp.SKGraphics object from the new image
             using (Graphics graphics = Graphics.FromImage(grayscaleBitmap))
             {
                 // Draw the original image using the ImageAttributes we created
@@ -242,7 +242,7 @@ namespace FastReport.Utils
         /// <param name="output">The output stream</param>
         /// <param name="preserveAspectRatio">Preserve the aspect ratio</param>
         /// <returns>Wether or not the icon was succesfully generated</returns>
-        public static bool SaveAsIcon(Image image, Stream output, bool preserveAspectRatio = false)
+        public static bool SaveAsIcon(SkiaSharp.SKImage image, Stream output, bool preserveAspectRatio = false)
         {
             int size = 256;
             float width = size, height = size;
@@ -261,7 +261,7 @@ namespace FastReport.Utils
             // save the resized png into a memory stream for future use
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                newBitmap.Save(memoryStream, ImageFormat.Png);
+                newBitmap.Save(memoryStream, SkiaSharp.SKEncodedImageFormat.Png);
 
                 var iconWriter = new BinaryWriter(output);
                 if (output == null || iconWriter == null)
@@ -315,48 +315,49 @@ namespace FastReport.Utils
     public static class ImageExtension
     {
         /// <summary>
-        /// Returns an Image format.
+        /// Returns an SkiaSharp.SKImage  format.
         /// </summary>
-        public static ImageFormat GetImageFormat(this Image bitmap)
+        public static SkiaSharp.SKEncodedImageFormat GetImageFormat(this SkiaSharp.SKImage  bitmap)
         {
+            
             if (bitmap == null || bitmap.RawFormat == null)
                 return null;
-            ImageFormat format = null;
+            SkiaSharp.SKEncodedImageFormat format = null;
             if (ImageFormat.Jpeg.Equals(bitmap.RawFormat))
             {
-                format = ImageFormat.Jpeg;
+                format = SkiaSharp.SKEncodedImageFormat.Jpeg;
             }
             else if (ImageFormat.Gif.Equals(bitmap.RawFormat))
             {
-                format = ImageFormat.Gif;
+                format = SkiaSharp.SKEncodedImageFormat.Gif;
             }
             else if (ImageFormat.Png.Equals(bitmap.RawFormat))
             {
-                format = ImageFormat.Png;
+                format = SkiaSharp.SKEncodedImageFormat.Png;
             }
             else if (ImageFormat.Emf.Equals(bitmap.RawFormat))
             {
-                format = ImageFormat.Emf;
+                format = SkiaSharp.SKEncodedImageFormat.Emf;
             }
             else if (ImageFormat.Icon.Equals(bitmap.RawFormat))
             {
-                format = ImageFormat.Icon;
+                format = SkiaSharp.SKEncodedImageFormat.Icon;
             }
             else if (ImageFormat.Tiff.Equals(bitmap.RawFormat))
             {
-                format = ImageFormat.Tiff;
+                format = SkiaSharp.SKEncodedImageFormat.Tiff;
             }
-            else if (ImageFormat.Bmp.Equals(bitmap.RawFormat) || ImageFormat.MemoryBmp.Equals(bitmap.RawFormat)) // MemoryBmp format raises a GDI exception
+            else if (ImageFormat.Bmp.Equals(bitmap.RawFormat) || SkiaSharp.SKEncodedImageFormat.MemoryBmp.Equals(bitmap.RawFormat)) // MemoryBmp format raises a GDI exception
             {
-                format = ImageFormat.Bmp;
+                format = SkiaSharp.SKEncodedImageFormat.Bmp;
             }
             else if (ImageFormat.Wmf.Equals(bitmap.RawFormat)) 
             {
-                format = ImageFormat.Wmf;
+                format = SkiaSharp.SKEncodedImageFormat.Wmf;
             }
             if (format != null)
                 return format;
-            return ImageFormat.Bmp;
+            return SkiaSharp.SKEncodedImageFormat.Bmp;
         }
     }
 }

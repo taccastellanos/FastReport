@@ -2112,14 +2112,14 @@
   <!-- end of svg-conditional.mod -->
 ]]>
 
-<!-- Image Module ................................................ -->
+<!-- SkiaSharp.SKImage  Module ................................................ -->
 <!ENTITY % svg-image.module "INCLUDE" >
 <![%svg-image.module;[
   <!ENTITY % svg-image.mod
     PUBLIC "-//W3C//ELEMENTS SVG 1.1 Image//EN"
            "svg-image.mod" >
   <!-- ....................................................................... -->
-  <!-- SVG 1.1 Image Module .................................................. -->
+  <!-- SVG 1.1 SkiaSharp.SKImage  Module .................................................. -->
   <!-- file: svg-image.mod
 
      This is SVG, a language for describing two-dimensional graphics in XML.
@@ -2170,7 +2170,7 @@
     "| %SVG.image.qname; %SVG.Image.extra.class;"
 >
 
-  <!-- image: Image Element .............................. -->
+  <!-- image: SkiaSharp.SKImage  Element .............................. -->
 
   <!ENTITY % SVG.image.extra.content "" >
 
@@ -4346,7 +4346,7 @@
     <!-- end of SVG.feGaussianBlur.attlist -->
   ]]>
 
-  <!-- feImage: Filter Effect Image Element .............. -->
+  <!-- feImage: Filter Effect SkiaSharp.SKImage  Element .............. -->
 
   <!ENTITY % SVG.feImage.extra.content "" >
 

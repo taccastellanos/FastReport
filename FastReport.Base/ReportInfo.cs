@@ -1,9 +1,9 @@
 using System;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 using System.Reflection;
-using System.Drawing.Design;
+
 
 namespace FastReport
 {
@@ -53,7 +53,7 @@ namespace FastReport
     private string author;
     private string version;
     private string description;
-    private Image picture;
+    private SkiaSharp.SKImage  picture;
     private DateTime created;
     private DateTime modified;
     private bool savePreviewPicture;
@@ -95,7 +95,7 @@ namespace FastReport
     /// Gets or sets the report description.
     /// </summary>
    
-    [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+    
     public string Description
     {
       get { return description; }
@@ -105,7 +105,7 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the picture associated with a report.
     /// </summary>
-    public Image Picture
+    public SkiaSharp.SKImage  Picture
     {
       get { return picture; }
       set { picture = value; }
@@ -167,7 +167,7 @@ namespace FastReport
     /// <summary>
     /// Gets or sets the Tag string object for this report file.
     /// </summary>
-    [Editor("System.ComponentModel.Design.MultilineStringEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+    
     public string Tag
     {
       get { return tag; }

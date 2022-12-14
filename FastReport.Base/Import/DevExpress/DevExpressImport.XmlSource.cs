@@ -2,7 +2,7 @@
 using FastReport.Table;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -163,10 +163,10 @@ namespace FastReport.Import.DevExpress
             border.Style = UnitsConverter.ConvertBorderDashStyle(GetAttribute(node, "BorderDashStyle"));
         }
 
-        private Font LoadFontXml(string fontString)
+        private SkiaSharp.SKFont  LoadFontXml(string fontString)
         {
             if(string.IsNullOrEmpty(fontString))
-                return new Font("Arial", 10, FontStyle.Regular);
+                return new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
 
             string[] fontParts = fontString.Split(',');
 
@@ -176,26 +176,27 @@ namespace FastReport.Import.DevExpress
             if (fontString.IndexOf("style=") != -1)
             {
                 string styles = fontString.Substring(fontString.IndexOf("style=") + 6);
-                FontStyle fontStyle = FontStyle.Regular;
+                SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+                /*TODO
                 if (styles.Contains("Bold"))
                 {
-                    fontStyle |= FontStyle.Bold;
+                    fontStyle |= SkiaSharp.SKFontStyle.Bold;
                 }
                 if (styles.Contains("Italic"))
                 {
-                    fontStyle |= FontStyle.Italic;
+                    fontStyle |= SkiaSharp.SKFontStyle.Italic;
                 }
                 if (styles.Contains("Underline"))
                 {
-                    fontStyle |= FontStyle.Underline;
+                    fontStyle |= SkiaSharp.SKFontStyle.Underline;
                 }
                 if (styles.Contains("Strikeout"))
                 {
-                    fontStyle |= FontStyle.Strikeout;
-                }
-                return new Font(fontFamily, fontSize, fontStyle);
+                    fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
+                }*/
+                return  new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontFamily), 10);
             }
-            return new Font(fontFamily, fontSize, FontStyle.Regular);
+            return  new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontFamily), 10);
         }
 
         private void LoadBand(XmlNode node, BandBase band)

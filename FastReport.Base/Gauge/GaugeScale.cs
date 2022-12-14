@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Design;
+
+
 using FastReport.Utils;
 
 namespace FastReport.Gauge
@@ -16,7 +16,7 @@ namespace FastReport.Gauge
         #region Fields
 
         private GaugeObject parent;
-        private Font font;
+        private SkiaSharp.SKFont font;
         private FillBase textFill;
         private ScaleTicks majorTicks;
         private ScaleTicks minorTicks;
@@ -59,7 +59,7 @@ namespace FastReport.Gauge
         /// Gets or sets the font of scale.
         /// </summary>
         [Browsable(true)]
-        public Font Font
+        public SkiaSharp.SKFont Font
         {
             get { return font; }
             set { font = value; }
@@ -68,7 +68,7 @@ namespace FastReport.Gauge
         /// <summary>
         /// Gets or sets the scale font color
         /// </summary>
-        [Editor("FastReport.TypeEditors.FillEditor, FastReport", typeof(UITypeEditor))]
+        
         public FillBase TextFill
         {
             get { return textFill; }
@@ -85,8 +85,8 @@ namespace FastReport.Gauge
         public GaugeScale(GaugeObject parent)
         {
             this.parent = parent;
-            font = new Font("Arial", 8.0f);
-            TextFill = new SolidFill(Color.Black);
+            font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8.0f);
+            TextFill = new SolidFill(SkiaSharp.SKColors.Black);
             majorTicks = new ScaleTicks();
             minorTicks = new ScaleTicks();
         }
@@ -144,7 +144,7 @@ namespace FastReport.Gauge
 
         private float length;
         private int width;
-        private Color color;
+        private SkiaSharp.SKColor color;
         private int count;
 
         #endregion // Fields
@@ -175,7 +175,7 @@ namespace FastReport.Gauge
         /// Gets or sets the color of ticks.
         /// </summary>
         [Browsable(true)]
-        public Color Color
+        public SkiaSharp.SKColor Color
         {
             get { return color; }
             set { color = value; }
@@ -201,7 +201,7 @@ namespace FastReport.Gauge
         {
             length = 8.0f;
             width = 1;
-            color = Color.Black;
+            color = SkiaSharp.SKColors.Black;
             count = 6;
         }
 
@@ -211,7 +211,7 @@ namespace FastReport.Gauge
         /// <param name="length">Ticks length.</param>
         /// <param name="width">Ticks width.</param>
         /// <param name="color">Ticks color.</param>
-        public ScaleTicks(float length, int width, Color color)
+        public ScaleTicks(float length, int width, SkiaSharp.SKColor color)
         {
             this.length = length;
             this.width = width;
@@ -225,7 +225,7 @@ namespace FastReport.Gauge
         /// <param name="width">Ticks width.</param>
         /// <param name="color">Ticks color.</param>
         /// <param name="count">Ticks count.</param>
-        public ScaleTicks(float length, int width, Color color, int count)
+        public ScaleTicks(float length, int width, SkiaSharp.SKColor color, int count)
         {
             this.length = length;
             this.width = width;

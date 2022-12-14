@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 using System.Windows.Forms;
-using System.Drawing.Design;
+
 
 namespace FastReport
 {
@@ -124,7 +124,7 @@ namespace FastReport
         private bool flagPreviewVisible;
         private bool flagSerializeStyle;
         private bool flagProvidesHyperlinkValue;
-        private RectangleF savedBounds;
+        private SkiaSharp.SKRect savedBounds;
         private bool savedVisible;
         private string savedBookmark;
         private Border savedBorder;
@@ -186,7 +186,7 @@ namespace FastReport
         /// </summary>
         [DefaultValue("")]
         [Category("Behavior")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public virtual string ExportableExpression
         {
             get { return exportableExpression; }
@@ -223,7 +223,6 @@ namespace FastReport
         /// </code>
         /// </example>          
         [Category("Appearance")]
-        [EditorAttribute("FastReport.TypeEditors.FillEditor, FastReport",typeof(UITypeEditor))]
         public virtual FillBase Fill
         {
             get
@@ -248,7 +247,7 @@ namespace FastReport
         /// equivalent to: <code>reportComponent1.Fill = new SolidFill(color);</code>
         /// </remarks>
         [Browsable(false)]
-        public Color FillColor
+        public SkiaSharp.SKColor FillColor
         {
             get { return Fill is SolidFill ? (Fill as SolidFill).Color : Color.Transparent; }
             set { Fill = new SolidFill(value); }
@@ -263,7 +262,7 @@ namespace FastReport
         /// </remarks>
 
         [Category("Navigation")]
-        [Editor("FastReport.TypeEditors.ExpressionEditor, FastReport", typeof(UITypeEditor))]
+        
         public string Bookmark
         {
             get { return bookmark; }
@@ -286,7 +285,7 @@ namespace FastReport
         /// property instead of <b>Expression</b>.</para>
         /// </remarks>
         [Category("Navigation")]
-        [Editor("FastReport.TypeEditors.HyperlinkEditor, FastReport", typeof(UITypeEditor))]
+        
         public Hyperlink Hyperlink
         {
             get { return hyperlink; }
@@ -361,7 +360,7 @@ namespace FastReport
         /// </remarks>
 
         [Category("Appearance")]
-        [Editor("FastReport.TypeEditors.StyleEditor, FastReport", typeof(UITypeEditor))]
+        
         public string Style
         {
             get { return style; }
@@ -379,7 +378,7 @@ namespace FastReport
         /// Style with this name must exist in the <see cref="Report.Styles"/> collection.
         /// </remarks>
         [Category("Appearance")]
-        [Editor("FastReport.TypeEditors.StyleEditor, FastReport", typeof(UITypeEditor))]
+        
         public string EvenStyle
         {
             get { return evenStyle; }
@@ -394,7 +393,7 @@ namespace FastReport
         /// </remarks>
 
         [Category("Appearance")]
-        [Editor("FastReport.TypeEditors.StyleEditor, FastReport", typeof(UITypeEditor))]
+        
         public string HoverStyle
         {
             get { return hoverStyle; }
@@ -437,7 +436,7 @@ namespace FastReport
         [DefaultValue(PrintOn.FirstPage | PrintOn.LastPage | PrintOn.OddPages | PrintOn.EvenPages | PrintOn.RepeatedBand | PrintOn.SinglePage)]
 
         [Category("Behavior")]
-        [Editor("FastReport.TypeEditors.FlagsEditor, FastReport", typeof(UITypeEditor))]
+        
         public PrintOn PrintOn
         {
             get { return printOn; }
@@ -801,7 +800,7 @@ namespace FastReport
         /// <param name="e">Draw event arguments.</param>
         public virtual bool IsVisible(FRPaintEventArgs e)
         {
-            RectangleF objRect = new RectangleF(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
+            SkiaSharp.SKRect objRect = new SkiaSharp.SKRect(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
               Width * e.ScaleX + 1, Height * e.ScaleY + 1);
             return e.Graphics.IsVisible(objRect);
         }

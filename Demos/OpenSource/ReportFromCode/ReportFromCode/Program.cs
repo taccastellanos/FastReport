@@ -6,7 +6,7 @@ using FastReport.Table;
 using FastReport.Utils;
 using System;
 using System.Data;
-using System.Drawing;
+
 using System.IO;
 
 namespace DataFromDataSet
@@ -55,8 +55,8 @@ namespace DataFromDataSet
             TextObject titleText = new TextObject();
             titleText.Parent = page.ReportTitle;
             titleText.CreateUniqueName();
-            titleText.Bounds = new RectangleF(Units.Centimeters * 5, 0, Units.Centimeters * 10, Units.Centimeters * 1);
-            titleText.Font = new Font("Arial", 14, FontStyle.Bold);
+            titleText.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 5, 0, Units.Centimeters * 10, Units.Centimeters * 1);
+            titleText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
             titleText.Text = "Employees";
             titleText.HorzAlign = HorzAlign.Center;
 
@@ -71,13 +71,13 @@ namespace DataFromDataSet
             TextObject empNameText = new TextObject();
             empNameText.Parent = dataBand;
             empNameText.CreateUniqueName();
-            empNameText.Bounds = new RectangleF(0, 0, Units.Centimeters * 5, Units.Centimeters * 0.5f);
+            empNameText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 5, Units.Centimeters * 0.5f);
             empNameText.Text = "[Employees.FirstName] [Employees.LastName]";
 
             TextObject empBirthDateText = new TextObject();
             empBirthDateText.Parent = dataBand;
             empBirthDateText.CreateUniqueName();
-            empBirthDateText.Bounds = new RectangleF(Units.Centimeters * 5.5f, 0, Units.Centimeters * 3, Units.Centimeters * 0.5f);
+            empBirthDateText.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 5.5f, 0, Units.Centimeters * 3, Units.Centimeters * 0.5f);
             empBirthDateText.Text = "[Employees.BirthDate]";
             // format value as date
             DateFormat format = new DateFormat();
@@ -122,8 +122,8 @@ namespace DataFromDataSet
             TextObject categoryText = new TextObject();
             categoryText.Parent = masterDataBand;
             categoryText.CreateUniqueName();
-            categoryText.Bounds = new RectangleF(0, 0, Units.Centimeters * 5, Units.Centimeters * 0.5f);
-            categoryText.Font = new Font("Arial", 10, FontStyle.Bold);
+            categoryText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 5, Units.Centimeters * 0.5f);
+            categoryText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10, SkiaSharp.SKFontStyle.Bold);
             categoryText.Text = "[Categories.CategoryName]";
 
             // create detail data band
@@ -139,7 +139,7 @@ namespace DataFromDataSet
             TextObject productText = new TextObject();
             productText.Parent = detailDataBand;
             productText.CreateUniqueName();
-            productText.Bounds = new RectangleF(Units.Centimeters * 1, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
+            productText.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 1, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
             productText.Text = "[Products.ProductName]";
 
             return report;
@@ -177,8 +177,8 @@ namespace DataFromDataSet
             TextObject groupText = new TextObject();
             groupText.Parent = groupHeaderBand;
             groupText.CreateUniqueName();
-            groupText.Bounds = new RectangleF(0, 0, Units.Centimeters * 10, Units.Centimeters * 1);
-            groupText.Font = new Font("Arial", 14, FontStyle.Bold);
+            groupText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 1);
+            groupText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
             groupText.Text = "[[Products.ProductName].Substring(0,1)]";
             groupText.VertAlign = VertAlign.Center;
             groupText.Fill = new LinearGradientFill(Color.OldLace, Color.Moccasin, 90, 0.5f, 1);
@@ -194,7 +194,7 @@ namespace DataFromDataSet
             TextObject productText = new TextObject();
             productText.Parent = dataBand;
             productText.CreateUniqueName();
-            productText.Bounds = new RectangleF(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
+            productText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
             productText.Text = "[Products.ProductName]";
 
             // create group footer
@@ -214,7 +214,7 @@ namespace DataFromDataSet
             TextObject totalText = new TextObject();
             totalText.Parent = groupHeaderBand.GroupFooter;
             totalText.CreateUniqueName();
-            totalText.Bounds = new RectangleF(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
+            totalText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
             totalText.Text = "Rows: [TotalRows]";
             totalText.HorzAlign = HorzAlign.Right;
             totalText.Border.Lines = BorderLines.Top;
@@ -253,8 +253,8 @@ namespace DataFromDataSet
             TextObject groupText = new TextObject();
             groupText.Parent = groupHeaderBand;
             groupText.CreateUniqueName();
-            groupText.Bounds = new RectangleF(0, 0, Units.Centimeters * 10, Units.Centimeters * 1);
-            groupText.Font = new Font("Arial", 14, FontStyle.Bold);
+            groupText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 1);
+            groupText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
             groupText.Text = "[[Products.ProductName].Substring(0,1)]";
             groupText.VertAlign = VertAlign.Center;
             groupText.Fill = new LinearGradientFill(Color.OldLace, Color.Moccasin, 90, 0.5f, 1);
@@ -269,8 +269,8 @@ namespace DataFromDataSet
             TextObject nestedText = new TextObject();
             nestedText.Parent = nestedGroupBand;
             nestedText.CreateUniqueName();
-            nestedText.Bounds = new RectangleF(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
-            nestedText.Font = new Font("Arial", 10, FontStyle.Bold);
+            nestedText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
+            nestedText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10, SkiaSharp.SKFontStyle.Bold);
             nestedText.Text = "[[Products.ProductName].Substring(0,2)]";
 
             // create data band
@@ -287,7 +287,7 @@ namespace DataFromDataSet
             TextObject productText = new TextObject();
             productText.Parent = dataBand;
             productText.CreateUniqueName();
-            productText.Bounds = new RectangleF(Units.Centimeters * 0.5f, 0, Units.Centimeters * 9.5f, Units.Centimeters * 0.5f);
+            productText.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 0.5f, 0, Units.Centimeters * 9.5f, Units.Centimeters * 0.5f);
             productText.Text = "[Products.ProductName]";
 
             // create group footer for outer group
@@ -307,7 +307,7 @@ namespace DataFromDataSet
             TextObject totalText = new TextObject();
             totalText.Parent = groupHeaderBand.GroupFooter;
             totalText.CreateUniqueName();
-            totalText.Bounds = new RectangleF(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
+            totalText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
             totalText.Text = "Rows: [TotalRows]";
             totalText.HorzAlign = HorzAlign.Right;
             totalText.Border.Lines = BorderLines.Top;
@@ -347,16 +347,16 @@ namespace DataFromDataSet
             TextObject titleText1 = new TextObject();
             titleText1.Parent = page.ReportTitle;
             titleText1.CreateUniqueName();
-            titleText1.Bounds = new RectangleF(0, 0, Units.Centimeters * 8, Units.Centimeters * 1);
-            titleText1.Font = new Font("Arial", 14, FontStyle.Bold);
+            titleText1.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 1);
+            titleText1.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
             titleText1.Text = "Products";
             titleText1.HorzAlign = HorzAlign.Center;
 
             TextObject titleText2 = new TextObject();
             titleText2.Parent = page.ReportTitle;
             titleText2.CreateUniqueName();
-            titleText2.Bounds = new RectangleF(Units.Centimeters * 9, 0, Units.Centimeters * 8, Units.Centimeters * 1);
-            titleText2.Font = new Font("Arial", 14, FontStyle.Bold);
+            titleText2.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 9, 0, Units.Centimeters * 8, Units.Centimeters * 1);
+            titleText2.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
             titleText2.Text = "Suppliers";
             titleText2.HorzAlign = HorzAlign.Center;
 
@@ -370,7 +370,7 @@ namespace DataFromDataSet
             SubreportObject subreport1 = new SubreportObject();
             subreport1.Parent = childBand;
             subreport1.CreateUniqueName();
-            subreport1.Bounds = new RectangleF(0, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
+            subreport1.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
 
             // create subreport's page
             ReportPage subreportPage1 = new ReportPage();
@@ -388,7 +388,7 @@ namespace DataFromDataSet
             TextObject productText = new TextObject();
             productText.Parent = dataBand;
             productText.CreateUniqueName();
-            productText.Bounds = new RectangleF(0, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
+            productText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
             productText.Text = "[Products.ProductName]";
 
 
@@ -396,7 +396,7 @@ namespace DataFromDataSet
             SubreportObject subreport2 = new SubreportObject();
             subreport2.Parent = childBand;
             subreport2.CreateUniqueName();
-            subreport2.Bounds = new RectangleF(Units.Centimeters * 9, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
+            subreport2.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 9, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
 
             // create subreport's page
             ReportPage subreportPage2 = new ReportPage();
@@ -415,7 +415,7 @@ namespace DataFromDataSet
             TextObject supplierText = new TextObject();
             supplierText.Parent = dataBand2;
             supplierText.CreateUniqueName();
-            supplierText.Bounds = new RectangleF(0, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
+            supplierText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 0.5f);
             supplierText.Text = "[Suppliers.CompanyName]";
 
             return report;

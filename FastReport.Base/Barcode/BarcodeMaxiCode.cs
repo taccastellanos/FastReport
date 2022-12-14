@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
+
 using System.Text;
 
 namespace FastReport.Barcode
@@ -52,10 +52,10 @@ namespace FastReport.Barcode
             maxiCodeImpl.encode();
         }
 
-        internal override SizeF CalcBounds()
+        internal override SkiaSharp.SKSize CalcBounds()
         {
             int textAdd = showText ? 18 : 0;
-            SizeF s = new SizeF();
+            SkiaSharp.SKSize s = new SkiaSharp.SKSize();
 
             foreach(MaxiCodeImpl.Hexagon hex in maxiCodeImpl.hexagons)
             {
@@ -81,17 +81,18 @@ namespace FastReport.Barcode
             return s;
         }
 
-        internal override void Draw2DBarcode(IGraphics g, float kx, float ky)
+        internal override void Draw2DBarcode(SkiaSharp.SKDrawable g, float kx, float ky)
         {
-            Brush b = new SolidBrush(Color);
-            Pen p = new Pen(Color, PenSizeFactor * ((kx + ky) / 2));
+            /*
+            /*Brush/SkiaSharp.SKPaint b = new SolidBrush(Color);
+            /*Pen/SkiaSharp.SKPaint p = new /*Pen/SkiaSharp.SKPaint (Color, PenSizeFactor * ((kx + ky) / 2));
 
             foreach (MaxiCodeImpl.Hexagon hex in maxiCodeImpl.hexagons)
             {
-                PointF[] points = new PointF[hex.pointX.Length];
+                SkiaSharp.SKSkiaSharp.SKPoint[] points = new SkiaSharp.SKPoint[hex.pointX.Length];
 
                 for (int i = 0; i < hex.pointX.Length; i++)
-                    points[i] = new PointF(FieldSizeFactor * kx * (float)hex.pointX[i], FieldSizeFactor * ky * (float)hex.pointY[i]);
+                    points[i] = new SkiaSharp.SKPoint(FieldSizeFactor * kx * (float)hex.pointX[i], FieldSizeFactor * ky * (float)hex.pointY[i]);
 
                 g.FillPolygon(b, points);
             }
@@ -106,7 +107,7 @@ namespace FastReport.Barcode
             }
 
             b.Dispose();
-            p.Dispose();
+            p.Dispose();*/
         }
 
         /// <inheritdoc/>

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
 
@@ -49,7 +49,7 @@ namespace FastReport.Table
         private bool serializingToPreview;
         private bool lockColumnRowChange;
         private TableLayout layout;
-        private List<Rectangle> spanList;
+        private List<SkiaSharp.SKRect> spanList;
         private TableResult resultTable;
         private TableCellData printingCell;
         //private static float FLeftRtl;
@@ -491,13 +491,13 @@ namespace FastReport.Table
             {
                 DrawTableRtl(e);
                 // !! ����������� ������ !!
-                //Border.Draw(e, new RectangleF(FLeftRtl - Width + AbsLeft, AbsTop, Width, Height));
-                Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+                //Border.Draw(e, new SkiaSharp.SKRect(FLeftRtl - Width + AbsLeft, AbsTop, Width, Height));
+                Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
             }
             else
             {
                 DrawTable(e);
-                Border.Draw(e, new RectangleF(AbsLeft, AbsTop, Width, Height));
+                Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
             }
             DrawDesign(e);
         }
@@ -509,9 +509,9 @@ namespace FastReport.Table
                 return false;
             Width = Columns[Columns.Count - 1].Right;
             Height = Rows[Rows.Count - 1].Bottom;
-            RectangleF objRect = new RectangleF(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
+            SkiaSharp.SKRect objRect = new SkiaSharp.SKRect(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
               Width * e.ScaleX + 1, Height * e.ScaleY + 1);
-            return e.Graphics.IsVisible(objRect);
+            return true;//TODOe.Graphics.IsVisible(objRect);
         }
 
         internal void SetResultTable(TableResult table)
@@ -532,18 +532,18 @@ namespace FastReport.Table
             return rows[row].CellData(col);
         }
 
-        internal List<Rectangle> GetSpanList()
+        internal List<SkiaSharp.SKRect> GetSpanList()
         {
             if (spanList == null)
             {
-                spanList = new List<Rectangle>();
+                spanList = new List<SkiaSharp.SKRect>();
                 for (int y = 0; y < Rows.Count; y++)
                 {
                     for (int x = 0; x < Columns.Count; x++)
                     {
                         TableCellData cell = GetCellData(x, y);
                         if (cell.ColSpan > 1 || cell.RowSpan > 1)
-                            spanList.Add(new Rectangle(x, y, cell.ColSpan, cell.RowSpan));
+                            spanList.Add(new SkiaSharp.SKRect(x, y, cell.ColSpan, cell.RowSpan));
                     }
                 }
             }
@@ -597,9 +597,9 @@ namespace FastReport.Table
         
         public bool IsInsideSpan(TableCell cell)
         {
-            Point address = cell.Address;
-            List<Rectangle> spans = GetSpanList();
-            foreach (Rectangle span in spans)
+            var address = cell.Address;
+            List<SkiaSharp.SKRect> spans = GetSpanList();
+            foreach (var span in spans)
             {
                 if (span.Contains(address) && span.Location != address)
                     return true;
@@ -1077,27 +1077,27 @@ namespace FastReport.Table
             }
 
             // get the span list
-            List<Rectangle> spans = GetSpanList();
+            List<SkiaSharp.SKRect> spans = GetSpanList();
 
             // break the spans
-            foreach (Rectangle span in spans)
+            foreach (var span in spans)
             {
                 if (span.Top < breakRowIndex + breakRowIndexAdd && span.Bottom > breakRowIndex)
                 {
-                    TableCell cell = this[span.Left, span.Top];
-                    TableCell cellTo = tableTo[span.Left, span.Top];
+                    TableCell cell = this[Convert.ToInt32(span.Left), Convert.ToInt32(span.Top)];
+                    TableCell cellTo = tableTo[Convert.ToInt32(span.Left), Convert.ToInt32(span.Top)];
 
                     // update cell spans
-                    cell.RowSpan = breakRowIndex + breakRowIndexAdd - span.Top;
-                    cellTo.RowSpan = span.Bottom - breakRowIndex;
+                    cell.RowSpan = breakRowIndex + breakRowIndexAdd - Convert.ToInt32(span.Top);
+                    cellTo.RowSpan = Convert.ToInt32(span.Bottom) - breakRowIndex;
 
                     // break the cell
                     if (!rowBroken && !cell.Break(cellTo))
                         cell.Text = "";
 
                     // set the top span cell to the correct place
-                    tableTo[span.Left, span.Top] = new TableCell();
-                    tableTo[span.Left, breakRowIndex] = cellTo;
+                    tableTo[Convert.ToInt32(span.Left), Convert.ToInt32(span.Top)] = new TableCell();
+                    tableTo[Convert.ToInt32(span.Left), breakRowIndex] = cellTo;
                 }
             }
 
@@ -1125,12 +1125,12 @@ namespace FastReport.Table
             // to the left and top from this point and collect every cell which OriginalCell is equal to
             // the aggregateCell value. We have to stop when we meet the same row or column.
 
-            int columnIndex = PrintingCell.Address.X;
-            int rowIndex = PrintingCell.Address.Y;
+            int columnIndex = Convert.ToInt32(PrintingCell.Address.X);
+            int rowIndex = Convert.ToInt32(PrintingCell.Address.Y);
             TableColumn startColumn = ResultTable.Columns[columnIndex];
             TableRow startRow = ResultTable.Rows[rowIndex];
-            TableColumn aggregateColumn = Columns[aggregateCell.Address.X];
-            TableRow aggregateRow = Rows[aggregateCell.Address.Y];
+            TableColumn aggregateColumn = Columns[Convert.ToInt32(aggregateCell.Address.X)];
+            TableRow aggregateRow = Rows[Convert.ToInt32(aggregateCell.Address.Y)];
 
             // check if result is in the same row/column as aggregate cell
             bool sameRow = startRow.OriginalComponent == aggregateRow.OriginalComponent;

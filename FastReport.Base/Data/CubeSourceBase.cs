@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using FastReport.Utils;
 using FastReport.CrossView;
-using System.Drawing.Design;
+
 
 namespace FastReport.Data
 {
@@ -10,7 +10,7 @@ namespace FastReport.Data
   /// Base class for all CubeSources such as <see cref="SliceCubeSource"/>.
   /// </summary>
   [TypeConverter(typeof(FastReport.TypeConverters.CubeSourceConverter))]
-  [Editor("FastReport.TypeEditors.CubeSourceEditor, FastReport", typeof(UITypeEditor))]
+  
   public abstract class CubeSourceBase : DataComponentBase
   {
     #region Fields

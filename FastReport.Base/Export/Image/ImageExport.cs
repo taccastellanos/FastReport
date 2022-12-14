@@ -1,6 +1,6 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
+
+
 using System.IO;
 using System.Runtime.InteropServices;
 using FastReport.Utils;
@@ -48,30 +48,33 @@ namespace FastReport.Export.Image
     /// </summary>
     public partial class ImageExport : ExportBase
     {
-        private ImageExportFormat imageFormat;
+
         private bool separateFiles;
         private int resolutionX;
         private int resolutionY;
         private int jpegQuality;
         private bool multiFrameTiff;
         private bool monochromeTiff;
-        private EncoderValue monochromeTiffCompression;
-        private System.Drawing.Image masterTiffImage;
-        private System.Drawing.Image bigImage;
-        private Graphics bigGraphics;
+        private SkiaSharp.SKColorType monochromeTiffCompression ;
+        private SkiaSharp.SKImage masterTiffImage;
+        private SkiaSharp.SKImage bigImage;
+        /* TODO
+        private SkiaSharp.SKGraphics bigGraphics;*/
         private float curOriginY;
         private bool firstPage;
         private int paddingNonSeparatePages;
         private int pageNumber;
-        private System.Drawing.Image image;
-        private Graphics g;
+        private SkiaSharp.SKImage image;
+/* TODO
+        private static SkiaSharp.SKGraphics g;*/
         private int height;
         private int width;
         private int widthK;
         private string fileSuffix;
         private float zoomX;
         private float zoomY;
-        private System.Drawing.Drawing2D.GraphicsState state;
+        /* TODO
+        private System.Drawing.Drawing2D.GraphicsState state;*/
 
         #region Properties
         /// <summary>
@@ -79,8 +82,8 @@ namespace FastReport.Export.Image
         /// </summary>
         public ImageExportFormat ImageFormat
         {
-            get { return imageFormat; }
-            set { imageFormat = value; }
+            get ;
+            set ;
         }
 
         /// <summary>
@@ -188,7 +191,7 @@ namespace FastReport.Export.Image
         /// <b>EncoderValue.CompressionCCITT3</b>, <b>EncoderValue.CompressionCCITT4</b>. 
         /// The default compression method is CCITT4.
         /// </remarks>
-        public EncoderValue MonochromeTiffCompression
+        public SkiaSharp.SKColorType MonochromeTiffCompression
         {
             get { return monochromeTiffCompression; }
             set { monochromeTiffCompression = value; }
@@ -210,21 +213,22 @@ namespace FastReport.Export.Image
         #endregion
 
         #region Private Methods
-        private System.Drawing.Image CreateImage(int width, int height, string suffix)
+        private SkiaSharp.SKImage CreateImage(int width, int height, string suffix)
         {
             widthK = width;
             if (ImageFormat == ImageExportFormat.Metafile)
                 return CreateMetafile(suffix);
-            return new Bitmap(width, height);
+            return SkiaSharp.SKImage.Create(new SkiaSharp.SKImageInfo(width,height));
         }
 
-        private System.Drawing.Image CreateMetafile(string suffix)
+        private SkiaSharp.SKImage CreateMetafile(string suffix)
         {
             string extension = Path.GetExtension(FileName);
             string fileName = Path.ChangeExtension(FileName, suffix + extension);
 
-            System.Drawing.Image image;
-            using (Bitmap bmp = new Bitmap(1, 1))
+            SkiaSharp.SKImage image = SkiaSharp.SKImage.Create( new SkiaSharp.SKImageInfo());
+            using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
+            /* TODO
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 IntPtr hdc = g.GetHdc();
@@ -237,29 +241,30 @@ namespace FastReport.Export.Image
                         GeneratedFiles.Add(fileName);
                 }
                 g.ReleaseHdc(hdc);
-            }
+            }*/
             return image;
         }
 
-        private Bitmap ConvertToBitonal(Bitmap original)
+        private SkiaSharp.SKBitmap ConvertToBitonal(SkiaSharp.SKBitmap original)
         {
-            Bitmap source = null;
+            SkiaSharp.SKBitmap source = null;
 
             // If original bitmap is not already in 32 BPP, ARGB format, then convert
-            if (original.PixelFormat != PixelFormat.Format32bppArgb)
+            if (original.ColorType != SkiaSharp.SKColorType.RgbaF32)
             {
-                source = new Bitmap(original.Width, original.Height, PixelFormat.Format32bppArgb);
-                source.SetResolution(original.HorizontalResolution, original.VerticalResolution);
-                using (Graphics g = Graphics.FromImage(source))
+                source = new SkiaSharp.SKBitmap(original.Width, original.Height, SkiaSharp.SKColorType.RgbaF32, original.AlphaType);
+                /* TODO
+                source.SetPixel(original.GetPixel()., original.VerticalResolution);
+                using (var g = SkiaSharp.SKGraphics.FromImage(source))
                 {
                     g.DrawImageUnscaled(original, 0, 0);
-                }
+                }*/
             }
             else
             {
                 source = original;
             }
-
+            /* TODO
             // Lock source bitmap in memory
             BitmapData sourceData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
@@ -272,7 +277,7 @@ namespace FastReport.Export.Image
             source.UnlockBits(sourceData);
 
             // Create destination bitmap
-            Bitmap destination = new Bitmap(source.Width, source.Height, PixelFormat.Format1bppIndexed);
+            SkiaSharp.SKBitmap destination = new Bitmap(source.Width, source.Height, PixelFormat.Format1bppIndexed);
 
             // Lock destination bitmap in memory
             BitmapData destinationData = destination.LockBits(new Rectangle(0, 0, destination.Width, destination.Height), ImageLockMode.WriteOnly, PixelFormat.Format1bppIndexed);
@@ -340,11 +345,13 @@ namespace FastReport.Export.Image
 
             // Return
             destination.SetResolution(ResolutionX, ResolutionY);
-            return destination;
+            return destination;*/
+            return null;
         }
 
-        private void SaveImage(System.Drawing.Image image, string suffix)
+        private void SaveImage(SkiaSharp.SKImage image, string suffix)
         {
+            /* TODO
             // store the resolution in output file.
             // Call this method after actual draw because it may affect drawing the text
             if (image is Bitmap)
@@ -398,14 +405,14 @@ namespace FastReport.Export.Image
                     EncoderParameters ep = new EncoderParameters();
                     ep.Param[0] = new EncoderParameter(Encoder.Compression, (long)MonochromeTiffCompression);
 
-                    using (Bitmap bwImage = ConvertToBitonal(image as Bitmap))
+                    using (SkiaSharp.SKBitmap bwImage = ConvertToBitonal(image as Bitmap))
                     {
                         bwImage.Save(stream, info, ep);
                     }
                 }
                 else
                 {
-                    ImageFormat format = System.Drawing.Imaging.ImageFormat.Bmp;
+                    SkiaSharp.SKEncodedImageFormat format = System.Drawing.Imaging.ImageFormat.Bmp;
                     switch (ImageFormat)
                     {
                         case ImageExportFormat.Gif:
@@ -428,7 +435,7 @@ namespace FastReport.Export.Image
             }
 
             if (image != masterTiffImage)
-                image.Dispose();
+                image.Dispose();*/
         }
         #endregion
 
@@ -451,10 +458,10 @@ namespace FastReport.Export.Image
             height = 0;
             width = 0;
             image = null;
-            g = null;
+            /* TODOg = null;*/
             zoomX = 1;
             zoomY = 1;
-            state = null;
+            /* TODOstate = null;*/
 
             curOriginY = 0;
             firstPage = true;
@@ -467,17 +474,18 @@ namespace FastReport.Export.Image
 
                 foreach (int pageNo in Pages)
                 {
-                    SizeF size = Report.PreparedPages.GetPageSize(pageNo);
+                    SkiaSharp.SKSize size = Report.PreparedPages.GetPageSize(pageNo);
                     if (size.Width > w)
                         w = size.Width;
                     h += size.Height + paddingNonSeparatePages * 2;
                 }
 
                 w += paddingNonSeparatePages * 2;
-
+/* TODO
                 bigImage = CreateImage((int)(w * ResolutionX / 96f), (int)(h * ResolutionY / 96f), "");
                 bigGraphics = Graphics.FromImage(bigImage);
-                bigGraphics.Clear(Color.Transparent);
+                bigGraphics.Clear(SkinSharp.SKColors.Transparent);
+                */
             }
             pageNumber = 0;
         }
@@ -501,7 +509,7 @@ namespace FastReport.Export.Image
             }
             else
                 image = bigImage;
-
+/* TODO
             if (bigGraphics != null)
                 g = bigGraphics;
             else
@@ -509,11 +517,11 @@ namespace FastReport.Export.Image
 
             state = g.Save(); 
 
-            g.FillRegion(Brushes.Transparent, new Region(new RectangleF(0, curOriginY, width, height)));
+            g.FillRegion(Brushes.Transparent, new Region(new SkiaSharp.SKRect(0, curOriginY, width, height)));
             if (bigImage != null && curOriginY + height * 2 > bigImage.Height)
-                page.Fill.Draw(new FRPaintEventArgs(g, 1, 1, Report.GraphicCache), new RectangleF(0, curOriginY, widthK, bigImage.Height - curOriginY));
+                page.Fill.Draw(new FRPaintEventArgs(g, 1, 1, Report.GraphicCache), new SkiaSharp.SKRect(0, curOriginY, widthK, bigImage.Height - curOriginY));
             else
-                page.Fill.Draw(new FRPaintEventArgs(g, 1, 1, Report.GraphicCache), new RectangleF(0, curOriginY, widthK, height + paddingNonSeparatePages * 2));
+                page.Fill.Draw(new FRPaintEventArgs(g, 1, 1, Report.GraphicCache), new SkiaSharp.SKRect(0, curOriginY, widthK, height + paddingNonSeparatePages * 2));
 
 
             if (image == bigImage)
@@ -535,7 +543,7 @@ namespace FastReport.Export.Image
             if (page.Watermark.Enabled && !page.Watermark.ShowImageOnTop)
                 AddImageWatermark(page);
             if (page.Watermark.Enabled && !page.Watermark.ShowTextOnTop)
-                AddTextWatermark(page);
+                AddTextWatermark(page);*/
         }
 
         /// <inheritdoc/>
@@ -552,8 +560,10 @@ namespace FastReport.Export.Image
 
         private void ExportObj(Base obj)
         {
+            /* TODO
             if (obj is ReportComponentBase && (obj as ReportComponentBase).Exportable)
                 (obj as ReportComponentBase).Draw(new FRPaintEventArgs(g, zoomX, zoomX, Report.GraphicCache));
+                */
         }
 
         /// <inheritdoc/>
@@ -564,7 +574,7 @@ namespace FastReport.Export.Image
                 AddImageWatermark(page);
             if (page.Watermark.Enabled && page.Watermark.ShowTextOnTop)
                 AddTextWatermark(page);
-
+/* TODO
             g.Restore(state);
             if (g != bigGraphics)
                 g.Dispose();
@@ -573,23 +583,25 @@ namespace FastReport.Export.Image
             else
                 curOriginY += height + paddingNonSeparatePages * 2;
             firstPage = false;
-            pageNumber++;
+            pageNumber++;*/
         }
 
         private void AddImageWatermark(ReportPage page)
         {
+            /* TODO
             page.Watermark.DrawImage(new FRPaintEventArgs(g, zoomX, zoomX, Report.GraphicCache),
-                new RectangleF(-page.LeftMargin * Units.Millimeters, -page.TopMargin * Units.Millimeters, width / zoomX, height / zoomY),
-                page.Report, false);
+                new SkiaSharp.SKRect(-page.LeftMargin * Units.Millimeters, -page.TopMargin * Units.Millimeters, width / zoomX, height / zoomY),
+                page.Report, false);*/
         }
 
         private void AddTextWatermark(ReportPage page)
         {
             if (string.IsNullOrEmpty(page.Watermark.Text))
                 return;
+                /* TODO
             page.Watermark.DrawText(new FRPaintEventArgs(g, zoomX, zoomX, Report.GraphicCache),
-                new RectangleF(-page.LeftMargin * Units.Millimeters, -page.TopMargin * Units.Millimeters, width / zoomX, height / zoomY),
-                page.Report, false);
+                new SkiaSharp.SKRect(-page.LeftMargin * Units.Millimeters, -page.TopMargin * Units.Millimeters, width / zoomX, height / zoomY),
+                page.Report, false);*/
         }
 
         /// <inheritdoc/>
@@ -597,15 +609,19 @@ namespace FastReport.Export.Image
         {
             if (IsMultiFrameTiff)
             {
+                /* TODO
                 // close the file.
                 EncoderParameters ep = new EncoderParameters(1);
                 ep.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.Flush);
                 masterTiffImage.SaveAdd(ep);
+                */
             }
             else if (!SeparateFiles)
             {
+                /* TODO
                 bigGraphics.Dispose();
-                bigGraphics = null;
+                
+                bigGraphics = null;*/
                 SaveImage(bigImage, "");
             }
             if (masterTiffImage != null)
@@ -641,11 +657,11 @@ namespace FastReport.Export.Image
             paddingNonSeparatePages = 10;
             fileSuffix = String.Empty;
             HasMultipleFiles = true;
-            imageFormat = ImageExportFormat.Jpeg;
+            ImageFormat = ImageExportFormat.Jpeg;
             separateFiles = true;
             Resolution = 96;
             jpegQuality = 100;
-            monochromeTiffCompression = EncoderValue.CompressionCCITT4;
+            monochromeTiffCompression = SkiaSharp.SKColorType.Unknown;
         }
     }
 }

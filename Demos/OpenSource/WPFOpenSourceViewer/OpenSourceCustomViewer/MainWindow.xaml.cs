@@ -74,7 +74,7 @@ namespace OpenSourceCustomViewer
             ex.Export(report, Directory.GetCurrentDirectory() + "/test." + rnd.Next(100) + ".png");
             foreach (string file in ex.GeneratedFiles)
             {
-                BitmapImage image = new BitmapImage();
+                BitmapSkiaSharp.SKImage image = new BitmapImage();
                 image.BeginInit();
                 image.CacheOption = BitmapCacheOption.OnLoad;
                 image.UriSource = new Uri(file);

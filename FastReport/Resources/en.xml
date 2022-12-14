@@ -926,7 +926,7 @@
           <Filter Text="Filter:"/>
           <AutoSeries Text="Auto-created series"/>
           <DataColumn Text="Data column:"/>
-          <ColorColumn Text="Color column:"/>
+          <ColorColumn Text="SkiaSharp.SKColor column:"/>
           <SeriesSort Text="Series sort:"/>
           <AlignXValues Text="Align X values"/>
           <ForceAutoSeries Text="Force"/>

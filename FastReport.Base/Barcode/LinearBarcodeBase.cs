@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Utils;
-using System.Drawing.Drawing2D;
+
 
 namespace FastReport.Barcode
 {
@@ -36,10 +36,10 @@ namespace FastReport.Barcode
         private float[] modules;
         private bool calcCheckSum;
         private bool trim;
-        internal RectangleF drawArea;
-        internal RectangleF barArea;
-        internal static Font FFont = new Font("Arial", 8);
-        internal static Font FSmallFont = new Font("Arial", 6);
+        internal SkiaSharp.SKRect drawArea;
+        internal SkiaSharp.SKRect barArea;
+        internal static SkiaSharp.SKFont FFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8);
+        internal static SkiaSharp.SKFont FSmallFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 6);
         internal bool textUp;
         internal float ratioMin;
         internal float ratioMax;
@@ -133,9 +133,10 @@ namespace FastReport.Barcode
             modules[3] = modules[1] * 2;
         }
 
-        internal virtual void DoLines(string data, IGraphics g, float zoom)
+        internal virtual void DoLines(string data, SkiaSharp.SKDrawable g, float zoom)
         {
-            using (Pen pen = new Pen(Color))
+            /* TODO
+            using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (Color))
             {
                 float currentWidth = 0;
                 foreach (char c in data)
@@ -193,7 +194,7 @@ namespace FastReport.Barcode
 
                     currentWidth += width;
                 }
-            }
+            }*/
         }
 
         public string CheckSumModulo10(string data)
@@ -410,7 +411,7 @@ namespace FastReport.Barcode
             base.Initialize(text, showText, angle, zoom);
         }
 
-        internal override SizeF CalcBounds()
+        internal override SkiaSharp.SKSize CalcBounds()
         {
             float barWidth = GetWidth(Code);
             float extra1 = 0;
@@ -419,13 +420,14 @@ namespace FastReport.Barcode
             if (showText)
             {
                 float txtWidth = 0;
-                using (Bitmap bmp = new Bitmap(1, 1))
+                using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
                 {
+                    /* TODO
                     bmp.SetResolution(96, 96);
                     using (Graphics g = Graphics.FromImage(bmp))
                     {
                         txtWidth = g.MeasureString(text, FFont, 100000).Width;
-                    }
+                    }*/
                 }
 
                 if (barWidth < txtWidth)
@@ -440,14 +442,15 @@ namespace FastReport.Barcode
             if (this.extra2 != 0)
                 extra2 = this.extra2;
 
-            drawArea = new RectangleF(0, 0, barWidth + extra1 + extra2, 0);
-            barArea = new RectangleF(extra1, 0, barWidth, 0);
+            drawArea = new SkiaSharp.SKRect(0, 0, barWidth + extra1 + extra2, 0);
+            barArea = new SkiaSharp.SKRect(extra1, 0, barWidth, 0);
 
-            return new SizeF(drawArea.Width * 1.25f, 0);
+            return new SkiaSharp.SKSize(drawArea.Width * 1.25f, 0);
         }
 
-        public override void DrawBarcode(IGraphics g, RectangleF displayRect)
+        public override void DrawBarcode(SkiaSharp.SKDrawable g, SkiaSharp.SKRect displayRect)
         {
+            /* TODO
             float originalWidth = CalcBounds().Width / 1.25f;
             float width = angle == 90 || angle == 270 ? displayRect.Height : displayRect.Width;
             float height = angle == 90 || angle == 270 ? displayRect.Width : displayRect.Height;
@@ -488,36 +491,38 @@ namespace FastReport.Barcode
             finally
             {
                 g.Restore(state);
-            }
+            }*/
         }
 
-        internal void DrawString(IGraphics g, float x1, float x2, string s)
+        internal void DrawString(SkiaSharp.SKDrawable g, float x1, float x2, string s)
         {
             DrawString(g, x1, x2, s, false);
         }
 
-        internal void DrawString(IGraphics g, float x1, float x2, string s, bool small)
+        internal void DrawString(SkiaSharp.SKDrawable g, float x1, float x2, string s, bool small)
         {
             if (String.IsNullOrEmpty(s))
                 return;
 
             // when we print, .Net automatically scales the font. However, we need to handle this process.
             // Downscale the font to the screen resolution, then scale by required value (Zoom).
+            /* TODO
             float fontZoom = 14f / (int)g.MeasureString(s, FFont).Height * zoom;
-            Font font = small ? FSmallFont : FFont;
-            using (Font drawFont = new Font(font.FontFamily, font.Size * fontZoom, font.Style))
+            
+            SkiaSharp.SKFont font = small ? FSmallFont : FFont;
+            using (var drawFont = new SkiaSharp.SKFont(font.Typeface, font.Size * fontZoom))
             {
-                SizeF size = g.MeasureString(s, drawFont);
+                SkiaSharp.SKSize size = g.MeasureString(s, drawFont);
                 size.Width /= zoom;
                 size.Height /= zoom;
                 
                 g.DrawString(s, drawFont, new SolidBrush(Color),
                   (x1 + (x2 - x1 - size.Width) / 2) * zoom,
                   (textUp ? 0 : drawArea.Height - size.Height) * zoom);
-            }
+            }*/
         }
 
-        internal virtual void DrawText(IGraphics g, string data)
+        internal virtual void DrawText(SkiaSharp.SKDrawable g, string data)
         {
             data = StripControlCodes(data);
             DrawString(g, 0, drawArea.Width, data);

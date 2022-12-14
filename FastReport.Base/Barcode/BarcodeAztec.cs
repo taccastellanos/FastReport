@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Barcode.Aztec;
 using FastReport.Utils;
@@ -42,30 +42,32 @@ namespace FastReport.Barcode
             matrix = Encoder.encode(System.Text.Encoding.ASCII.GetBytes(text), ErrorCorrectionPercent, 0).Matrix;
         }
 
-        internal override SizeF CalcBounds()
+        internal override SkiaSharp.SKSize CalcBounds()
         {
             int textAdd = showText ? 18 : 0;
-            return new SizeF(matrix.Width * PIXEL_SIZE, matrix.Height * PIXEL_SIZE + textAdd);
+            return new  SkiaSharp.SKSize(matrix.Width * PIXEL_SIZE, matrix.Height * PIXEL_SIZE + textAdd);
         }
 
-        internal override void Draw2DBarcode(IGraphics g, float kx, float ky)
+        internal override void Draw2DBarcode(SkiaSharp.SKDrawable g, float kx, float ky)
         {
-            Brush light = Brushes.White;
-            Brush dark = new SolidBrush(Color);     
-
+            /* TODO
+            /*Brush/SkiaSharp.SKPaint light = Brushes.White;
+            /*Brush/SkiaSharp.SKPaint dark = new SolidBrush(Color);     
+            
             for (int y = 0; y < matrix.Height; y++)
             {
                 for (int x = 0; x < matrix.Width; x++)
                 {
                     bool b = matrix.getRow(y, null)[x];
-
-                    Brush brush = /*b == true ?*/ dark /*: light*/;
+                    
+                    /*Brush/SkiaSharp.SKPaint brush = /*b == true ?/ dark /*: light/;
                     if (b == true)
                         g.FillRectangle(brush, x * PIXEL_SIZE * kx, y * PIXEL_SIZE * ky,
                                                PIXEL_SIZE * kx,     PIXEL_SIZE * ky);
+                                            
                 }
             }
-            dark.Dispose();
+            dark.Dispose();*/
         }
 
         /// <inheritdoc/>

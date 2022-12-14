@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using System.Drawing;
+
 using System.ComponentModel;
 using FastReport.Barcode.QRCode;
 using FastReport.Utils;
-using System.Drawing.Drawing2D;
+
 
 namespace FastReport.Barcode
 {
@@ -184,15 +184,16 @@ namespace FastReport.Barcode
             matrix = QRCodeWriter.encode(base.text, 0, 0, GetErrorCorrectionLevel(), GetEncoding(), QuietZone);
         }
 
-        internal override SizeF CalcBounds()
+        internal override SkiaSharp.SKSize CalcBounds()
         {
             int textAdd = showText ? 18 : 0;
-            return new SizeF(matrix.Width * PixelSize, matrix.Height * PixelSize + textAdd);
+            return new SkiaSharp.SKSize(matrix.Width * PixelSize, matrix.Height * PixelSize + textAdd);
         }
 
-        internal override void Draw2DBarcode(IGraphics g, float kx, float ky)
+        internal override void Draw2DBarcode(SkiaSharp.SKDrawable g, float kx, float ky)
         {
-            Brush dark = new SolidBrush(Color);
+            /*
+            /*Brush/SkiaSharp.SKPaint dark = new SolidBrush(Color);
 
             for (int y = 0; y < matrix.Height; y++)
             {
@@ -200,7 +201,7 @@ namespace FastReport.Barcode
                 {
                     if (matrix.get_Renamed(x, y) == 0)
                     {
-                        g.FillRectangle(dark, new RectangleF(
+                        g.FillRectangle(dark, new SkiaSharp.SKRect(
                         x * PixelSize * kx,
                         y * PixelSize * ky,
                         PixelSize * kx,
@@ -215,6 +216,7 @@ namespace FastReport.Barcode
             }
 
             dark.Dispose();
+            */
         }
         #endregion
 

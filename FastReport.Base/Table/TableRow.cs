@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
-using System.Drawing;
+
 using FastReport.Data;
 using FastReport.Utils;
 
@@ -273,11 +273,11 @@ namespace FastReport.Table
             }
 
             // update spanned cells that contains this row
-            List<Rectangle> spanList = table.GetSpanList();
-            foreach (Rectangle span in spanList)
+            List<SkiaSharp.SKRect> spanList = table.GetSpanList();
+            foreach (var span in spanList)
             {
                 if (Index > span.Top && Index < span.Bottom)
-                    table[span.Left, span.Top].CellData.UpdateLayout(dx, dy);
+                    table[Convert.ToInt32(span.Left), Convert.ToInt32(span.Top)].CellData.UpdateLayout(dx, dy);
             }
 
         }
@@ -306,7 +306,7 @@ namespace FastReport.Table
 
             TableCellData cellData = cells[col];
             cellData.Table = Parent as TableBase;
-            cellData.Address = new Point(col, Index);
+            cellData.Address = new SkiaSharp.SKPoint(col, Index);
             return cellData;
         }
 
