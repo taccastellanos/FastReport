@@ -17,7 +17,7 @@ namespace FastReport.Utils
         public struct RendererContext
         {
             internal string text;
-            internal IGraphics g;
+            internal SkiaSharp.SKDrawable g;
             internal SkiaSharp.SKTypeface font;
             internal float size;
             internal SkiaSharp.SKFontStyle style; // no keep
@@ -25,7 +25,7 @@ namespace FastReport.Utils
             internal SkiaSharp.SKColor underlineColor;
             internal SkiaSharp.SKRect rect;
             internal bool underlines;
-            internal SkiaSharp.SKTextAlign format; // no keep
+            internal StringAlignment format; // no keep
             internal HorzAlign horzAlign;
             internal VertAlign vertAlign;
             internal ParagraphFormat paragraphFormat;
@@ -56,8 +56,8 @@ namespace FastReport.Utils
         private float fontLineHeight;
         private float scale;
         private bool forceJustify;
-        private SkiaSharp.SKTextAlign format;
-        private IGraphics graphics;
+        private StringAlignment format;
+        private SkiaSharp.SKDrawable graphics;
         private HorzAlign horzAlign;
         private ParagraphFormat paragraphFormat;
         private List<HtmlTextRenderer.Paragraph> paragraphs;
@@ -98,8 +98,11 @@ namespace FastReport.Utils
         {
             get
             {
+                /*TODO
                 float firstTabStop;
                 return format.GetTabStops(out firstTabStop);
+                */
+                return null;
             }
         }
 
@@ -131,7 +134,9 @@ namespace FastReport.Utils
 
         public bool WordWrap
         {
-            get { return (format.FormatFlags & StringFormatFlags.NoWrap) == 0; }
+            get { 
+                return true;//TODOreturn (format.FormatFlags & StringFormatFlags.NoWrap) == 0; 
+                }
         }
 
         #endregion Public Properties
@@ -166,6 +171,7 @@ namespace FastReport.Utils
             this.keepLastSpace = context.keepLastLineSpace;
 
             paragraphs = new List<HtmlTextRenderer.Paragraph>();
+            /*TODO
             rightToLeft = (context.format.FormatFlags & StringFormatFlags.DirectionRightToLeft) == StringFormatFlags.DirectionRightToLeft;
             // Dispose it
             this.format = StringFormat.GenericTypographic.Clone() as StringFormat;
@@ -208,10 +214,10 @@ namespace FastReport.Utils
             // restore original values
             displayRect = context.rect;
             this.format.FormatFlags = saveFlags;
-            this.format.Trimming = saveTrimming;
+            this.format.Trimming = saveTrimming;*/
         }
 
-        public HtmlTextRenderer(string text, IGraphics g, SkiaSharp.SKTypeface font, float size,
+        public HtmlTextRenderer(string text, SkiaSharp.SKDrawable g, SkiaSharp.SKTypeface font, float size,
                     SkiaSharp.SKFontStyle style, SkiaSharp.SKColor color, SkiaSharp.SKColor underlineColor, SkiaSharp.SKRect rect, bool underlines,
                     SkiaSharp.SKTextAlign format, HorzAlign horzAlign, VertAlign vertAlign,
                     ParagraphFormat paragraphFormat, bool forceJustify, float scale, float fontScale, InlineImageCache cache, bool isPrinting = false, bool isDifferentTabPositions = false)
@@ -224,6 +230,7 @@ namespace FastReport.Utils
             graphics = g;
             this.font = font;
             displayRect = rect;
+            /*TODO
             rightToLeft = (format.FormatFlags & StringFormatFlags.DirectionRightToLeft) == StringFormatFlags.DirectionRightToLeft;
             // Dispose it
             this.format = StringFormat.GenericTypographic.Clone() as StringFormat;
@@ -276,7 +283,7 @@ namespace FastReport.Utils
             // restore original values
             displayRect = rect;
             this.format.FormatFlags = saveFlags;
-            this.format.Trimming = saveTrimming;
+            this.format.Trimming = saveTrimming;*/
         }
 
         #endregion Public Constructors
@@ -436,10 +443,13 @@ namespace FastReport.Utils
         internal void Draw()
         {
             // set clipping
-            IGraphicsState state = graphics.Save();
+            //TODO IGraphicsState state = graphics.Save();
             //SkiaSharp.SKRect rect = new SkiaSharp.SKRect(FDisplayRect.Location, SizeF.Add(FDisplayRect.Size, new SizeF(width_dotnet, 0)));
             //FGraphics.SetClip(rect, CombineMode.Intersect);
+            
+            /*TODO
             graphics.SetClip(displayRect, CombineMode.Intersect);
+            */
 
             // reset alignment
             //StringAlignment saveAlign = FFormat.Alignment;
@@ -452,6 +462,7 @@ namespace FastReport.Utils
             //        using (Brush /*Brush*/SkiaSharp.SKPaint = new SolidBrush(rect.Color))
             //            FGraphics.FillRectangle(brush, rect.Left - rect.Width, rect.Top, rect.Width, rect.Height);
             //else
+            /*TODO
             foreach (RectangleFColor rect in backgrounds)
                 using (var brush = new SolidBrush(rect.Color))
                     graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
@@ -477,28 +488,29 @@ namespace FastReport.Utils
             //if (RightToLeft)
             //{
             //    foreach (LineFColor line in FUnderlines)
-            //        using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
+            //        using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (line.Color, line.Width))
             //            FGraphics.DrawLine(pen, 2 * line.Left - line.Right, line.Top, line.Left, line.Top);
 
             //    foreach (LineFColor line in FStrikeouts)
-            //        using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
+            //        using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (line.Color, line.Width))
             //            FGraphics.DrawLine(pen, 2 * line.Left - line.Right, line.Top, line.Left, line.Top);
             //}
             //else
             //{
+
             foreach (LineFColor line in underlines)
-                using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
+                using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (line.Color, line.Width))
                     graphics.DrawLine(pen, line.Left, line.Top, line.Right, line.Top);
 
             foreach (LineFColor line in strikeouts)
-                using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (line.Color, line.Width))
+                using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (line.Color, line.Width))
                     graphics.DrawLine(pen, line.Left, line.Top, line.Right, line.Top);
             //}
 
             // restore alignment and clipping
             //FFormat.Alignment = saveAlign;
             //FFormat.LineAlignment = saveLineAlign;
-            graphics.Restore(state);
+            graphics.Restore(state);*/
         }
 
 #endregion Internal Methods
@@ -550,11 +562,11 @@ namespace FastReport.Utils
                     try { style.Size *= Single.Parse(tStr.Substring(0, tStr.Length - 2), CultureInfo); } catch { }
             }
             if (dict.TryGetValue("font-family", out tStr))
-                style.Font = new SkiaSharp.SKTypeface(tStr);
+                style.Font = SkiaSharp.SKTypeface.FromFamilyName( tStr);
             if (dict.TryGetValue("color", out tStr))
             {
                 if (StartsWith(tStr, "#"))
-                    try { style.Color = Color.FromArgb((int)(0xFF000000 + uint.Parse(tStr.Substring(1), System.Globalization.NumberStyles.HexNumber))); } catch { }
+                    try { style.Color =  SkiaSharp.SKColor.Parse(tStr.Replace("#","")); } catch { }
                 else if (StartsWith(tStr, "rgba"))
                 {
                     int i1 = tStr.IndexOf('(');
@@ -569,7 +581,7 @@ namespace FastReport.Utils
                             g = Single.Parse(strs[1], CultureInfo);
                             b = Single.Parse(strs[2], CultureInfo);
                             a = Single.Parse(strs[3], CultureInfo);
-                            style.Color = Color.FromArgb((int)(a * 0xFF), (int)r, (int)g, (int)b);
+                            style.Color = new SkiaSharp.SKColor((byte)r, (byte)g, (byte)b,(byte)(a * 0xFF));
                         }
                         catch { }
                     }
@@ -587,18 +599,18 @@ namespace FastReport.Utils
                             r = Single.Parse(strs[0], CultureInfo);
                             g = Single.Parse(strs[1], CultureInfo);
                             b = Single.Parse(strs[2], CultureInfo);
-                            style.Color = Color.FromArgb((int)r, (int)g, (int)b);
+                            style.Color = new SkiaSharp.SKColor((byte)r, (byte)g, (byte)b);
                         }
                         catch { }
                     }
                 }
-                else style.Color = Color.FromName(tStr);
+                else style.Color = new SkiaSharp.SKColor();//TODO Color.FromName(tStr);
             }
 
             if (dict.TryGetValue("background-color", out tStr))
             {
                 if (StartsWith(tStr, "#"))
-                    try { style.BackgroundColor = Color.FromArgb((int)(0xFF000000 + uint.Parse(tStr.Substring(1), System.Globalization.NumberStyles.HexNumber))); } catch { }
+                    try { style.BackgroundColor = SkiaSharp.SKColor.Parse(tStr.Substring(1)); } catch { }
                 else if (StartsWith(tStr, "rgba"))
                 {
                     int i1 = tStr.IndexOf('(');
@@ -613,7 +625,7 @@ namespace FastReport.Utils
                             g = Single.Parse(strs[1], CultureInfo);
                             b = Single.Parse(strs[2], CultureInfo);
                             a = Single.Parse(strs[3], CultureInfo);
-                            style.BackgroundColor = Color.FromArgb((int)(a * 0xFF), (int)r, (int)g, (int)b);
+                            style.BackgroundColor = new SkiaSharp.SKColor((byte)r, (byte)g, (byte)b,(byte)(a * 0xFF));
                         }
                         catch { }
                     }
@@ -631,12 +643,12 @@ namespace FastReport.Utils
                             r = Single.Parse(strs[0], CultureInfo);
                             g = Single.Parse(strs[1], CultureInfo);
                             b = Single.Parse(strs[2], CultureInfo);
-                            style.BackgroundColor = Color.FromArgb((int)r, (int)g, (int)b);
+                            style.BackgroundColor = new SkiaSharp.SKColor((byte)r, (byte)g, (byte)b);
                         }
                         catch { }
                     }
                 }
-                else style.BackgroundColor = Color.FromName(tStr);
+                else style.BackgroundColor = new SkiaSharp.SKColor();//TODOColor.FromName(tStr);
             }
         }
 
@@ -669,9 +681,9 @@ namespace FastReport.Utils
         private float GetTabPosition(float pos, int tabIndex)
         {
             float tabOffset = 0;
-            float tabSize;
+            float tabSize = 0;
             float firstTabOffset;
-            float[] tabsPos = format.GetTabStops(out firstTabOffset);
+            //TODOfloat[] tabsPos = format.GetTabStops(out firstTabOffset);
             if (tabIndex <= 1)
             {
                 tabOffset = TabOffset;
@@ -679,11 +691,13 @@ namespace FastReport.Utils
             }
             else 
             {
+                /*TODO
                 for (int i = 0; i < tabIndex; i++)
                 {
                     tabOffset += tabsPos[i];
                 }
                 tabSize = tabsPos[tabIndex];
+                */
             }
             int tabPosition = (int)((pos - tabOffset) / tabSize);
             if (pos < tabOffset)
@@ -914,6 +928,7 @@ namespace FastReport.Utils
                         else elements.Push(element);
 
                         SimpleFastReportHtmlElement[] arr = elements.ToArray();
+                        /*TODO
                         for (int i = arr.Length - 1; i >= 0; i--)
                         {
                             SimpleFastReportHtmlElement el = arr[i];
@@ -985,7 +1000,7 @@ namespace FastReport.Utils
                                     //    break;
                             }
                             CssStyle(newStyle, el.Style);
-                        }
+                        }*/
 
                         if (currentWord.Count > 0)
                         {
@@ -1229,22 +1244,22 @@ namespace FastReport.Utils
             }
 
             public LineFColor(float left, float top, float right, float width, byte R, byte G, byte B)
-                : this(left, top, right, width, Color.FromArgb(R, G, B))
+                : this(left, top, right, width, new SkiaSharp.SKColor(R, G, B))
             {
             }
 
             public LineFColor(float left, float top, float right, float width, byte R, byte G, byte B, byte A)
-                : this(left, top, right, width, Color.FromArgb(A, R, G, B))
+                : this(left, top, right, width, new SkiaSharp.SKColor(R, G, B, A))
             {
             }
 
             public LineFColor(float left, float top, float right, float width, int R, int G, int B)
-              : this(left, top, right, width, Color.FromArgb(R, G, B))
+              : this(left, top, right, width, new SkiaSharp.SKColor((byte)R, (byte)G, (byte)B))
             {
             }
 
             public LineFColor(float left, float top, float right, float width, int R, int G, int B, int A)
-                : this(left, top, right, width, Color.FromArgb(A, R, G, B))
+                : this(left, top, right, width, new SkiaSharp.SKColor((byte) R, (byte)G, (byte)B, (byte)A))
             {
             }
 
@@ -1279,22 +1294,22 @@ namespace FastReport.Utils
             }
 
             public RectangleFColor(float left, float top, float width, float height, byte R, byte G, byte B)
-                : this(left, top, width, height, Color.FromArgb(R, G, B))
+                : this(left, top, width, height, new SkiaSharp.SKColor(R, G, B))
             {
             }
 
             public RectangleFColor(float left, float top, float width, float height, byte R, byte G, byte B, byte A)
-                : this(left, top, width, height, Color.FromArgb(A, R, G, B))
+                : this(left, top, width, height, new SkiaSharp.SKColor( R, G, B, A))
             {
             }
 
             public RectangleFColor(float left, float top, float width, float height, int R, int G, int B)
-              : this(left, top, width, height, Color.FromArgb(R, G, B))
+              : this(left, top, width, height, new SkiaSharp.SKColor((byte)R, (byte)G, (byte)B))
             {
             }
 
             public RectangleFColor(float left, float top, float width, float height, int R, int G, int B, int A)
-                : this(left, top, width, height, Color.FromArgb(A, R, G, B))
+                : this(left, top, width, height,new SkiaSharp.SKColor((byte)R, (byte)G, (byte)B, (byte)A))
             {
             }
 
@@ -1563,7 +1578,7 @@ namespace FastReport.Utils
                 {
                     foreach (Word word in Words)
                         foreach (Run run in word.Runs)
-                            if (run.Style.BackgroundColor.A > 0)
+                            if (run.Style.BackgroundColor.Alpha > 0)
                                 list.Add(new RectangleFColor(
                                     run.Left - run.Width, top, run.Width, height, run.Style.BackgroundColor
                                     ));
@@ -1572,7 +1587,7 @@ namespace FastReport.Utils
                 {
                     foreach (Word word in Words)
                         foreach (Run run in word.Runs)
-                            if (run.Style.BackgroundColor.A > 0)
+                            if (run.Style.BackgroundColor.Alpha > 0)
                                 list.Add(new RectangleFColor(
                                     run.Left, top, run.Width, height, run.Style.BackgroundColor
                                     ));
@@ -1594,10 +1609,10 @@ namespace FastReport.Utils
                         }
                 if (styles.Count == 0 || BaseLine <= 0.01)
                 {
-                    using (Font ff = renderer.initalStyle.GetFont())
+                    using (var ff = renderer.initalStyle.GetFont())
                     {
-                        float lineSpace = ff.FontFamily.GetLineSpacing(renderer.initalStyle.FontStyle);
-                        float ascent = ff.FontFamily.GetCellAscent(renderer.initalStyle.FontStyle);
+                        float lineSpace = 0;//TODOff.Typeface.FamilyName.GetLineSpacing(renderer.initalStyle.FontStyle);
+                        float ascent = 0;//TODOff.Typeface.FamilyName.GetCellAscent(renderer.initalStyle.FontStyle);
                         baseLine = height * ascent / lineSpace;
                         float FDescent = height - baseLine;
                         underline = FDescent / 2;
@@ -1621,6 +1636,7 @@ namespace FastReport.Utils
             {
                 List<LineFColor> lines = renderer.strikeouts;
                 float fixScale = Renderer.Scale / Renderer.FontScale;
+                /*TODO
                 if (renderer.rightToLeft)
                 {
                     foreach (Word word in Words)
@@ -1638,7 +1654,7 @@ namespace FastReport.Utils
                                 lines.Add(new LineFColor(
                                 r.Left, r.Top + r.BaseLine / 3f * 2f, r.Left + r.Width, r.Style.Size * 0.1f * fixScale,
                                 r.Style.Color));
-                }
+                }*/
             }
 
             internal void MakeUnderlines()
@@ -1650,7 +1666,7 @@ namespace FastReport.Utils
                 }
                 List<List<Run>> runs = new List<List<Run>>();
                 List<Run> currentRuns = null;
-
+                /*TODO
                 foreach (Word word in Words)
                     foreach (Run run in word.Runs)
                     {
@@ -1668,6 +1684,7 @@ namespace FastReport.Utils
                             currentRuns = null;
                         }
                     }
+                */
                 List<LineFColor> unerlines = renderer.underlines;
                 float fixScale = Renderer.Scale / Renderer.FontScale;
 
@@ -1916,7 +1933,7 @@ namespace FastReport.Utils
 
             protected /*Brush*/SkiaSharp.SKPaint GetBackgroundBrush()
             {
-                return new SolidBrush(style.BackgroundColor);
+                return new SkiaSharp.SKPaint();//TODO new SolidBrush(style.BackgroundColor);
             }
 
 #endregion Protected Methods
@@ -1969,7 +1986,9 @@ namespace FastReport.Utils
                 base.style = new StyleDescriptor(style);
                 this.src = src;
                 //disable for exports because img tag not support strikeouts and underlines
+                /*TODO
                 base.style.FontStyle &= ~(FontStyle.Strikeout | SkiaSharp.SKFontStyle.Underline);
+                */
                 image = InlineImageCache.Load(Renderer.cache, src);
                 Width = image.Width * Renderer.Scale;
                 Height = image.Height * Renderer.Scale;
@@ -1992,13 +2011,14 @@ namespace FastReport.Utils
                     Height *= img_width / image.Width;
                 }
                 baseLine = Height;
-                using (Font ff = style.GetFont())
+                /*TODO
+                using (var ff = style.GetFont())
                 {
                     float height = ff.GetHeight(Renderer.graphics.Graphics);
                     float lineSpace = ff.FontFamily.GetLineSpacing(style.FontStyle);
                     float descent = ff.FontFamily.GetCellDescent(style.FontStyle);
                     base.descent = height * descent / lineSpace;
-                }
+                }*/
             }
 
 #endregion Public Constructors
@@ -2011,10 +2031,12 @@ namespace FastReport.Utils
                 //if (drawContents)
                 if (image != null)
                 {
+                    /*TODO
                     if (renderer.rightToLeft)
                         renderer.graphics.DrawImage(image, new SkiaSharp.SKRect(Left - Width, Top, Width, Height));
                     else
                         renderer.graphics.DrawImage(image, new SkiaSharp.SKRect(Left, Top, Width, Height));
+                        */
                 }
 
                 //base.Draw(drawContents);
@@ -2035,7 +2057,7 @@ namespace FastReport.Utils
                 width = 1;
                 height = 1;
                 if (image == null)
-                    return new Bitmap(1, 1);
+                    return new SkiaSharp.SKBitmap(1, 1);
 
                 width = image.Width;
                 height = image.Height;
@@ -2070,11 +2092,12 @@ namespace FastReport.Utils
                 if (width < 1) width = 1;
                 if (height < 1) height = 1;
 
-                SkiaSharp.SKSkiaSharp.SKBitmap bmp = new Bitmap((int)width, (int)height);
+                SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap((int)width, (int)height);
+                /*TODO
                 using (Graphics g = Graphics.FromImage(bmp))
                     g.DrawImage(image, new SkiaSharp.SKPoint(x, y));
                 width /= scaleX;
-                height /= scaleY;
+                height /= scaleY;*/
                 return bmp;
             }
 
@@ -2141,13 +2164,13 @@ namespace FastReport.Utils
 
             public RunText(HtmlTextRenderer renderer, Word word, StyleDescriptor style, List<CharWithIndex> text, float left, int charIndex) : base(renderer, word, style, left, charIndex)
             {
-                using (Font ff = style.GetFont())
+                using (var ff = style.GetFont())
                 {
                     chars = new List<CharWithIndex>(text);
 
                     this.text = GetString(text);
 
-                    if (ff.FontFamily.Name == "Wingdings" || ff.FontFamily.Name == "Webdings")
+                    if (ff.Typeface.FamilyName == "Wingdings" || ff.Typeface.FamilyName == "Webdings")
                     {
                         this.text = WingdingsToUnicodeConverter.Convert(this.text);
                     }
@@ -2162,16 +2185,17 @@ namespace FastReport.Utils
                         }
                         else
                         {
-                            width = Renderer.graphics.MeasureString(this.text, ff, int.MaxValue, base.renderer.format).Width;
+                            width = 1;//TODORenderer.graphics.MeasureString(this.text, ff, int.MaxValue, base.renderer.format).Width;
                         }
                     }
+                    /*TODO
                     height = ff.GetHeight(Renderer.graphics.Graphics);
                     float lineSpace = ff.FontFamily.GetLineSpacing(style.FontStyle);
                     float ascent = ff.FontFamily.GetCellAscent(style.FontStyle);
                     baseLine = height * ascent / lineSpace;
                     descent = height - baseLine;
                     if (style.BaseLine == HtmlTextRenderer.BaseLine.Subscript)
-                        descent += height * 0.45f;
+                        descent += height * 0.45f;*/
                 }
             }
 
@@ -2181,8 +2205,8 @@ namespace FastReport.Utils
 
             public float CalcSpaceWidth(string text, SkiaSharp.SKFont ff)
             {
-                return Renderer.graphics.MeasureString("1" + text + "2", ff, int.MaxValue, renderer.format).Width
-                    - Renderer.graphics.MeasureString("12", ff, int.MaxValue, renderer.format).Width;
+                return 0;/*TODORenderer.graphics.MeasureString("1" + text + "2", ff, int.MaxValue, renderer.format).Width
+                    - Renderer.graphics.MeasureString("12", ff, int.MaxValue, renderer.format).Width;*/
             }
 
             public override void Draw()
@@ -2200,7 +2224,7 @@ namespace FastReport.Utils
                     //                    else
                     //                        FRenderer.FGraphics.DrawRectangle(Pens.Red, Left, Top, size.Width, size.Height);
                     //#endif
-                    renderer.graphics.DrawString(text, font, brush, Left, Top, renderer.format);
+                    //TODOrenderer.graphics.DrawString(text, font, brush, Left, Top, renderer.format);
                 }
                 //}
                 //base.Draw(drawContents);
@@ -2208,7 +2232,7 @@ namespace FastReport.Utils
 
             public /*Brush*/SkiaSharp.SKPaint GetBrush()
             {
-                return new SolidBrush(Style.Color);
+                return new SkiaSharp.SKPaint();//TODOnew SolidBrush(Style.Color);
             }
 
             public override Run Split(float availableWidth, out Run secondPart)
@@ -2804,7 +2828,7 @@ namespace FastReport.Utils
         {
 #region Private Fields
 
-            private static readonly SkiaSharp.SKColor DefaultColor = Color.Transparent;
+            private static readonly SkiaSharp.SKColor DefaultColor = SkiaSharp.SKColors.Transparent;
             private SkiaSharp.SKColor backgroundColor;
             private BaseLine baseLine;
             private SkiaSharp.SKColor color;
@@ -2911,8 +2935,9 @@ namespace FastReport.Utils
 
                 SkiaSharp.SKFontStyle fontStyle = FontStyle;
 
-                fontStyle = fontStyle & ~FontStyle.Underline & ~FontStyle.Strikeout;
-                return new SkiaSharp.SKFont(font, fontSize, fontStyle);
+                //TODO fontStyle = fontStyle & ~FontStyle.Underline & ~FontStyle.Strikeout;
+
+                return new SkiaSharp.SKFont(font, fontSize);
             }
 
             public override int GetHashCode()
@@ -2921,7 +2946,7 @@ namespace FastReport.Utils
                 unchecked
                 {
                     hashCode = hashCode * -1521134295 + baseLine.GetHashCode();
-                    hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(font.Name);
+                    hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(font.FamilyName);
                     hashCode = hashCode * -1521134295 + fontStyle.GetHashCode();
                     hashCode = hashCode * -1521134295 + size.GetHashCode();
                 }
@@ -2934,12 +2959,12 @@ namespace FastReport.Utils
                 if (close)
                 {
                     sb.Append("</span>");
-
+                    /*TODO
                     if ((fontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout) sb.Append("</strike>");
                     if ((fontStyle & SkiaSharp.SKFontStyle.Underline) == SkiaSharp.SKFontStyle.Underline) sb.Append("</u>");
                     if ((fontStyle & SkiaSharp.SKFontStyle.Italic) == SkiaSharp.SKFontStyle.Italic) sb.Append("</i>");
                     if ((fontStyle & SkiaSharp.SKFontStyle.Bold) == SkiaSharp.SKFontStyle.Bold) sb.Append("</b>");
-
+                    */
                     switch (baseLine)
                     {
                         case BaseLine.Subscript: sb.Append("</sub>"); break;
@@ -2953,16 +2978,16 @@ namespace FastReport.Utils
                         case BaseLine.Subscript: sb.Append("<sub>"); break;
                         case BaseLine.Superscript: sb.Append("<sup>"); break;
                     }
-
+                    /*TODO
                     if ((fontStyle & SkiaSharp.SKFontStyle.Bold) == SkiaSharp.SKFontStyle.Bold) sb.Append("<b>");
                     if ((fontStyle & SkiaSharp.SKFontStyle.Italic) == SkiaSharp.SKFontStyle.Italic) sb.Append("<i>");
                     if ((fontStyle & SkiaSharp.SKFontStyle.Underline) == SkiaSharp.SKFontStyle.Underline) sb.Append("<u>");
                     if ((fontStyle & SkiaSharp.SKFontStyle.Strikeout) == SkiaSharp.SKFontStyle.Strikeout) sb.Append("<strike>");
-
+                    */
                     sb.Append("<span style=\"");
-                    if (backgroundColor.A > 0) sb.Append(String.Format(CultureInfo, "background-color:rgba({0},{1},{2},{3});", backgroundColor.R, backgroundColor.G, backgroundColor.B, ((float)backgroundColor.A) / 255f));
-                    if (color.A > 0) sb.Append(String.Format(CultureInfo, "color:rgba({0},{1},{2},{3});", color.R, color.G, color.B, ((float)color.A) / 255f));
-                    if (font != null) { sb.Append("font-family:"); sb.Append(font.Name); sb.Append(";"); }
+                    if (backgroundColor.Alpha > 0) sb.Append(String.Format(CultureInfo, "background-color:rgba({0},{1},{2},{3});", backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue, ((float)backgroundColor.Alpha) / 255f));
+                    if (color.Alpha > 0) sb.Append(String.Format(CultureInfo, "color:rgba({0},{1},{2},{3});", color.Red, color.Green, color.Blue, ((float)color.Alpha) / 255f));
+                    if (font != null) { sb.Append("font-family:"); sb.Append(font.FamilyName); sb.Append(";"); }
                     if (fontsize > 0) { sb.Append("font-size:"); sb.Append(fontsize.ToString(CultureInfo)); sb.Append("pt;"); }
                     sb.Append("\">");
                 }
@@ -3031,8 +3056,8 @@ namespace FastReport.Utils
             {
                 if (disposing)
                 {
-                    format.Dispose();
-                    format = null;
+                    //TODOformat.Dispose();
+                    format = StringAlignment.Center;//TODO null;
                 }
 
                 disposedValue = true;

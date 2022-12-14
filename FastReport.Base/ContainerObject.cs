@@ -121,8 +121,10 @@ namespace FastReport
             try
             {
                 SkiaSharp.SKRect remainingBounds = new SkiaSharp.SKRect(0, 0, Width, Height);
+                /*TODO
                 remainingBounds.Width += dx;
                 remainingBounds.Height += dy;
+                */
                 foreach (ReportComponentBase c in Objects)
                 {
                     if ((c.Anchor & AnchorStyles.Right) != 0)
@@ -151,30 +153,35 @@ namespace FastReport
                     {
                         case DockStyle.Left:
                             c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Top, c.Width, remainingBounds.Height);
+                            /*TODO
                             remainingBounds.X += c.Width;
                             remainingBounds.Width -= c.Width;
+                            */
                             break;
 
                         case DockStyle.Top:
                             c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Top, remainingBounds.Width, c.Height);
+                            /*TODO
                             remainingBounds.Y += c.Height;
                             remainingBounds.Height -= c.Height;
+                            */
                             break;
 
                         case DockStyle.Right:
                             c.Bounds = new SkiaSharp.SKRect(remainingBounds.Right - c.Width, remainingBounds.Top, c.Width, remainingBounds.Height);
-                            remainingBounds.Width -= c.Width;
+                            //TODOremainingBounds.Width -= c.Width;
                             break;
 
                         case DockStyle.Bottom:
                             c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Bottom - c.Height, remainingBounds.Width, c.Height);
-                            remainingBounds.Height -= c.Height;
+                            //TODOremainingBounds.Height -= c.Height;
                             break;
 
                         case DockStyle.Fill:
                             c.Bounds = remainingBounds;
-                            remainingBounds.Width = 0;
+                            /*TODOremainingBounds.Width = 0;
                             remainingBounds.Height = 0;
+                            */
                             break;
                     }
                 }

@@ -336,7 +336,7 @@ namespace FastReport.Export.Html
                 default:
                     if (obj.VertAlign != VertAlign.Top)
                     {
-                        IGraphics g = htmlMeasureGraphics;
+                        SkiaSharp.SKDrawable g = htmlMeasureGraphics;
                         /* TODO
                         using (SkiaSharp.SKFont f = new SkiaSharp.SKFont(obj.Font.Typeface, obj.Font.Size * DrawUtils.ScreenDpiFX)
                         {

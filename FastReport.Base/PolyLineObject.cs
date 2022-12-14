@@ -169,6 +169,7 @@ namespace FastReport
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
+            /*TODO
             switch (pointsCollection.Count)
             {
                 case 0:
@@ -190,7 +191,7 @@ namespace FastReport
                     DrawDesign0(e);
                     break;
             }
-            DrawDesign1(e);
+            DrawDesign1(e);*/
         }
 
         /// <summary>
@@ -206,6 +207,7 @@ namespace FastReport
         /// <returns>Always returns a non-empty path</returns>
         public SkiaSharp.SKPath GetPath (/*Pen*/SkiaSharp.SKPaint pen, float left, float top, float right, float bottom, float scaleX, float scaleY)
         {
+            /*TODO
             if (pointsCollection.Count == 0)
             {
                 SkiaSharp.SKPath result = new GraphicsPath();
@@ -277,7 +279,8 @@ namespace FastReport
                     pointTypes.Add(1);
                 }
             }
-            return new GraphicsPath(aPoints.ToArray(), pointTypes.ToArray());
+            return new GraphicsPath(aPoints.ToArray(), pointTypes.ToArray());*/
+            return new SkiaSharp.SKPath();
         }
 
         /// <summary>
@@ -504,6 +507,7 @@ namespace FastReport
 
         internal void DoDrawPoly(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
             Report report = Report;
             if (report != null && report.SmoothGraphics)
@@ -518,7 +522,8 @@ namespace FastReport
             {
                 g.InterpolationMode = InterpolationMode.Default;
                 g.SmoothingMode = SmoothingMode.Default;
-            }
+            }*/
+            
         }
 
         #endregion Internal Methods
@@ -560,13 +565,15 @@ namespace FastReport
         /// <param name="e">Event arguments</param>
         protected virtual void drawPoly(FRPaintEventArgs e)
         {
-            /*Pen*/SkiaSharp.SKPaint pen;
+            /*TODO
+            /*Pen/SkiaSharp.SKPaint pen;
             if (polygonSelectionMode == PolygonSelectionMode.MoveAndScale)
                 pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
             else pen = e.Cache.GetPen(Border.Color, 1, DashStyle.Solid);
 
             using (GraphicsPath path = GetPath(pen, AbsLeft, AbsTop, AbsRight, AbsBottom, e.ScaleX, e.ScaleY))
                 e.Graphics.DrawPath(pen, path);
+                */
         }
 
         /// <summary>

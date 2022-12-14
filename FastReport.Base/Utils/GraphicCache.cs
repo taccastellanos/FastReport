@@ -155,7 +155,7 @@ namespace FastReport
         /// <param name="tabWidth">Distance between tab stops.</param>
         /// <param name="defaultTab">Default distance between default tabs stops.</param>
         /// <returns>The <b>StringFormat</b> object.</returns>
-        public SkiaSharp.SKTextAlign GetStringFormat(StringAlignment align, StringAlignment lineAlign,
+        public StringAlignment GetStringFormat(StringAlignment align, StringAlignment lineAlign,
           StringTrimming trimming, StringFormatFlags flags, float firstTab, FloatCollection tabWidth,
           float defaultTab = 48)
         {
@@ -186,7 +186,7 @@ namespace FastReport
                 stringFormats[hash] = result;
             }
             return result;*/
-            return SkiaSharp.SKTextAlign.Center;
+            return StringAlignment.Center;
         }
 
         /// <summary>

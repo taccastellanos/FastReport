@@ -208,12 +208,12 @@ namespace FastReport
 
         private bool ShouldSerializeTextFill()
         {
-            return !(TextFill is SolidFill) || (TextFill as SolidFill).Color != Color.LightGray;
+            return !(TextFill is SolidFill) || (TextFill as SolidFill).Color != SkiaSharp.SKColors.LightGray;
         }
 
         private bool ShouldSerializeImage()
         {
-            return SkiaSharp.SKImage  != null;
+            return Image  != null;
         }
         #endregion
 
@@ -322,7 +322,7 @@ namespace FastReport
         public void Assign(Watermark source)
         {
             Enabled = source.Enabled;
-            SkiaSharp.SKImage  = source.Image == null ? null : source.Image.Clone() as Image;
+            Image  = source.Image == null ? null : SkiaSharp.SKImage.Create(source.Image.Info) ;
             ImageSize = source.ImageSize;
             ImageTransparency = source.ImageTransparency;
             Text = source.Text;
@@ -357,8 +357,8 @@ namespace FastReport
             textObject.HorzAlign = HorzAlign.Center;
             textObject.VertAlign = VertAlign.Center;
             ImageSize = WatermarkImageSize.Zoom;
-            Font = new SkiaSharp.SKFont(DrawUtils.DefaultReportFont.Name, 60);
-            TextFill = new SolidFill(Color.FromArgb(40, SkiaSharp.SKColors.Gray));
+            Font = new SkiaSharp.SKFont(DrawUtils.DefaultReportFont.Typeface, 60);
+            TextFill = new SolidFill(new SkiaSharp.SKColor(SkiaSharp.SKColors.Gray.Red,SkiaSharp.SKColors.Gray.Green,SkiaSharp.SKColors.Gray.Blue,40));
             TextRotation = WatermarkTextRotation.ForwardDiagonal;
             ShowTextOnTop = true;
         }

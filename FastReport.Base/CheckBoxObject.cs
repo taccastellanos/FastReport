@@ -210,6 +210,7 @@ namespace FastReport
             float ratio = Width / (Units.Millimeters * 5);
             drawRect.Inflate(-4 * ratio * e.ScaleX, -4 * ratio * e.ScaleY);
             /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(CheckColor, 1.6f * ratio * CheckWidthRatio * e.ScaleX, DashStyle.Solid);
+            /*TODO
             IGraphics g = e.Graphics;
             SmoothingMode saveSmoothing = g.SmoothingMode;
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -219,7 +220,7 @@ namespace FastReport
                 switch (CheckedSymbol)
                 {
                     case CheckedSymbol.Check:
-                        g.DrawLines(pen, new SkiaSharp.SKSkiaSharp.SKPoint[] {
+                        g.DrawLines(pen, new SkiaSharp.SKPoint[] {
               new SkiaSharp.SKPoint(drawRect.Left, drawRect.Top + drawRect.Height / 10 * 5),
               new SkiaSharp.SKPoint(drawRect.Left + drawRect.Width / 10 * 4, drawRect.Bottom - drawRect.Height / 10),
               new SkiaSharp.SKPoint(drawRect.Right, drawRect.Top + drawRect.Height / 10) });
@@ -236,7 +237,7 @@ namespace FastReport
                         break;
 
                     case CheckedSymbol.Fill:
-                        /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(CheckColor);
+                        /*Brush/SkiaSharp.SKPaint brush = e.Cache.GetBrush(CheckColor);
                         g.FillRectangle(brush, drawRect);
                         break;
                 }
@@ -264,7 +265,7 @@ namespace FastReport
                 }
             }
 
-            g.SmoothingMode = saveSmoothing;
+            g.SmoothingMode = saveSmoothing;*/
         }
         #endregion
 

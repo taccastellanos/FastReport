@@ -84,7 +84,7 @@ namespace FastReport
                 UpdateAutoSize();
                 UpdateTransparentImage();
                 ResetImageIndex();
-                SkiaSharp.SKEncodedImageFormat = CheckImageFormat();
+                ImageFormat = CheckImageFormat();
                 ShouldDisposeImage = false;
             }
         }
@@ -109,7 +109,7 @@ namespace FastReport
                 if (!wasC)
                     return;
                 ForceLoadImage();
-                SkiaSharp.SKEncodedImageFormat = CheckImageFormat();
+                ImageFormat = CheckImageFormat();
             }
         }
 
@@ -256,10 +256,11 @@ namespace FastReport
         #region Private Methods
         private SkiaSharp.SKEncodedImageFormat CheckImageFormat()
         {
-            if (Image == null || Image.RawFormat == null)
+            /*TODO
+            if (Image == null || Image.EncodedData == null)
                 return null;
             SkiaSharp.SKEncodedImageFormat format = null;
-            if (ImageFormat.Jpeg.Equals(image.RawFormat))
+            if (ImageFormat. Jpeg.Equals(image.RawFormat))
             {
                 format = SkiaSharp.SKEncodedImageFormat.Jpeg;
             }
@@ -292,7 +293,7 @@ namespace FastReport
                 format = SkiaSharp.SKEncodedImageFormat.Wmf;
             }
             if (format != null)
-                return format;
+                return format;*/
             return SkiaSharp.SKEncodedImageFormat.Bmp;
         }
 
@@ -301,7 +302,8 @@ namespace FastReport
             if (transparentImage != null)
                 transparentImage.Dispose();
             transparentImage = null;
-            if (SkiaSharp.SKImage is Bitmap)
+            /*TODO
+            if (image is Bitmap)
             {
                 if (TransparentColor != Color.Transparent)
                 {
@@ -312,7 +314,7 @@ namespace FastReport
                 {
                     transparentImage = ImageHelper.GetTransparentBitmap(Image, Transparency);
                 }
-            }
+            }*/
         }
         #endregion
 
@@ -333,17 +335,18 @@ namespace FastReport
             base.Assign(source);
 
             PictureObject src = source as PictureObject;
+            /*TODO
             if (src != null)
             {
                 TransparentColor = src.TransparentColor;
                 Transparency = src.Transparency;
                 Tile = src.Tile;
-                SkiaSharp.SKImage  = src.Image == null ? null : src.Image.Clone() as Image;
+                image  = src.Image == null ? null : src.Image.Clone() as Image;
                 if (src.Image == null && src.imageData != null)
                     imageData = src.imageData;
                 ShouldDisposeImage = true;
-                SkiaSharp.SKEncodedImageFormat = src.ImageFormat;
-            }
+                imageFormat = src.ImageFormat;
+            }*/
         }
 
         /// <summary>
@@ -352,6 +355,7 @@ namespace FastReport
         /// <param name="e">Paint event args.</param>
         public override void DrawImage(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
             if (Image == null)
                 ForceLoadImage();
@@ -416,11 +420,12 @@ namespace FastReport
             if (IsPrinting)
             {
                 DisposeImage();
-            }
+            }*/
         }
 
-        protected override void DrawImageInternal2(IGraphics graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft)
+        protected override void DrawImageInternal2(SkiaSharp.SKDrawable graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft)
         {
+            /*TODO
             SkiaSharp.SKImage  image = transparentImage != null ? transparentImage.Clone() as SkiaSharp.SKImage  : Image.Clone() as Image;
             if (image == null)
                 return;
@@ -440,7 +445,7 @@ namespace FastReport
             //graphics.DrawImage(image, new SkiaSharp.SKSkiaSharp.SKPoint[] { upperLeft, upperRight, lowerLeft });
 
             DrawImage3Points(graphics, image, upperLeft, upperRight, lowerLeft);
-            image.Dispose();
+            image.Dispose();*/
         }
 
         // This is analogue of graphics.DrawImage(image, SkiaSharp.SKSkiaSharp.SKPoint[] points) method. 
@@ -459,8 +464,9 @@ namespace FastReport
             float m12 = (p1.Y - p0.Y) / rect.Width;
             float m21 = (p2.X - p0.X) / rect.Height;
             float m22 = (p2.Y - p0.Y) / rect.Height;
+            /*TODO
             g.MultiplyTransform(new System.Drawing.Drawing2D.Matrix(m11, m12, m21, m22, p0.X, p0.Y), MatrixOrder.Prepend);
-            g.DrawImage(image, rect);
+            g.DrawImage(image, rect);*/
         }
 
         /// <summary>
@@ -581,7 +587,7 @@ namespace FastReport
                 }
                 catch
                 {
-                    SkiaSharp.SKImage  = null;
+                    image  = SkiaSharp.SKImage.Create(SkiaSharp.SKImageInfo.Empty);
                 }
 
                 ShouldDisposeImage = true;
@@ -595,7 +601,7 @@ namespace FastReport
         {
             if (Image != null && ShouldDisposeImage)
                 Image.Dispose();
-            SkiaSharp.SKImage  = null;
+            image  = null;
         }
 
         protected override void ResetImageIndex()
@@ -630,7 +636,7 @@ namespace FastReport
             if (!String.IsNullOrEmpty(DataColumn))
             {
                 // reset the image
-                SkiaSharp.SKImage  = null;
+                image = null;
                 imageData = null;
 
                 object data = Report.GetColumnValueNullable(DataColumn);
@@ -638,9 +644,9 @@ namespace FastReport
                 {
                     SetImageData((byte[])data);
                 }
-                else if (data is Image)
+                else if (data is SkiaSharp.SKImage)
                 {
-                    SkiaSharp.SKImage  = data as Image;
+                    image  = data as SkiaSharp.SKImage;
                 }
                 else if (data is string)
                 {
@@ -666,7 +672,7 @@ namespace FastReport
 
             byte[] saveImageData = imageData;
             // FImageData will be reset after this line, keep it
-            SkiaSharp.SKImage  = ImageHelper.Load(imageData);
+            image  = ImageHelper.Load(imageData);
             imageData = saveImageData;
             ShouldDisposeImage = true;
         }
@@ -678,7 +684,7 @@ namespace FastReport
         /// </summary>
         public PictureObject()
         {
-            transparentColor = Color.Transparent;
+            transparentColor = SkiaSharp.SKColors.Transparent;
             SetFlags(Flags.HasSmartTag, true);
             ResetImageIndex();
         }

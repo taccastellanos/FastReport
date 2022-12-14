@@ -147,7 +147,7 @@ namespace FastReport
         /// </summary>
         public SubreportObject()
         {
-            Fill = new SolidFill(SystemColors.Control);
+            Fill = new SolidFill(SkiaSharp.SKColors.Gray);
             FlagUseBorder = false;
             FlagUseFill = false;
             FlagPreviewVisible = false;

@@ -79,8 +79,9 @@ namespace FastReport
 
         internal void GetCustomCapPath(out SkiaSharp.SKPath path, out float inset)
         {
-            path = new GraphicsPath();
+            path = new SkiaSharp.SKPath();
             inset = 0;
+            /*TODO
             switch (Style)
             {
                 case CapStyle.Arrow:
@@ -105,7 +106,7 @@ namespace FastReport
                     path.AddLine(new SkiaSharp.SKPoint(Width / 1.4f, 0), new SkiaSharp.SKPoint(0, -Height / 1.4f));
                     inset = Height / 1.4f;
                     break;
-            }
+            }*/
         }
 
         /// <summary>

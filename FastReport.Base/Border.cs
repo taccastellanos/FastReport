@@ -183,12 +183,13 @@ namespace FastReport
     internal void Draw(FRPaintEventArgs e, float x, float y, float x1, float y1, 
       bool reverseGaps, bool gap1, bool gap2)
     {
+      /*TODO
       IGraphics g = e.Graphics;
 
       int penWidth = (int)Math.Round(Width * e.ScaleX);
       if (penWidth <= 0)
         penWidth = 1;
-      using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (Color, penWidth))
+      using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (Color, penWidth))
       {
         pen.DashStyle = DashStyle;
         pen.StartCap = LineCap.Square;
@@ -233,7 +234,7 @@ namespace FastReport
             g.DrawLine(pen, x + g3, y + pen.Width, x1 - g4, y1 + pen.Width);
           }  
         }
-      }  
+      } */ 
     }
 
     internal void Serialize(FRWriter writer, string prefix, BorderLine c)
@@ -571,6 +572,7 @@ namespace FastReport
     /// </remarks>
     public void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
+      /*TODO
       IGraphics g = e.Graphics;
       rect.X *= e.ScaleX;
       rect.Y *= e.ScaleY;
@@ -585,7 +587,7 @@ namespace FastReport
         //g.DrawLine(pen, rect.Left + d, rect.Bottom + d / 2, rect.Right + d, rect.Bottom + d / 2);
 
         float d = ShadowWidth * e.ScaleX;
-        /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(ShadowColor);
+        /*Brush/SkiaSharp.SKPaint brush = e.Cache.GetBrush(ShadowColor);
         g.FillRectangle(brush, rect.Left + d, rect.Bottom, rect.Width, d);
         g.FillRectangle(brush, rect.Right, rect.Top + d, d, rect.Height);
       }
@@ -597,7 +599,7 @@ namespace FastReport
         if (Lines == BorderLines.All && LeftLine.Equals(TopLine) && LeftLine.Equals(RightLine) &&
           LeftLine.Equals(BottomLine) && LeftLine.Style == LineStyle.Solid)
         {
-          /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(LeftLine.Color, (int)Math.Round(LeftLine.Width * e.ScaleX), LeftLine.DashStyle);
+          /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(LeftLine.Color, (int)Math.Round(LeftLine.Width * e.ScaleX), LeftLine.DashStyle);
           g.DrawRectangle(pen, rect.Left, rect.Top, rect.Width, rect.Height);
         }
         else
@@ -615,7 +617,7 @@ namespace FastReport
             BottomLine.Draw(e, rect.Left, rect.Bottom, rect.Right, rect.Bottom,
               false, (Lines & BorderLines.Left) != 0, (Lines & BorderLines.Right) != 0);
         }
-      }
+      }*/
     }
     #endregion
 

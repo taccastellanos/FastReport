@@ -75,6 +75,7 @@ namespace FastReport
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
+            /*TODO
             IGraphics g = e.Graphics;
             // draw marker when inserting a line
             if (Width == 0 && Height == 0)
@@ -91,7 +92,7 @@ namespace FastReport
                 g.SmoothingMode = SmoothingMode.AntiAlias;
             }
 
-            /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
+            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
 
             float width = Width;
             float height = Height;
@@ -164,7 +165,7 @@ namespace FastReport
             {
                 g.InterpolationMode = InterpolationMode.Default;
                 g.SmoothingMode = SmoothingMode.Default;
-            }
+            }*/
         }
 
         /// <inheritdoc/>

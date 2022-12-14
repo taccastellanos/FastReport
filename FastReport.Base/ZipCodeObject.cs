@@ -141,11 +141,12 @@ namespace FastReport
     #region Private Methods
     private void DrawSegmentGrid(FRPaintEventArgs e, float offsetX, float offsetY)
     {
+      /*TODO
       IGraphics g = e.Graphics;
       SmoothingMode saveSmoothing = g.SmoothingMode;
       g.SmoothingMode = SmoothingMode.AntiAlias;
 
-      /*Brush*/SkiaSharp.SKPaint b = e.Cache.GetBrush(Border.Color);
+      /*Brush/SkiaSharp.SKPaint b = e.Cache.GetBrush(Border.Color);
       
       int[] grid = new int[] { 111111, 110001, 101001, 100101, 100011, 111111, 110001, 101001, 100101, 100011, 111111 };
       float ratioX = segmentWidth / (Units.Centimeters * 0.5f);
@@ -171,13 +172,14 @@ namespace FastReport
         y += Units.Millimeters * 1 * ratioY;
       }
 
-      g.SmoothingMode = saveSmoothing;
+      g.SmoothingMode = saveSmoothing;*/
     }
 
     private void DrawReferenceLine(FRPaintEventArgs e, float offsetX)
     {
+      /*TODO
       IGraphics g = e.Graphics;
-      /*Brush*/SkiaSharp.SKPaint b = e.Cache.GetBrush(Border.Color);
+      /*Brush/SkiaSharp.SKPaint b = e.Cache.GetBrush(Border.Color);
 
       g.FillRectangle(b,
         new SkiaSharp.SKRect((AbsLeft + offsetX) * e.ScaleX, AbsTop * e.ScaleY,
@@ -189,11 +191,12 @@ namespace FastReport
         g.FillRectangle(b,
           new SkiaSharp.SKRect((AbsLeft + offsetX) * e.ScaleX, (AbsTop + Units.Millimeters * 3) * e.ScaleY,
             Units.Millimeters * 7 * e.ScaleX, Units.Millimeters * 1 * e.ScaleY));
-      }
+      }*/
     }
 
     private void DrawSegment(FRPaintEventArgs e, int symbol, float offsetX)
     {
+      /*
       IGraphics g = e.Graphics;
       float offsetY = 0;
 
@@ -231,14 +234,14 @@ namespace FastReport
             (AbsTop + digit[i].Y * Units.Millimeters * ratioY + offsetY) * e.ScaleY);
         }
         
-        using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint (Border.Color, Border.Width * e.ScaleX))
+        using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (Border.Color, Border.Width * e.ScaleX))
         {
           pen.StartCap = LineCap.Round;
           pen.EndCap = LineCap.Round;
           pen.LineJoin = LineJoin.Round;
           g.DrawLines(pen, path);
         }
-      }  
+      }  */
     }
     #endregion
 
@@ -375,16 +378,16 @@ namespace FastReport
     static ZipCodeObject()
     {
       FDigits = new List<SkiaSharp.SKPoint[]>();
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 0), new Point(5, 0), new Point(5, 10), new Point(0, 10), new Point(0, 0) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 5), new Point(5, 0), new Point(5, 10) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 0), new Point(5, 0), new Point(5, 5), new Point(0, 10), new Point(5, 10) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 0), new Point(5, 0), new Point(0, 5), new Point(5, 5), new Point(0, 10) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 0), new Point(0, 5), new Point(5, 5), new Point(5, 0), new Point(5, 10) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(5, 0), new Point(0, 0), new Point(0, 5), new Point(5, 5), new Point(5, 10), new Point(0, 10) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(5, 0), new Point(0, 5), new Point(0, 10), new Point(5, 10), new Point(5, 5), new Point(0, 5) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 0), new Point(5, 0), new Point(0, 5), new Point(0, 10) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(0, 5), new Point(0, 0), new Point(5, 0), new Point(5, 10), new Point(0, 10), new Point(0, 5), new Point(5, 5) });
-      FDigits.Add(new SkiaSharp.SKPoint[] { new Point(5, 5), new Point(0, 5), new Point(0, 0), new Point(5, 0), new Point(5, 5), new Point(0, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(5, 10), new SkiaSharp.SKPoint(0, 10), new SkiaSharp.SKPoint(0, 0) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(5, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(0, 10), new SkiaSharp.SKPoint(5, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(0, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(5, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(5, 10), new SkiaSharp.SKPoint(0, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(0, 10), new SkiaSharp.SKPoint(5, 10), new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(0, 5) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(0, 10) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(5, 10), new SkiaSharp.SKPoint(0, 10), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(5, 5) });
+      FDigits.Add(new SkiaSharp.SKPoint[] { new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(0, 5), new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(5, 0), new SkiaSharp.SKPoint(5, 5), new SkiaSharp.SKPoint(0, 10) });
     }
   }
 }

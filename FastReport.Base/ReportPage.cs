@@ -688,17 +688,20 @@ namespace FastReport
         #region Private Methods
         private void DrawBackground(FRPaintEventArgs e, SkiaSharp.SKRect rect)
         {
-            rect.Width *= e.ScaleX;
+           
+           /*TODO rect.Width *= e.ScaleX;
             rect.Height *= e.ScaleY;
-            /*Brush*/SkiaSharp.SKPaint brush = null;
+
+            /*Brush/SkiaSharp.SKPaint brush = null;
             if (Fill is SolidFill)
-                /*Brush*/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
+                brush = e.Cache.GetBrush((Fill as SolidFill).Color);
             else
-                /*Brush*/SkiaSharp.SKPaint = Fill.CreateBrush(rect, e.ScaleX, e.ScaleY);
+                brush = Fill.CreateBrush(rect, e.ScaleX, e.ScaleY);
 
             e.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
             if (!(Fill is SolidFill))
                 brush.Dispose();
+                */
         }
         #endregion
 
@@ -946,6 +949,7 @@ namespace FastReport
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
+            /*TODO
             if (IsDesigning)
                 return;
 
@@ -1017,7 +1021,7 @@ namespace FastReport
                     Watermark.DrawImage(e, pageRect, Report, IsPrinting);
                 if (Watermark.ShowTextOnTop)
                     Watermark.DrawText(e, pageRect, Report, IsPrinting);
-            }
+            }*/
         }
 
         internal void InitializeComponents()
@@ -1125,7 +1129,7 @@ namespace FastReport
             guides = new FloatCollection();
             columns = new PageColumns(this);
             border = new Border();
-            fill = new SolidFill(Color.White);
+            fill = new SolidFill(SkiaSharp.SKColors.White);
             watermark = new Watermark();
             titleBeforeHeader = true;
             startPageEvent = "";

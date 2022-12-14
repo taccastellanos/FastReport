@@ -139,7 +139,7 @@ namespace FastReport
         [Browsable(false)]
         public virtual SkiaSharp.SKSize ClientSize
         {
-            get { return new SizeF(Width, Height); }
+            get { return new SkiaSharp.SKSize(Width, Height); }
             set
             {
                 Width = value.Width;

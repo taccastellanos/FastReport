@@ -102,7 +102,7 @@ namespace FastReport
     public HighlightCondition()
     {
       Expression = "";
-      TextFill = new SolidFill(Color.Red); 
+      TextFill = new SolidFill(SkiaSharp.SKColors.Red); 
       Visible = true;
       ApplyBorder = false;
       ApplyFill = false;

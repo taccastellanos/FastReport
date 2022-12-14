@@ -94,7 +94,7 @@ namespace FastReport
             // calculate cellWidth, cellHeight automatically
             if (cellWidth == 0 || cellHeight == 0)
             {
-                float fontHeight = Font.GetHeight() * 96f / DrawUtils.ScreenDpi;
+                float fontHeight = Font.Size * 96f / DrawUtils.ScreenDpi;
                 cellWidth = GetCellWidthInternal(fontHeight);
                 cellHeight = cellWidth;
             }

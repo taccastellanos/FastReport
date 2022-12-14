@@ -70,10 +70,13 @@ namespace FastReport
 
         internal SkiaSharp.SKTextAlign GetStringFormat(GraphicCache cache, StringFormatFlags flags, float scale)
         {
+            /*TODO
             if (RightToLeft)
                 flags |= SkiaSharp.SKEncodedImageFormat.DirectionRightToLeft;
 
             return cache.GetStringFormat(StringAlignment.Near, StringAlignment.Near, StringTrimming.None, flags, 0 * scale, 0 * scale);
+            */
+            return SkiaSharp.SKTextAlign.Left;
         }
 
         /// <inheritdoc/>
@@ -91,6 +94,7 @@ namespace FastReport
         /// <param name="e">Paint event data.</param>
         public void DrawText(FRPaintEventArgs e)
         {
+            /*TODO
             string text = Text;
             if (!String.IsNullOrEmpty(text))
             {
@@ -105,7 +109,7 @@ namespace FastReport
 
                 SkiaSharp.SKFont font = DrawUtils.DefaultTextObjectFont;
 
-                /*Brush*/SkiaSharp.SKPaint textBrush = e.Cache.GetBrush(SkiaSharp.SKColors.Black);
+                /*Brush/SkiaSharp.SKPaint textBrush = e.Cache.GetBrush(SkiaSharp.SKColors.Black);
 
                 Report report = Report;
                 if (report != null)
@@ -116,7 +120,7 @@ namespace FastReport
                         // use simple rendering
                         g.DrawString(text, font, textBrush, textRect, format);
                 }
-            }
+            }*/
         }
 
 

@@ -113,7 +113,7 @@ namespace FastReport.Utils
 
         private static SkiaSharp.SKRect GetReducedRect(SkiaSharp.SKRect rect)
         {
-            return new SkiaSharp.SKRect(rect.X + 0.01f, rect.Y + 0.01f, rect.Width - 0.02f, rect.Height - 0.02f);
+            return new SkiaSharp.SKRect(rect.Left + 0.01f, rect.Top + 0.01f, rect.Width - 0.02f, rect.Height - 0.02f);
         }
 
         /// <summary>

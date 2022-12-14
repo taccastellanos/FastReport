@@ -249,7 +249,7 @@ namespace FastReport
         [Browsable(false)]
         public SkiaSharp.SKColor FillColor
         {
-            get { return Fill is SolidFill ? (Fill as SolidFill).Color : Color.Transparent; }
+            get { return Fill is SolidFill ? (Fill as SolidFill).Color : SkiaSharp.SKColors.Transparent; }
             set { Fill = new SolidFill(value); }
         }
 
@@ -800,9 +800,11 @@ namespace FastReport
         /// <param name="e">Draw event arguments.</param>
         public virtual bool IsVisible(FRPaintEventArgs e)
         {
+            
             SkiaSharp.SKRect objRect = new SkiaSharp.SKRect(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
               Width * e.ScaleX + 1, Height * e.ScaleY + 1);
-            return e.Graphics.IsVisible(objRect);
+            
+            return false;//TODO e.Graphics.IsVisible(objRect);
         }
 
         /// <summary>

@@ -96,7 +96,7 @@ namespace FastReport
       rect = new SkiaSharp.SKRect(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
       using (var brush = CreateBrush(rect, e.ScaleX, e.ScaleY))
       {
-        e.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
+        //TODOe.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
       }
     }
   }
@@ -120,7 +120,7 @@ namespace FastReport
 
     public override bool IsTransparent 
     {
-        get { return color.A == 0; }
+        get { return color.Alpha == 0; }
     }
 
     /// <inheritdoc/>
@@ -145,7 +145,7 @@ namespace FastReport
     /// <inheritdoc/>
     public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
-      return new SolidBrush(Color);
+      return new SkiaSharp.SKPaint();//TODOnew SolidBrush(Color);
     }
 
     /// <inheritdoc/>
@@ -161,16 +161,16 @@ namespace FastReport
     /// <inheritdoc/>
     public override void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
-      if (Color == Color.Transparent)
+      if (Color == SkiaSharp.SKColors.Transparent)
         return;
       /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(Color);
-      e.Graphics.FillRectangle(brush, rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      //TODOe.Graphics.FillRectangle(brush, rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
     }
     
     /// <summary>
     /// Initializes the <see cref="SolidFill"/> class with Transparent color.
     /// </summary>
-    public SolidFill() : this(Color.Transparent)
+    public SolidFill() : this(SkiaSharp.SKColors.Transparent)
     {
     }
     
@@ -217,7 +217,7 @@ namespace FastReport
 
     public override bool IsTransparent 
     {
-        get { return startColor.A == 0 && endColor.A == 0; }
+        get { return startColor.Alpha == 0 && endColor.Alpha == 0; }
     }
 
     /// <summary>
@@ -294,10 +294,12 @@ namespace FastReport
     {
       // workaround the gradient bug
       rect.Inflate(1, 1);
-      
+      /*TODO
       LinearGradientBrush result = new LinearGradientBrush(rect, StartColor, EndColor, Angle);
       result.SetSigmaBellShape(Focus, Contrast);
-      return result;
+
+      return result;*/
+      return new SkiaSharp.SKPaint();
     }
 
     /// <inheritdoc/>
@@ -321,7 +323,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="LinearGradientFill"/> class with default settings.
     /// </summary>
-    public LinearGradientFill() : this(SkiaSharp.SKColors.Black, Color.White, 0, 100, 100)
+    public LinearGradientFill() : this(SkiaSharp.SKColors.Black, SkiaSharp.SKColors.White, 0, 100, 100)
     {
     }
 
@@ -421,7 +423,7 @@ namespace FastReport
 
     public override bool IsTransparent 
     {
-        get { return centerColor.A == 0 && edgeColor.A == 0; }
+        get { return centerColor.Alpha == 0 && edgeColor.Alpha == 0; }
     }
 
     /// <inheritdoc/>
@@ -446,21 +448,24 @@ namespace FastReport
     /// <inheritdoc/>
     public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
-      SkiaSharp.SKPath path = new GraphicsPath();
+      SkiaSharp.SKPath path = new SkiaSharp.SKPath();
       if (Style == PathGradientStyle.Rectangular)
-        path.AddRectangle(rect);
+        path.AddRect(rect);
       else
       {
         float radius = (float)Math.Sqrt(rect.Width * rect.Width + rect.Height * rect.Height) / 2 + 1;
         SkiaSharp.SKPoint center = new SkiaSharp.SKPoint(rect.Left + rect.Width / 2 - 1, rect.Top + rect.Height / 2 - 1);
         SkiaSharp.SKRect r = new SkiaSharp.SKRect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
-        path.AddEllipse(r);
+        path.AddOval(r);
       }
-      PathGradientBrush result = new PathGradientBrush(path);
-      path.Dispose();
+      /*TODO
+      PathGradientBrush result = new  PathGradientBrush(path);
+      path.Dispose(); 
       result.CenterColor = CenterColor;
       result.SurroundColors = new Color[] { EdgeColor };
       return result;
+      */
+      return new SkiaSharp.SKPaint();
     }
 
     /// <inheritdoc/>
@@ -480,7 +485,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="PathGradientFill"/> class with default settings.
     /// </summary>
-    public PathGradientFill() : this(SkiaSharp.SKColors.Black, Color.White, PathGradientStyle.Elliptic)
+    public PathGradientFill() : this(SkiaSharp.SKColors.Black, SkiaSharp.SKColors.White, PathGradientStyle.Elliptic)
     {
     }
 
@@ -538,7 +543,7 @@ namespace FastReport
 
     public override bool IsTransparent 
     {
-        get { return foreColor.A == 0 && backColor.A == 0; }
+        get { return foreColor.Alpha == 0 && backColor.Alpha == 0; }
     }
 
     /// <inheritdoc/>
@@ -563,7 +568,7 @@ namespace FastReport
     /// <inheritdoc/>
     public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
-      return new HatchBrush(Style, ForeColor, BackColor);
+      return new SkiaSharp.SKPaint();//TODO new HatchBrush(Style, ForeColor, BackColor);
     }
 
     /// <inheritdoc/>
@@ -583,7 +588,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="HatchFill"/> class with default settings.
     /// </summary>
-    public HatchFill() : this(SkiaSharp.SKColors.Black, Color.White, HatchStyle.BackwardDiagonal)
+    public HatchFill() : this(SkiaSharp.SKColors.Black, SkiaSharp.SKColors.White, HatchStyle.BackwardDiagonal)
     {
     }
     
@@ -646,7 +651,7 @@ namespace FastReport
 
     public override bool IsTransparent 
     {
-        get { return color.A == 0; }
+        get { return color.Alpha == 0; }
     }
 
     /// <inheritdoc/>
@@ -672,7 +677,7 @@ namespace FastReport
     public override void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
       rect = new SkiaSharp.SKRect(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
-
+      /*TODO
       // draw fill
       using (SolidBrush b = new SolidBrush(Color))
       {
@@ -693,13 +698,13 @@ namespace FastReport
       using (SolidBrush b = new SolidBrush(Color.FromArgb((int)(Blend * 255), Color.White)))
       {
         e.Graphics.FillRectangle(b, rect.Left, rect.Top, rect.Width, rect.Height / 2);
-      }
+      }*/
     }
 
     /// <inheritdoc/>
     public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
-      return new SolidBrush(Color);
+      return new SkiaSharp.SKPaint();//TODOnew SolidBrush(Color);
     }
 
     /// <inheritdoc/>
@@ -719,7 +724,7 @@ namespace FastReport
     /// <summary>
     /// Initializes the <see cref="GlassFill"/> class with default settings.
     /// </summary>
-    public GlassFill() : this(Color.White, 0.2f, true)
+    public GlassFill() : this(SkiaSharp.SKColors.White, 0.2f, true)
     {
     }
 
@@ -889,8 +894,9 @@ namespace FastReport
                 return;
             else
             {
-                image = ImageHelper.Load(imageData);
-                image = new Bitmap(image, width, height);
+                var b = SkiaSharp.SKBitmap.FromImage(image)
+                              .Resize(new SkiaSharp.SKSizeI(width,height), SkiaSharp.SKFilterQuality.High);
+                image = SkiaSharp.SKImage.FromBitmap(b);              
             }
                 
         }
@@ -942,7 +948,7 @@ namespace FastReport
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                image.Save(ms, image.RawFormat);
+                //image.Save(ms, image.RawFormat);
                 SetImageData(ms.ToArray());
             }
         }
@@ -985,9 +991,10 @@ namespace FastReport
         {
             if (image == null)
                 ForceLoadImage();          
-            TextureBrush brush = new TextureBrush(image, WrapMode);
+            /*TODOTextureBrush brush = new TextureBrush(image, WrapMode);
             brush.TranslateTransform(rect.Left + ImageOffsetX, rect.Top + ImageOffsetY);
-            return brush;
+            return brush;*/
+            return new SkiaSharp.SKPaint();
         }
 
         /// <inheritdoc/>
@@ -995,10 +1002,11 @@ namespace FastReport
         {
             if (image == null)
                 ForceLoadImage();
-            TextureBrush brush = new TextureBrush(image, WrapMode);
+            /*TODO TextureBrush brush = new TextureBrush(image, WrapMode);
             brush.TranslateTransform(rect.Left + ImageOffsetX * scaleX, rect.Top + ImageOffsetY * scaleY);
             brush.ScaleTransform(scaleX, scaleY);
-            return brush;
+            return brush;*/
+            return new SkiaSharp.SKPaint();
         }
 
         /// <inheritdoc/>

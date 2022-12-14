@@ -100,14 +100,15 @@ namespace FastReport
 #else    
     private SkiaSharp.SKPath GetRoundRectPath(float x, float y, float x1, float y1, float radius)
     {
-        SkiaSharp.SKPath gp = new GraphicsPath();
+        SkiaSharp.SKPath gp = new SkiaSharp.SKPath();
         if (radius < 1)
             radius = 1;
+            /*TODO
         gp.AddArc(x1 - radius - 1, y, radius + 1, radius + 1, 270, 90);
         gp.AddArc(x1 - radius - 1, y1 - radius - 1, radius + 1, radius + 1, 0, 90);
         gp.AddArc(x, y1 - radius - 1, radius + 1, radius + 1, 90, 90);
         gp.AddArc(x, y, radius, radius, 180, 90);
-        gp.CloseFigure();
+        gp.Close();*/
         return gp;
     }
 #endif
@@ -127,6 +128,7 @@ namespace FastReport
     /// <inheritdoc/>
     public override void Draw(FRPaintEventArgs e)
     {
+      /*TODO
       if (Math.Abs(Width) < 1 || Math.Abs(Height) < 1)
         return;
 
@@ -138,12 +140,12 @@ namespace FastReport
       float x1 = x + dx;
       float y1 = y + dy;
 
-      /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
-      /*Brush*/SkiaSharp.SKPaint brush = null;
+      /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
+      /*Brush/SkiaSharp.SKPaint brush = null;
       if (Fill is SolidFill)
-        /*Brush*/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
+        /*Brush/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
       else
-        /*Brush*/SkiaSharp.SKPaint = Fill.CreateBrush(new SkiaSharp.SKRect(x, y, dx, dy), e.ScaleX, e.ScaleY);
+        /*Brush/SkiaSharp.SKPaint = Fill.CreateBrush(new SkiaSharp.SKRect(x, y, dx, dy), e.ScaleX, e.ScaleY);
         
       Report report = Report;
       if (report != null && report.SmoothGraphics && Shape != ShapeKind.Rectangle)
@@ -193,7 +195,7 @@ namespace FastReport
       {
         g.InterpolationMode = InterpolationMode.Default;
         g.SmoothingMode = SmoothingMode.Default;
-      }  
+      }  */
     }
 
     /// <inheritdoc/>

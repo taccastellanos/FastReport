@@ -240,7 +240,7 @@ namespace FastReport
         private ReportEngine engine;
         private bool aborted;
         private SkiaSharp.SKBitmap measureBitmap;
-        private IGraphics measureGraphics;
+        private SkiaSharp.SKDrawable measureGraphics;
         private bool storeInResources;
         private PermissionSet scriptRestrictions;
         private ReportOperation operation;
@@ -870,9 +870,6 @@ namespace FastReport
                     "System.Windows.Forms.dll",
 #endif
 
-#if CROSSPLATFORM || COREWIN
-                    "System.Drawing.Primitives",
-#endif
 
 #if MSCHART
                     "FastReport.DataVisualization.dll"
@@ -886,17 +883,17 @@ namespace FastReport
             get { return codeHelper; }
         }
 
-        public IGraphics MeasureGraphics
+        public SkiaSharp.SKDrawable MeasureGraphics
         {
             get
             {
                 if (measureGraphics == null)
                 {
 #if CROSSPLATFORM || MONO
-                    measureBitmap = new Bitmap(1, 1);
-                    measureGraphics = new GdiGraphics(measureBitmap);
+                    measureBitmap = new SkiaSharp.SKBitmap(SkiaSharp.SKImageInfo.Empty);
+                    //TODOmeasureGraphics = new GdiGraphics(measureBitmap);
 #else
-                    measureGraphics = GdiGraphics.FromGraphics(Graphics.FromHwnd(IntPtr.Zero));
+                    //TODOmeasureGraphics = GdiGraphics.FromGraphics(Graphics.FromHwnd(IntPtr.Zero));
 #endif
                 }
                 return measureGraphics;

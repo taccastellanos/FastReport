@@ -242,7 +242,7 @@ namespace FastReport.Export.Html
         }
 
         private string HTMLGetImage(int PageNumber, int CurrentPage, int ImageNumber, string hash, bool Base,
-            System.Drawing.Image Metafile, MemoryStream PictureStream, bool isSvg)
+            SkiaSharp.SKImage Metafile, MemoryStream PictureStream, bool isSvg)
         {
             if (pictures)
             {

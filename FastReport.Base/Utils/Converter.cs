@@ -77,12 +77,12 @@ namespace FastReport.Utils
 #if true// | CROSSPLATFORM
             if (value is SkiaSharp.SKFont)
             {
-                return new TypeConverters.FontConverter().ConvertToInvariantString(value);
+                return "";//TODOnew TypeConverters.FontConverter().ConvertToInvariantString(value);
             }
 #endif
-            if(value is System.Drawing.Imaging.ImageFormat)
+            if(value is SkiaSharp.SKEncodedImageFormat)
             {
-                var imageFormat = value as System.Drawing.Imaging.ImageFormat;
+                var imageFormat = (SkiaSharp.SKEncodedImageFormat)value;
                 return imageFormat.ToString();
             }
             return TypeDescriptor.GetConverter(value).ConvertToInvariantString(value);
@@ -135,7 +135,7 @@ namespace FastReport.Utils
 #if true //CROSSPLATFORM
             if (type == typeof(SkiaSharp.SKFont))
             {
-                return new TypeConverters.FontConverter().ConvertFromInvariantString(value);
+                return "";//TODOnew TypeConverters.FontConverter().ConvertFromInvariantString(value);
             }
 #endif
       if (type == typeof(SkiaSharp.SKColor))
