@@ -44,7 +44,7 @@ namespace FastReport
     public partial class PictureObject : PictureObjectBase
     {
         #region Fields
-        private SkiaSharp.SKImage  image;
+        private SkiaSharp.SKBitmap  image;
         
         private int imageIndex;
         
@@ -74,7 +74,7 @@ namespace FastReport
         /// </remarks>
         [Category("Data")]
         
-        public virtual SkiaSharp.SKImage  Image
+        public virtual SkiaSharp.SKBitmap  Image
         {
             get { return image; }
             set
@@ -587,7 +587,7 @@ namespace FastReport
                 }
                 catch
                 {
-                    image  = SkiaSharp.SKImage.Create(SkiaSharp.SKImageInfo.Empty);
+                    image  = new SkiaSharp.SKBitmap();
                 }
 
                 ShouldDisposeImage = true;
@@ -644,9 +644,9 @@ namespace FastReport
                 {
                     SetImageData((byte[])data);
                 }
-                else if (data is SkiaSharp.SKImage)
+                else if (data is SkiaSharp.SKBitmap)
                 {
-                    image  = data as SkiaSharp.SKImage;
+                    image  = data as SkiaSharp.SKBitmap;
                 }
                 else if (data is string)
                 {

@@ -98,7 +98,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets the watermark image.
         /// </summary>
-        public SkiaSharp.SKImage  Image
+        public SkiaSharp.SKBitmap  Image
         {
             get { return pictureObject.Image; }
             set { pictureObject.Image = value; }
@@ -322,7 +322,7 @@ namespace FastReport
         public void Assign(Watermark source)
         {
             Enabled = source.Enabled;
-            Image  = source.Image == null ? null : SkiaSharp.SKImage.Create(source.Image.Info) ;
+            Image  = source.Image == null ? null : new SkiaSharp.SKBitmap();
             ImageSize = source.ImageSize;
             ImageTransparency = source.ImageTransparency;
             Text = source.Text;

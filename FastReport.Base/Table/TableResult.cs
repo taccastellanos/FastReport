@@ -213,8 +213,10 @@ namespace FastReport.Table
                 cellData.ColSpan = colSpan;
                 cellData.RowSpan = rowSpan;
             }
-
-            list.Add(new SkiaSharp.SKRect(startX, startY, colSpan, rowSpan));
+            var r =new SkiaSharp.SKRect();
+            r.Location = new SkiaSharp.SKPoint( startX, startY);
+            r.Size = new SkiaSharp.SKSize(colSpan, rowSpan);    
+            list.Add(r);
         }
 
         private bool IsInsideSpan(TableCell cell, List<SkiaSharp.SKRect> list)
@@ -456,8 +458,11 @@ namespace FastReport.Table
                             columnsFit = 1;
 
                         engine.CurY = saveCurY;
+                        var r = new SkiaSharp.SKRect();
+                        r.Location = new SkiaSharp.SKPoint(0,0);
+                        r.Size = new SkiaSharp.SKSize(engine.PageWidth, CanBreak ? freeSpace : Height);
                         curY = GeneratePage(startColumn, startRow, columnsFit, rowsFit,
-                            new SkiaSharp.SKRect(0, 0, engine.PageWidth, CanBreak ? freeSpace : Height), spans) + saveCurY;
+                            r, spans) + saveCurY;
 
                         Left = 0;
                         startColumn += columnsFit;
@@ -534,9 +539,11 @@ namespace FastReport.Table
                         // avoid the infinite loop if there is not enough space for one row
                         if (startRow > 0 && rowsFit == 0)
                             rowsFit = 1;
-
+                        var r = new SkiaSharp.SKRect();
+                        r.Location = new SkiaSharp.SKPoint(0, 0);
+                        r.Size = new SkiaSharp.SKSize(engine.PageWidth, engine.FreeSpace); 
                         engine.CurY += GeneratePage(startColumn, startRow, columnsFit, rowsFit,
-                          new SkiaSharp.SKRect(0, 0, engine.PageWidth, engine.FreeSpace), spans);
+                          r, spans);
                         info.tableSize.Height++;
 
                         startRow += rowsFit;
@@ -609,9 +616,11 @@ namespace FastReport.Table
                         engine.StartNewPage();
                         rowsFit = GetRowsFit(startRow, engine.FreeSpace);
                     }
-
+                    var r = new SkiaSharp.SKRect();
+                    r.Location = new SkiaSharp.SKPoint(0, 0);
+                    r.Size = new SkiaSharp.SKSize(engine.PageWidth, engine.FreeSpace);
                     engine.CurY += GeneratePage(startColumn, startRow, columnsFit, rowsFit,
-                      new SkiaSharp.SKRect(0, 0, engine.PageWidth, engine.FreeSpace), spans);
+                      r, spans);
 
                     startRow += rowsFit;
 
@@ -695,6 +704,7 @@ namespace FastReport.Table
                             cell.Text = "";
                         if (cell.CanBreak)
                             newSpannedCell.Text = tempObject.Text;
+                           
                     }
 
                     // fix the row height

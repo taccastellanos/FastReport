@@ -4,6 +4,7 @@ using FastReport.Barcode;
 using FastReport.Gauge.Linear;
 using FastReport.Gauge.Simple;
 using FastReport.Data;
+using System;
 #if !CROSSPLATFORM
 using System.CodeDom.Compiler;
 #endif

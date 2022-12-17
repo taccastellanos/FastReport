@@ -93,10 +93,13 @@ namespace FastReport
     /// <param name="rect">Drawing rectangle.</param>
     public virtual void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
-      rect = new SkiaSharp.SKRect(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      rect = new SkiaSharp.SKRect();
+      rect.Location = new SkiaSharp.SKPoint(rect.Left * e.ScaleX, rect.Top * e.ScaleY);
+      rect.Size = new SkiaSharp.SKSize(rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      
       using (var brush = CreateBrush(rect, e.ScaleX, e.ScaleY))
       {
-        //TODOe.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
+        e.Graphics.DrawRect(rect.Left, rect.Top, rect.Width, rect.Height, brush);
       }
     }
   }
@@ -145,7 +148,10 @@ namespace FastReport
     /// <inheritdoc/>
     public override /*Brush*/SkiaSharp.SKPaint CreateBrush(SkiaSharp.SKRect rect)
     {
-      return new SkiaSharp.SKPaint();//TODOnew SolidBrush(Color);
+      var b = new SkiaSharp.SKPaint();
+      b.Style = SkiaSharp.SKPaintStyle.Fill;
+      b.Color = Color;
+      return b;
     }
 
     /// <inheritdoc/>
@@ -163,8 +169,8 @@ namespace FastReport
     {
       if (Color == SkiaSharp.SKColors.Transparent)
         return;
-      /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(Color);
-      //TODOe.Graphics.FillRectangle(brush, rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      var brush = e.Cache.GetBrush(Color);
+      e.Graphics.DrawRect(rect.Left * e.ScaleX, rect.Top * e.ScaleY, rect.Width * e.ScaleX, rect.Height * e.ScaleY, brush);
     }
     
     /// <summary>
@@ -749,7 +755,7 @@ namespace FastReport
     {
         #region Fields
 
-        private SkiaSharp.SKImage  image;
+        private SkiaSharp.SKBitmap  image;
         private int imageWidth;
         private int imageHeight;
         private bool preserveAspectRatio;
@@ -894,9 +900,9 @@ namespace FastReport
                 return;
             else
             {
-                var b = SkiaSharp.SKBitmap.FromImage(image)
-                              .Resize(new SkiaSharp.SKSizeI(width,height), SkiaSharp.SKFilterQuality.High);
-                image = SkiaSharp.SKImage.FromBitmap(b);              
+                
+                image.Resize(new SkiaSharp.SKSizeI(width,height), SkiaSharp.SKFilterQuality.High);
+                              
             }
                 
         }

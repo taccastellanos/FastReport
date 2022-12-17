@@ -10,7 +10,7 @@ namespace FastReport.Utils
     /// </summary>
     public class FRPaintEventArgs
     {
-        private SkiaSharp.SKDrawable graphics;
+        private SkiaSharp.SKCanvas graphics;
         private float scaleX;
         private float scaleY;
         private GraphicCache cache;
@@ -18,7 +18,7 @@ namespace FastReport.Utils
         /// <summary>
         /// Gets a <b>Graphics</b> object to draw on.
         /// </summary>
-        public SkiaSharp.SKDrawable Graphics
+        public SkiaSharp.SKCanvas Graphics
         {
             get { return graphics; }
         }
@@ -54,7 +54,7 @@ namespace FastReport.Utils
         /// <param name="scaleX">X scale factor.</param>
         /// <param name="scaleY">Y scale factor.</param>
         /// <param name="cache">Cache that contains graphics objects.</param>
-        public FRPaintEventArgs(SkiaSharp.SKDrawable g, float scaleX, float scaleY, GraphicCache cache)
+        public FRPaintEventArgs(SkiaSharp.SKCanvas g, float scaleX, float scaleY, GraphicCache cache)
         {
             graphics = g;
             this.scaleX = scaleX;

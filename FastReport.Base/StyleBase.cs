@@ -1,5 +1,5 @@
 using FastReport.Utils;
-
+using System;
 
 namespace FastReport
 {

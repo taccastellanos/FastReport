@@ -47,7 +47,12 @@ namespace FastReport
         [Browsable(false)]
         public SkiaSharp.SKRect AbsBounds
         {
-            get { return new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height); }
+            get {
+                    var r = new SkiaSharp.SKRect();
+                    r.Location = new SkiaSharp.SKPoint(AbsLeft, AbsTop);
+                    r.Size = new SkiaSharp.SKSize(Width, Height);
+                 return r; 
+                 }
         }
 
         /// <summary>
@@ -120,7 +125,12 @@ namespace FastReport
         [Browsable(false)]
         public SkiaSharp.SKRect Bounds
         {
-            get { return new SkiaSharp.SKRect(Left, Top, Width, Height); }
+            get {
+                    var r = new SkiaSharp.SKRect();
+                    r.Location = new SkiaSharp.SKPoint(Left, Top);
+                    r.Size = new SkiaSharp.SKSize(Width, Height);
+                return r; 
+                }
             set
             {
                 Left = value.Left;

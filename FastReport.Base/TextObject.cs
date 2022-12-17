@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
@@ -727,20 +728,21 @@ namespace FastReport
         #region Private Methods
         private void DrawUnderlines(FRPaintEventArgs e)
         {
-            /*TODO
+            
             if (!Underlines || Angle != 0)
                 return;
 
-            IGraphics g = e.Graphics;
-            float lineHeight = LineHeight == 0 ? Font.GetHeight() * DrawUtils.ScreenDpiFX : LineHeight;
+            var g = e.Graphics;
+            var f = new SkiaSharp.SKPaint(Font);
+            float lineHeight = LineHeight == 0 ? f.MeasureText("a") * DrawUtils.ScreenDpiFX : LineHeight;
             lineHeight *= e.ScaleY;
             float curY = AbsTop * e.ScaleY + lineHeight + 1;
-            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleY, DashStyle.Solid);
+            /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleY, DashStyle.Solid);
             while (curY < AbsBottom * e.ScaleY)
             {
-                g.DrawLine(pen, AbsLeft * e.ScaleX, curY, AbsRight * e.ScaleY, curY);
+                g.DrawLine( AbsLeft * e.ScaleX, curY, AbsRight * e.ScaleY, curY, pen);
                 curY += lineHeight;
-            }*/
+            }
         }
 
         private SkiaSharp.SKSize CalcSize()
@@ -758,19 +760,22 @@ namespace FastReport
                 else
                     width = Width - Padding.Horizontal;
             }
-            /*TODO
-            IGraphics g = report.MeasureGraphics;
-            IGraphicsState state = g.Save();
+            
+            var g = report.MeasureGraphics;
+            var state = g.Save();
             try
             {
-                if (report.TextQuality != TextQuality.Default)
+                /*if (report.TextQuality != TextQuality.Default)
                     g.TextRenderingHint = report.GetTextQuality();
+                    */
+
                 if (TextRenderType == TextRenderType.HtmlParagraph)
                 {
                     if (width == 0)
                         width = 100000;
-
-                    using (HtmlTextRenderer htmlRenderer = GetHtmlTextRenderer(g, new SkiaSharp.SKRect(0, 0, width, 100000), 1, 1))
+                    var area = new SkiaSharp.SKRect(0, 0, 0, 0);
+                    area.Size = new SkiaSharp.SKSize(width, 100000);
+                    using (HtmlTextRenderer htmlRenderer = GetHtmlTextRenderer(g, area, 1, 1))
                     {
                         float height = htmlRenderer.CalcHeight();
                         width = htmlRenderer.CalcWidth();
@@ -778,7 +783,7 @@ namespace FastReport
                         width += Padding.Horizontal + 1;
                         if (LineHeight == 0)
                             height += Padding.Vertical + 1;
-                        return new SizeF(width, height);
+                        return new SkiaSharp.SKSize(width, height);
                     }
                 }
 #if SKIA || !CROSSPLATFORM
@@ -787,8 +792,13 @@ namespace FastReport
                 {
                     if (width == 0)
                         width = 100000;
-                    AdvancedTextRenderer renderer = new AdvancedTextRenderer(Text, g, font, Brushes.Black, Pens.Black,
-                      new SkiaSharp.SKRect(0, 0, width, 100000), GetStringFormat(report.GraphicCache, 0),
+                    
+                    var area = new SkiaSharp.SKRect(0, 0, 0, 0);
+                    area.Size = new SkiaSharp.SKSize(width, 100000);    
+                    var brushes = report.GraphicCache.GetBrush(SkiaSharp.SKColors.Black);
+                    var pens = report.GraphicCache.GetPen(SkiaSharp.SKColors.Black,1, DashStyle.Solid);
+                    AdvancedTextRenderer renderer = new AdvancedTextRenderer(Text, g, font, brushes, pens,
+                      area, GetStringFormat(report.GraphicCache, 0),
                       HorzAlign, VertAlign, LineHeight, Angle, FontWidthRatio, false, Wysiwyg, HasHtmlTags, false, 96f / DrawUtils.ScreenDpi,
                       96f / DrawUtils.ScreenDpi, InlineImageCache);
                     float height = renderer.CalcHeight();
@@ -797,7 +807,7 @@ namespace FastReport
                     width += Padding.Horizontal + 1;
                     if (LineHeight == 0)
                         height += Padding.Vertical + 1;
-                    return new SizeF(width, height);
+                    return new SkiaSharp.SKSize(width, height);
                 }
 #if SKIA || !CROSSPLATFORM
                 else
@@ -813,9 +823,8 @@ namespace FastReport
             }
             finally
             {
-                g.Restore(state);
-            }*/
-            return new SkiaSharp.SKSize();
+                g.RestoreToCount(state);
+            }
         }
 
         private float InternalCalcWidth()
@@ -854,16 +863,19 @@ namespace FastReport
                 return "";
 
 
-            StringAlignment format = GetStringFormat(report.GraphicCache, StringFormatFlags.LineLimit);
-            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(0, 0, Width - Padding.Horizontal, Height - Padding.Vertical);
-/*TODO
-            int charactersFitted;
-            IGraphics g = report.MeasureGraphics;
-            IGraphicsState state = g.Save();
+            var format = GetStringFormat(report.GraphicCache, StringFormatFlags.LineLimit);
 
+            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect();
+            textRect.Location = new SkiaSharp.SKPoint(0, 0);
+            textRect.Size = new SkiaSharp.SKSize(Width - Padding.Horizontal, Height - Padding.Vertical);
+            
+            int charactersFitted;
+            var g = report.MeasureGraphics;
+            var state = g.Save();
+            /*TODO
             if (report.TextQuality != TextQuality.Default)
                 g.TextRenderingHint = report.GetTextQuality();
-
+            */
             try
             {
                 using (HtmlTextRenderer htmlRenderer = GetHtmlTextRenderer(g, 1, 1, textRect, format))
@@ -884,9 +896,9 @@ namespace FastReport
             }
             finally
             {
-                g.Restore(state);
+                g.RestoreToCount(state);
             }
-*/
+
             return result;
         }
 
@@ -902,26 +914,40 @@ namespace FastReport
                 return "";
 
             SkiaSharp.SKFont font = report.GraphicCache.GetFont(Font.Typeface, Font.Size * 96f / DrawUtils.ScreenDpi, Font.Typeface.FontStyle);
-            StringAlignment format = GetStringFormat(report.GraphicCache, StringFormatFlags.LineLimit);
-            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(0, 0, Width - Padding.Horizontal, Height - Padding.Vertical);
+            var format = GetStringFormat(report.GraphicCache, StringFormatFlags.LineLimit);
+            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect();
+            textRect.Location = new SkiaSharp.SKPoint(0, 0);
+            textRect.Size = new SkiaSharp.SKSize(Width - Padding.Horizontal, Height - Padding.Vertical);
+            SkiaSharp.SKPaint paint = new SkiaSharp.SKPaint(font);
+
             if (textRect.Height < 0)
                 return null;
 
-            int charactersFitted;
-            int linesFilled;
-/*
-            IGraphics g = report.MeasureGraphics;
-            IGraphicsState state = g.Save();
+            int charactersFitted=0;
+            int linesFilled=0;
+
+            var g = report.MeasureGraphics;
+            int state = g.Save();
             try
             {
                 if (report.TextQuality != TextQuality.Default)
-                    g.TextRenderingHint = report.GetTextQuality();
+                {
+                    //TODO:paint.IsAntialias = report.GetTextQuality();
+                }
 
                 AdvancedTextRenderer.StyleDescriptor htmlStyle = null;
 
                 if (IsAdvancedRendererNeeded)
                 {
-                    AdvancedTextRenderer renderer = new AdvancedTextRenderer(Text, g, font, Brushes.Black, Pens.Black,
+                    var brush = new SkiaSharp.SKPaint();
+                    brush.Color = SkiaSharp.SKColors.Black;
+                    brush.Style = SkiaSharp.SKPaintStyle.Fill;
+
+                    var pen = new SkiaSharp.SKPaint();
+                    pen.Color = SkiaSharp.SKColors.Black;
+                    pen.Style = SkiaSharp.SKPaintStyle.Stroke;
+
+                    var renderer = new AdvancedTextRenderer(Text, g, font, brush, pen,
                       textRect, format, HorzAlign, VertAlign, LineHeight, Angle, FontWidthRatio, false, Wysiwyg, HasHtmlTags, false, 96f / DrawUtils.ScreenDpi,
                        96f / DrawUtils.ScreenDpi, InlineImageCache);
                     renderer.CalcHeight(out charactersFitted, out htmlStyle);
@@ -933,7 +959,7 @@ namespace FastReport
                 }
                 else
                 {
-                    g.MeasureString(Text, font, textRect.Size, format, out charactersFitted, out linesFilled);
+                    paint.MeasureText(Text,ref textRect);
                 }
 
 
@@ -942,7 +968,7 @@ namespace FastReport
                 if (linesFilled == 1)
                 {
                     // check if there is enough space for one line
-                    float lineHeight = g.MeasureString("Wg", font).Height;
+                    float lineHeight = paint.MeasureText("Wg");
                     if (textRect.Height < lineHeight)
                         return null;
                 }
@@ -966,15 +992,15 @@ namespace FastReport
             }
             finally
             {
-                g.Restore(state);
-            }*/
+                g.RestoreToCount(state);
+            }
 
             return result;
         }
 
         private void ProcessAutoShrink()
         {
-            /*TODO
+            
             if (TextRenderType == TextRenderType.HtmlParagraph)
                 return;
             if (String.IsNullOrEmpty(Text))
@@ -993,7 +1019,7 @@ namespace FastReport
                 float ratio = Converter.DecreasePrecision((Width - 1) / CalcWidth(), 2) - 0.01f;
                 if (ratio < 1)
                     FontWidthRatio = Math.Max(ratio, AutoShrinkMinSize);
-            }*/
+            }
         }
 
         private string MakeParagraphOffset(string text)
@@ -1030,12 +1056,12 @@ namespace FastReport
         /// <param name="cache">Report graphic cache.</param>
         /// <param name="flags">StringFormat flags.</param>
         /// <returns>StringFormat object.</returns>
-        public StringAlignment GetStringFormat(GraphicCache cache, StringFormatFlags flags)
+        public StringFormat GetStringFormat(GraphicCache cache, StringFormatFlags flags)
         {
             return GetStringFormat(cache, flags, 1);
         }
 
-        internal StringAlignment GetStringFormat(GraphicCache cache, StringFormatFlags flags, float scale)
+        internal StringFormat GetStringFormat(GraphicCache cache, StringFormatFlags flags, float scale)
         {
             var align = StringAlignment.Center;
             if (HorzAlign == HorzAlign.Center)
@@ -1110,31 +1136,33 @@ namespace FastReport
             return GetHtmlTextRenderer(Report.MeasureGraphics, scale, fontScale);
         }
 
-        internal HtmlTextRenderer GetHtmlTextRenderer(SkiaSharp.SKDrawable g, float scale, float fontScale)
+        internal HtmlTextRenderer GetHtmlTextRenderer(SkiaSharp.SKCanvas g, float scale, float fontScale)
         {
-            StringAlignment format = GetStringFormat(Report.GraphicCache, 0, scale);
-            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(
-                (AbsLeft + Padding.Left) * scale,
-                (AbsTop + Padding.Top) * scale,
-                (Width - Padding.Horizontal) * scale,
-                (Height - Padding.Vertical) * scale);
+            StringFormat format = GetStringFormat(Report.GraphicCache, 0, scale);
+
+            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect();
+            textRect.Location = new SkiaSharp.SKPoint((AbsLeft + Padding.Left) * scale,
+                (AbsTop + Padding.Top) * scale);
+            textRect.Size = new SkiaSharp.SKSize((Width - Padding.Horizontal) * scale,
+                (Height - Padding.Vertical) * scale);    
+                
             return GetHtmlTextRenderer(g, scale, fontScale, textRect, format);
 
         }
 
-        internal HtmlTextRenderer GetHtmlTextRenderer(SkiaSharp.SKDrawable g, SkiaSharp.SKRect textRect, float scale, float fontScale)
+        internal HtmlTextRenderer GetHtmlTextRenderer(SkiaSharp.SKCanvas g, SkiaSharp.SKRect textRect, float scale, float fontScale)
         {
-            StringAlignment format = GetStringFormat(Report.GraphicCache, 0, fontScale);
+            StringFormat format = GetStringFormat(Report.GraphicCache, 0, fontScale);
             return GetHtmlTextRenderer(g, scale, fontScale, textRect, format);
         }
 
-        internal HtmlTextRenderer GetHtmlTextRenderer(SkiaSharp.SKDrawable g, float scale, float fontScale, SkiaSharp.SKRect textRect, StringAlignment format)
+        internal HtmlTextRenderer GetHtmlTextRenderer(SkiaSharp.SKCanvas g, float scale, float fontScale, SkiaSharp.SKRect textRect, StringFormat format)
         {
             return GetHtmlTextRenderer(Text, g, fontScale, scale, fontScale, textRect, format, false);
         }
 
-        internal HtmlTextRenderer GetHtmlTextRenderer(string text, SkiaSharp.SKDrawable g, float formatScale, float scale, float fontScale, 
-            SkiaSharp.SKRect textRect, StringAlignment format, bool isPrinting)
+        internal HtmlTextRenderer GetHtmlTextRenderer(string text, SkiaSharp.SKCanvas g, float formatScale, float scale, float fontScale, 
+            SkiaSharp.SKRect textRect, StringFormat format, bool isPrinting)
         {
 #if true
             HtmlTextRenderer.RendererContext context;
@@ -1176,44 +1204,48 @@ namespace FastReport
         public void DrawText(FRPaintEventArgs e)
         {
             string text = GetDisplayText();
-            /*TODO
+            
             if (!String.IsNullOrEmpty(text))
             {
-                IGraphics g = e.Graphics;
-                SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(
-                  (AbsLeft + Padding.Left) * e.ScaleX,
-                  (AbsTop + Padding.Top) * e.ScaleY,
-                  (Width - Padding.Horizontal) * e.ScaleX,
-                  (Height - Padding.Vertical) * e.ScaleY);
-
+                var g = e.Graphics;
+                SkiaSharp.SKRect textRect = new SkiaSharp.SKRect();
+                textRect.Location = new SkiaSharp.SKPoint((AbsLeft + Padding.Left) * e.ScaleX,
+                  (AbsTop + Padding.Top) * e.ScaleY);
+                textRect.Size = new SkiaSharp.SKSize((Width - Padding.Horizontal) * e.ScaleX,
+                  (Height - Padding.Vertical) * e.ScaleY);  
+                  
                 if (ParagraphOffset != 0 && IsDesigning)
                     text = MakeParagraphOffset(text);
-                SkiaSharp.SKTextAlign format = GetStringFormat(e.Cache, 0, e.ScaleX);
+                StringFormat format = GetStringFormat(e.Cache, 0, e.ScaleX);
 
-                SkiaSharp.SKFont font = e.Cache.GetFont(Font.FontFamily,
+                SkiaSharp.SKFont font = e.Cache.GetFont(Font.Typeface,
                   IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi,
-                  Font.Style);
+                  Font.Typeface.FontStyle);
 
-                /*Brush/SkiaSharp.SKPaint textBrush = null;
+                /*Brush*/SkiaSharp.SKPaint textBrush = null;
                 if (TextFill is SolidFill)
+                {
                     textBrush = e.Cache.GetBrush((TextFill as SolidFill).Color);
+                    
+                }
                 else
                     textBrush = TextFill.CreateBrush(textRect, e.ScaleX, e.ScaleY);
 
-                /*Pen/SkiaSharp.SKPaint outlinePen = null;
+                /*Pen*/SkiaSharp.SKPaint outlinePen = null;
                 if (textOutline.Enabled)
                     outlinePen = e.Cache.GetPen(textOutline.Color, textOutline.Width * e.ScaleX, textOutline.Style);
 
                 Report report = Report;
+                /*TODO
                 if (report != null && report.TextQuality != TextQuality.Default)
                     g.TextRenderingHint = report.GetTextQuality();
-
+                */
                 if (textRect.Width > 0 && textRect.Height > 0)
                 {
                     switch (TextRenderType)
                     {
                         case TextRenderType.Inline:
-                            g.DrawString(text, font, textBrush, textRect.X, textRect.Y, StringFormat.GenericTypographic);
+                            g.DrawText(text, textRect.Left, textRect.Top, font, textBrush);
                             break;
                         case TextRenderType.HtmlParagraph:
                             try
@@ -1251,29 +1283,30 @@ namespace FastReport
                                         if (WordWrap)
                                             format.Trimming = StringTrimming.Word;
 
-                                        g.DrawString(text, font, textBrush, textRect, format);
+                                        g.DrawText(text, textRect.Left,textRect.Top, font, textBrush);
                                     }
                                     else
                                     {
-                                        SkiaSharp.SKPath path = new GraphicsPath();
-                                        path.AddString(text, font.FontFamily, Convert.ToInt32(font.Style),
-                                            g.DpiY * font.Size / 72, textRect, format);
+                                        var path = new SkiaSharp.SKPath();
+                                        /*TODOpath.AddText(text, font.FontFamily, Convert.ToInt32(font.Style),
+                                            g.DpiY * font.Size / 72, textRect, format);*/
 
-                                        IGraphicsState state = g.Save();
-                                        g.SetClip(textRect);
-                                        //g.FillPath(textBrush, path);
+                                        var state = g.Save();
+                                        g.ClipPath(path);
+                                        //TODOg.FillPath(textBrush, path);
 
                                         //regime for text output with drawbehind 
                                         if (TextOutline.DrawBehind)
                                         {
-                                            g.DrawPath(outlinePen, path);
-                                            g.FillPath(textBrush, path);
+                                            
+                                            g.DrawPath(path, outlinePen);
+                                            //TODOg.FillPath(textBrush, path);
                                         }
                                         else //without. default
                                         {
-                                            g.FillAndDrawPath(outlinePen, textBrush, path);
+                                            //TODOg.FillAndDrawPath(outlinePen, textBrush, path);
                                         }
-                                        g.Restore(state);
+                                        g.RestoreToCount(state);
 
                                     }
                                 }
@@ -1291,21 +1324,24 @@ namespace FastReport
                 {
                     textBrush.Dispose();
                 }
-            }*/
+            }
         }
 
 
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
-            /*TODO
+            
             base.Draw(e);
 
             DrawText(e);
             DrawMarkers(e);
-            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
+            var r = new SkiaSharp.SKRect();
+            r.Location = new SkiaSharp.SKPoint(AbsLeft, AbsTop);
+            r.Size = new SkiaSharp.SKSize( Width, Height);
+            Border.Draw(e, r);
             DrawDesign(e);
-            */
+            
         }
 
         /// <inheritdoc/>
@@ -1670,20 +1706,29 @@ namespace FastReport
 
         internal IEnumerable<PictureObject> GetPictureFromHtmlText(AdvancedTextRenderer renderer)
         {
-            /*TODO
+            
             if (renderer == null)
             {
                 using (SkiaSharp.SKBitmap b = new SkiaSharp.SKBitmap(1, 1))
                 
-                using (IGraphics g = new GdiGraphics(b))
+                using (var g = new SkiaSharp.SKCanvas(b))
                 {
-                    SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(
-                      (AbsLeft + Padding.Left),
-                      (AbsTop + Padding.Top),
-                      (Width - Padding.Horizontal),
-                      (Height - Padding.Vertical));
-                    SkiaSharp.SKTextAlign format = GetStringFormat(Report.GraphicCache, StringFormatFlags.LineLimit);
-                    renderer = new AdvancedTextRenderer(Text, g, Font, Brushes.Black, Pens.Black,
+                    var brush = new SkiaSharp.SKPaint();
+                    brush.Color = SkiaSharp.SKColors.Black;
+                    brush.Style = SkiaSharp.SKPaintStyle.Fill;
+
+                    var pen = new SkiaSharp.SKPaint();
+                    pen.Color = SkiaSharp.SKColors.Black;
+                    pen.Style = SkiaSharp.SKPaintStyle.Stroke;
+
+                    SkiaSharp.SKRect textRect = new SkiaSharp.SKRect();
+                    textRect.Location = new SkiaSharp.SKPoint((AbsLeft + Padding.Left),
+                      (AbsTop + Padding.Top));
+                    textRect.Size = new SkiaSharp.SKSize((Width - Padding.Horizontal),
+                      (Height - Padding.Vertical));  
+                      
+                    var format = GetStringFormat(Report.GraphicCache, StringFormatFlags.LineLimit);
+                    renderer = new AdvancedTextRenderer(Text, g, Font, brush, pen,
                         textRect, format, HorzAlign, VertAlign, LineHeight, Angle, FontWidthRatio,
                         ForceJustify, Wysiwyg, HasHtmlTags, false, 1, 1,
                         InlineImageCache);
@@ -1725,10 +1770,10 @@ namespace FastReport
 
                                     if (left < 0 || top < 0 || width < runImage.Width || height < runImage.Height)
                                     {
-                                        SkiaSharp.SKSkiaSharp.SKBitmap bmp = new Bitmap((int)width, (int)height);
-                                        using (Graphics g = Graphics.FromImage(bmp))
+                                        SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap((int)width, (int)height);
+                                        using (var g = new SkiaSharp.SKCanvas(bmp))
                                         {
-                                            g.DrawImage(runImage.Image, new SkiaSharp.SKPoint(
+                                            g.DrawBitmap(runImage.Image, new SkiaSharp.SKPoint(
                                               left < 0 ? left : 0,
                                               top < 0 ? top : 0
                                               ));
@@ -1751,8 +1796,8 @@ namespace FastReport
                                     }
                                     yield return obj;
                                 }
-            }*/
-            return null;
+            }
+            yield return  new PictureObject();
         }
 #endregion
 

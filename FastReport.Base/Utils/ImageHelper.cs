@@ -25,12 +25,12 @@ namespace FastReport.Utils
             //      return source.Clone() as Bitmap;
         }
 
-        public static void Save(SkiaSharp.SKImage image, Stream stream)
+        public static void Save(SkiaSharp.SKBitmap image, Stream stream)
         {
-            Save(image, stream, image.GetImageFormat());
+            Save(image, stream, SkiaSharp.SKEncodedImageFormat.Png);
         }
 
-        public static void Save(SkiaSharp.SKImage image, string fileName, SkiaSharp.SKEncodedImageFormat format)
+        public static void Save(SkiaSharp.SKBitmap image, string fileName, SkiaSharp.SKEncodedImageFormat format)
         {
             using (FileStream stream = new FileStream(fileName, FileMode.Create))
             {
@@ -38,38 +38,24 @@ namespace FastReport.Utils
             }
         }
 
-        public static void Save(SkiaSharp.SKImage image, Stream stream, SkiaSharp.SKEncodedImageFormat format)
+        public static void Save(SkiaSharp.SKBitmap image, Stream stream, SkiaSharp.SKEncodedImageFormat format)
         {
-            /*TODO
+            
             if (image == null)
                 return;
-            if (image is SkiaSharp.SKBitmap)
-            {
+            
                 if (format == SkiaSharp.SKEncodedImageFormat.Ico)
+                {
                     SaveAsIcon(image, stream, true);
+                }
                 else
-                    image.Save(stream, format);
-            }
-            else if (image is Metafile)
-            {
-                
-                Metafile emf = null;
-                using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
-                
-                using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    IntPtr hdc = g.GetHdc();
-                    emf = new Metafile(stream, hdc);
-                    g.ReleaseHdc(hdc);
+                    image.Encode(stream, format, 95);
                 }
-                using (Graphics g = Graphics.FromImage(emf))
-                {
-                    g.DrawImage(image, 0, 0);
-                }
-            }*/
+            
         }
 
-        public static bool SaveAndConvert(SkiaSharp.SKImage image, Stream stream, SkiaSharp.SKEncodedImageFormat format)
+        public static bool SaveAndConvert(SkiaSharp.SKBitmap image, Stream stream, SkiaSharp.SKEncodedImageFormat format)
         {
             /*TODO
             if (image == null)
@@ -136,7 +122,7 @@ namespace FastReport.Utils
             return null;
         }
 
-        public static SkiaSharp.SKImage  Load(byte[] bytes)
+        public static SkiaSharp.SKBitmap  Load(byte[] bytes)
         {
             if (bytes != null && bytes.Length > 0)
             {
@@ -144,20 +130,24 @@ namespace FastReport.Utils
                 {
 
                     // TODO memory leaks image converter
-                    return SkiaSharp.SKImage.FromEncodedData(SkiaSharp.SKData.Create( new MemoryStream(bytes)));
+                    return SkiaSharp.SKBitmap.FromImage(SkiaSharp.SKImage.FromEncodedData(SkiaSharp.SKData.Create( new MemoryStream(bytes))));
 
 
                 }
                 catch
                 {
                     SkiaSharp.SKBitmap errorBmp = new SkiaSharp.SKBitmap(10, 10);
-                    /*TODO
-                    using (Graphics g = Graphics.FromImage(errorBmp))
+                    
+                    using (var g = new SkiaSharp.SKCanvas(errorBmp))
                     {
-                        g.DrawLine(Pens.Red, 0, 0, 10, 10);
-                        g.DrawLine(Pens.Red, 0, 10, 10, 0);
-                    }*/
-                    return SkiaSharp.SKImage.FromBitmap( errorBmp);
+                        SkiaSharp.SKPaint p = new SkiaSharp.SKPaint();
+                        p.Color = SkiaSharp.SKColors.Red;
+                        p.Style= SkiaSharp.SKPaintStyle.Stroke; 
+                        
+                        g.DrawLine( 0, 0, 10, 10, p);
+                        g.DrawLine( 0, 10, 10, 0, p);
+                    }
+                    return errorBmp;
                 }
             }
             return null;
@@ -246,7 +236,7 @@ namespace FastReport.Utils
         /// <param name="output">The output stream</param>
         /// <param name="preserveAspectRatio">Preserve the aspect ratio</param>
         /// <returns>Wether or not the icon was succesfully generated</returns>
-        public static bool SaveAsIcon(SkiaSharp.SKImage image, Stream output, bool preserveAspectRatio = false)
+        public static bool SaveAsIcon(SkiaSharp.SKBitmap image, Stream output, bool preserveAspectRatio = false)
         {
             int size = 256;
             int width = size, height = size;
@@ -258,7 +248,7 @@ namespace FastReport.Utils
                     width = (image.Width / image.Height) * size;
             }
 
-            var newBitmap = SkiaSharp.SKBitmap.FromImage(image);
+            var newBitmap = image;
             newBitmap.Resize(new SkiaSharp.SKSizeI(width,height), SkiaSharp.SKFilterQuality.High);
             if (newBitmap == null)
                 return false;
@@ -266,8 +256,8 @@ namespace FastReport.Utils
             // save the resized png into a memory stream for future use
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                //TODO newBitmap.Save(memoryStream, SkiaSharp.SKEncodedImageFormat.Png);
-
+                newBitmap.Encode(memoryStream, SkiaSharp.SKEncodedImageFormat.Png, 100);
+                
                 var iconWriter = new BinaryWriter(output);
                 if (output == null || iconWriter == null)
                     return false;

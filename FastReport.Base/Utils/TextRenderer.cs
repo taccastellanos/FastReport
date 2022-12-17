@@ -49,12 +49,12 @@ namespace FastReport.Utils
         #region Fields
         private List<Paragraph> paragraphs;
         private string text;
-        private SkiaSharp.SKDrawable graphics;
+        private SkiaSharp.SKCanvas graphics;
         private SkiaSharp.SKFont font;
         private /*Brush*/SkiaSharp.SKPaint brush;
         private /*Pen*/SkiaSharp.SKPaint outlinePen;
         private SkiaSharp.SKRect displayRect;
-        private SkiaSharp.SKTextAlign format;
+        private StringFormat format;
         private HorzAlign horzAlign;
         private VertAlign vertAlign;
         private float lineHeight;
@@ -77,7 +77,7 @@ namespace FastReport.Utils
             get { return paragraphs; }
         }
 
-        public SkiaSharp.SKDrawable Graphics
+        public SkiaSharp.SKCanvas Graphics
         {
             get { return graphics; }
         }
@@ -109,7 +109,7 @@ namespace FastReport.Utils
             get { return displayRect; }
         }
 
-        public SkiaSharp.SKTextAlign Format
+        public StringFormat Format
         {
             get { return format; }
         }
@@ -234,7 +234,7 @@ namespace FastReport.Utils
         const string ab = "abcdefabcdef";
         const string a40b = "abcdef                                        abcdef";
 
-        internal static float CalculateSpaceSize(SkiaSharp.SKDrawable g, SkiaSharp.SKFont f)
+        internal static float CalculateSpaceSize(SkiaSharp.SKCanvas g, SkiaSharp.SKFont f)
         {
             float w_ab = 0;//TODOg.MeasureString(ab, f).Width;
             float w_a40b = 0;//TODOg.MeasureString(a40b, f).Width;
@@ -399,8 +399,8 @@ namespace FastReport.Utils
         }
         #endregion
 
-        public AdvancedTextRenderer(string text, SkiaSharp.SKDrawable g, SkiaSharp.SKFont font, /*Brush*/SkiaSharp.SKPaint brush, /*Pen*/SkiaSharp.SKPaint outlinePen,
-          SkiaSharp.SKRect rect, SkiaSharp.SKTextAlign format, HorzAlign horzAlign, VertAlign vertAlign,
+        public AdvancedTextRenderer(string text, SkiaSharp.SKCanvas g, SkiaSharp.SKFont font, /*Brush*/SkiaSharp.SKPaint brush, /*Pen*/SkiaSharp.SKPaint outlinePen,
+          SkiaSharp.SKRect rect, StringFormat format, HorzAlign horzAlign, VertAlign vertAlign,
           float lineHeight, int angle, float widthRatio,
           bool forceJustify, bool wysiwyg, bool htmlTags, bool pdfMode,
           float scale, float fontScale, InlineImageCache cache, bool isPrinting = false)
@@ -437,10 +437,10 @@ namespace FastReport.Utils
             this.htmlTags = htmlTags;
             pDFMode = pdfMode;
             spaceWidth = CalculateSpaceSize(g, font);// g.MeasureString(" ", font).Width;
-/*TODO
+
             StringFormatFlags saveFlags = Format.FormatFlags;
             StringTrimming saveTrimming = Format.Trimming;
-*/
+
             // match DrawString behavior: 
             // if height is less than 1.25 of font height, turn off word wrap
             // commented out due to bug with band.break
@@ -1919,6 +1919,7 @@ namespace FastReport.Utils
                     fontSize = Style.Size;
                 if (Style.BaseLine != BaseLine.Normal)
                     fontSize *= 0.6f;
+                
 /*TODO
                 SkiaSharp.SKFontStyle fontStyle = Style.FontStyle;
                 if (disableUnderlinesStrikeouts)
@@ -1942,13 +1943,13 @@ namespace FastReport.Utils
 
             public virtual void Draw()
             {
-                /*TODO
+                
                 using (SkiaSharp.SKFont font = GetFont(true))
                 
                 using (var brush = GetBrush())
                 {
-                    Renderer.Graphics.DrawString(text, font, brush, Left, Top, Renderer.Format);
-                }*/
+                    Renderer.Graphics.DrawText(text, Left, Top, font, brush);
+                }
             }
             #endregion
 
@@ -1975,7 +1976,7 @@ namespace FastReport.Utils
         /// </summary>
         internal class RunImage : Run
         {
-            public SkiaSharp.SKImage  Image { get { return image; } }
+            public SkiaSharp.SKBitmap  Image { get { return image; } }
             override public float Width
             {
                 get
@@ -2016,7 +2017,7 @@ namespace FastReport.Utils
                 }
             }
 
-            private SkiaSharp.SKImage  image;
+            private SkiaSharp.SKBitmap  image;
 
             override public void Draw()
             {
@@ -2026,7 +2027,7 @@ namespace FastReport.Utils
                     return;
                 }
 
-                //TODO Renderer.Graphics.DrawImage(Image, Left, Top);// (FText, font, brush, Left, Top, Renderer.Format);
+                Renderer.Graphics.DrawBitmap(Image, Left, Top);// (FText, font, brush, Left, Top, Renderer.Format);
             }
 
             public static SkiaSharp.SKBitmap ResizeImage(SkiaSharp.SKImage image, float scale)
@@ -2077,37 +2078,38 @@ namespace FastReport.Utils
     /// </summary>
     internal class StandardTextRenderer
     {
-        public static void Draw(string text, SkiaSharp.SKDrawable g, SkiaSharp.SKFont font, /*Brush*/SkiaSharp.SKPaint brush, /*Pen*/SkiaSharp.SKPaint outlinePen,
-          SkiaSharp.SKRect rect, SkiaSharp.SKTextAlign format, int angle, float widthRatio)
+        public static void Draw(string text, SkiaSharp.SKCanvas g, SkiaSharp.SKFont font, /*Brush*/SkiaSharp.SKPaint brush, /*Pen*/SkiaSharp.SKPaint outlinePen,
+          SkiaSharp.SKRect rect, StringFormat format, int angle, float widthRatio)
         {
-            /*TODO
-            IGraphicsState state = g.Save();
-            g.SetClip(rect, CombineMode.Intersect);
-            g.TranslateTransform(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
-            g.RotateTransform(angle);
-            rect.X = -rect.Width / 2;
-            rect.Y = -rect.Height / 2;
+            
+            var state = g.Save();
+            g.ClipRect(rect, SkiaSharp.SKClipOperation.Intersect);
+            g.Translate(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+            g.RotateDegrees(angle);
+            rect.Left = -rect.Width / 2;
+            rect.Top = -rect.Height / 2;
 
             if ((angle >= 90 && angle < 180) || (angle >= 270 && angle < 360))
-                rect = new SkiaSharp.SKRect(rect.Y, rect.X, rect.Height, rect.Width);
+                rect = new SkiaSharp.SKRect(rect.Left, rect.Top, rect.Height, rect.Width);
 
-            g.ScaleTransform(widthRatio, 1);
-            rect.X /= widthRatio;
-            rect.Width /= widthRatio;
+            g.Scale(widthRatio, 1);
+            rect = new SkiaSharp.SKRect(rect.Left/widthRatio, rect.Top, rect.Width/widthRatio, rect.Height);
+            
+            
 
             if (outlinePen == null)
             {
-                g.DrawString(text, font, brush, rect, format);
+                g.DrawText(text, rect.Left, rect.Top, font, brush);
             }
             else
             {
-                SkiaSharp.SKPath path = new GraphicsPath();
-                path.AddString(text, font.FontFamily, Convert.ToInt32(font.Style), g.DpiY * font.Size / 72, rect, format);
-                g.FillAndDrawPath(outlinePen, brush, path);
+                SkiaSharp.SKPath path = new SkiaSharp.SKPath();
+                //TODO path.AddPath(text, font.FontFamily, Convert.ToInt32(font.Style), g.DpiY * font.Size / 72, rect, format);
+                g.DrawTextOnPath(text,path,new SkiaSharp.SKPoint(0,0), brush);
             }
 
-            g.Restore(state);
-            */
+            g.RestoreToCount(state);
+            
         }
     }
 

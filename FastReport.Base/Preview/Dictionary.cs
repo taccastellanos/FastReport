@@ -169,8 +169,9 @@ namespace FastReport.Preview
         Type type = originalComponent.GetType();
 
         // try frequently used objects first. The CreateInstance method is very slow.
-        if (type == typeof(TextObject))
+        if (type == typeof(TextObject)){
           result = new TextObject();
+        }
         else if (type == typeof(TableCell))
           result = new TableCell();
         else if (type == typeof(DataBand))

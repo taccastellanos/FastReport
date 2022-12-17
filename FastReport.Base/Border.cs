@@ -183,35 +183,41 @@ namespace FastReport
     internal void Draw(FRPaintEventArgs e, float x, float y, float x1, float y1, 
       bool reverseGaps, bool gap1, bool gap2)
     {
-      /*TODO
-      IGraphics g = e.Graphics;
+      
+      var g = e.Graphics;
 
       int penWidth = (int)Math.Round(Width * e.ScaleX);
       if (penWidth <= 0)
         penWidth = 1;
-      using  (/*Pen/SkiaSharp.SKPaint pen = new /*Pen/SkiaSharp.SKPaint (Color, penWidth))
+      using  (/*Pen*/SkiaSharp.SKPaint pen = new /*Pen*/SkiaSharp.SKPaint())
       {
-        pen.DashStyle = DashStyle;
-        pen.StartCap = LineCap.Square;
-        pen.EndCap = LineCap.Square;
-        if (pen.DashStyle != DashStyle.Solid)
+        if(DashStyle != DashStyle.Solid)
         {
           float patternWidth = 0;
-          foreach (float w in pen.DashPattern)
-            patternWidth += w * pen.Width;
+          float o = 0.0f;
+          var pattern = Utils.DrawUtils.GetDashStyle(DashStyle);
+
+          foreach (float w in pattern)
+            patternWidth += w * pen.StrokeWidth;
           if (y == y1)
-            pen.DashOffset = (x - ((int)(x / patternWidth)) * patternWidth) / pen.Width;
+            o = (x - ((int)(x / patternWidth)) * patternWidth) / pen.StrokeWidth;
           else
-            pen.DashOffset = (y - ((int)(y / patternWidth)) * patternWidth) / pen.Width;
+            o = (y - ((int)(y / patternWidth)) * patternWidth) / pen.StrokeWidth;
+
+          pen.PathEffect = SkiaSharp.SKPathEffect.CreateDash(pattern, o);
         }
+        pen.Style = SkiaSharp.SKPaintStyle.Stroke;
+        pen.StrokeCap = SkiaSharp.SKStrokeCap.Square;
+        pen.StrokeWidth = penWidth;
+        pen.Color = Color;
         
         if (Style != LineStyle.Double)
-          g.DrawLine(pen, x, y, x1, y1);
+          g.DrawLine(x,y,x1,y1,pen);
         else
         {
           // we have to correctly draw inner and outer lines of a double line
-          float g1 = gap1 ? pen.Width : 0;
-          float g2 = gap2 ? pen.Width : 0;
+          float g1 = gap1 ? pen.StrokeWidth : 0;
+          float g2 = gap2 ? pen.StrokeWidth : 0;
           float g3 = -g1;
           float g4 = -g2;
 
@@ -225,16 +231,16 @@ namespace FastReport
 
           if (x == x1)
           {
-            g.DrawLine(pen, x - pen.Width, y + g1, x1 - pen.Width, y1 - g2);
-            g.DrawLine(pen, x + pen.Width, y + g3, x1 + pen.Width, y1 - g4);
+            g.DrawLine(x - pen.StrokeWidth, y + g1, x1 - pen.StrokeWidth, y1 - g2, pen);
+            g.DrawLine(x + pen.StrokeWidth, y + g3, x1 + pen.StrokeWidth, y1 - g4, pen);
           }
           else
           {
-            g.DrawLine(pen, x + g1, y - pen.Width, x1 - g2, y1 - pen.Width);
-            g.DrawLine(pen, x + g3, y + pen.Width, x1 - g4, y1 + pen.Width);
+            g.DrawLine(x + g1, y - pen.StrokeWidth, x1 - g2, y1 - pen.StrokeWidth, pen);
+            g.DrawLine(x + g3, y + pen.StrokeWidth, x1 - g4, y1 + pen.StrokeWidth, pen);
           }  
         }
-      } */ 
+      } 
     }
 
     internal void Serialize(FRWriter writer, string prefix, BorderLine c)
@@ -572,13 +578,12 @@ namespace FastReport
     /// </remarks>
     public void Draw(FRPaintEventArgs e, SkiaSharp.SKRect rect)
     {
-      /*TODO
-      IGraphics g = e.Graphics;
-      rect.X *= e.ScaleX;
-      rect.Y *= e.ScaleY;
-      rect.Width *= e.ScaleX;
-      rect.Height *= e.ScaleY;
-
+      
+      var g = e.Graphics;
+      rect.Left *= e.ScaleX;
+      rect.Top *= e.ScaleY;
+      rect.Size = new SkiaSharp.SKSize(rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+      
       if (Shadow)
       {
         //int d = (int)Math.Round(ShadowWidth * e.ScaleX);
@@ -587,9 +592,9 @@ namespace FastReport
         //g.DrawLine(pen, rect.Left + d, rect.Bottom + d / 2, rect.Right + d, rect.Bottom + d / 2);
 
         float d = ShadowWidth * e.ScaleX;
-        /*Brush/SkiaSharp.SKPaint brush = e.Cache.GetBrush(ShadowColor);
-        g.FillRectangle(brush, rect.Left + d, rect.Bottom, rect.Width, d);
-        g.FillRectangle(brush, rect.Right, rect.Top + d, d, rect.Height);
+        /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(ShadowColor);
+        g.DrawRect(rect.Left + d, rect.Bottom, rect.Width, d, brush);
+        g.DrawRect(rect.Right, rect.Top + d, d, rect.Height, brush);
       }
 
       if (Lines != BorderLines.None)
@@ -599,8 +604,8 @@ namespace FastReport
         if (Lines == BorderLines.All && LeftLine.Equals(TopLine) && LeftLine.Equals(RightLine) &&
           LeftLine.Equals(BottomLine) && LeftLine.Style == LineStyle.Solid)
         {
-          /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(LeftLine.Color, (int)Math.Round(LeftLine.Width * e.ScaleX), LeftLine.DashStyle);
-          g.DrawRectangle(pen, rect.Left, rect.Top, rect.Width, rect.Height);
+          /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(LeftLine.Color, (int)Math.Round(LeftLine.Width * e.ScaleX), LeftLine.DashStyle);
+          g.DrawRect(rect.Left, rect.Top, rect.Width, rect.Height, pen);
         }
         else
         {
@@ -617,7 +622,7 @@ namespace FastReport
             BottomLine.Draw(e, rect.Left, rect.Bottom, rect.Right, rect.Bottom,
               false, (Lines & BorderLines.Left) != 0, (Lines & BorderLines.Right) != 0);
         }
-      }*/
+      }
     }
     #endregion
 

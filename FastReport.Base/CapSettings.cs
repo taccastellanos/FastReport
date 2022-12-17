@@ -81,32 +81,32 @@ namespace FastReport
         {
             path = new SkiaSharp.SKPath();
             inset = 0;
-            /*TODO
+           
             switch (Style)
             {
                 case CapStyle.Arrow:
-                    path.AddLine(new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(-Width, -Height));
-                    path.AddLine(new SkiaSharp.SKPoint(0, 0), new SkiaSharp.SKPoint(Width, -Height));
+                    path.MoveTo( new SkiaSharp.SKPoint(-Width, -Height));
+                    path.LineTo( new SkiaSharp.SKPoint(Width, -Height));
                     break;
 
                 case CapStyle.Circle:
-                    path.AddEllipse(-Width / 2, -Height / 2, Width, Height);
+                    path.AddCircle(-Width / 2, -Height / 2, Width);
                     inset = Height / 2;
                     break;
 
                 case CapStyle.Square:
-                    path.AddRectangle(new SkiaSharp.SKRect(-Width / 2, -Height / 2, Width, Height));
+                    path.AddRect(new SkiaSharp.SKRect(-Width / 2, -Height / 2, Width, Height));
                     inset = Height / 2;
                     break;
 
                 case CapStyle.Diamond:
-                    path.AddLine(new SkiaSharp.SKPoint(0, -Height / 1.4f), new SkiaSharp.SKPoint(-Width / 1.4f, 0));
-                    path.AddLine(new SkiaSharp.SKPoint(-Width / 1.4f, 0), new SkiaSharp.SKPoint(0, Height / 1.4f));
-                    path.AddLine(new SkiaSharp.SKPoint(0, Height / 1.4f), new SkiaSharp.SKPoint(Width / 1.4f, 0));
-                    path.AddLine(new SkiaSharp.SKPoint(Width / 1.4f, 0), new SkiaSharp.SKPoint(0, -Height / 1.4f));
+                    path.MoveTo(new SkiaSharp.SKPoint(0, -Height / 1.4f));
+                    path.LineTo(new SkiaSharp.SKPoint(-Width / 1.4f, 0));
+                    path.LineTo(new SkiaSharp.SKPoint(0, Height / 1.4f));
+                    path.LineTo(new SkiaSharp.SKPoint(Width / 1.4f, 0));
                     inset = Height / 1.4f;
                     break;
-            }*/
+            }
         }
 
         /// <summary>

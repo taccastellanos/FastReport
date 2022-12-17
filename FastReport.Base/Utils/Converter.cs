@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-
+using System.Linq;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -37,7 +37,7 @@ namespace FastReport.Utils
       {
         using (MemoryStream stream = new MemoryStream())
         {
-          ImageHelper.Save(value as SkiaSharp.SKImage, stream);
+          ImageHelper.Save((SkiaSharp.SKBitmap)value, stream);
           return Convert.ToBase64String(stream.ToArray());
         }
       }
@@ -74,12 +74,12 @@ namespace FastReport.Utils
           return type.FullName;
         return type.AssemblyQualifiedName;
       }
-#if true// | CROSSPLATFORM
-            if (value is SkiaSharp.SKFont)
-            {
-                return "";//TODOnew TypeConverters.FontConverter().ConvertToInvariantString(value);
-            }
-#endif
+
+      if (value is SkiaSharp.SKFont)
+      {
+          return new TypeConverters.FontConverterSkia().ConvertToInvariantString(value);
+      }
+
             if(value is SkiaSharp.SKEncodedImageFormat)
             {
                 var imageFormat = (SkiaSharp.SKEncodedImageFormat)value;
@@ -109,6 +109,7 @@ namespace FastReport.Utils
     /// a converted value.</returns>
     public static object FromString(Type type, string value)
     {
+      
       if (type == typeof(string))
         return value;
       if (value == null || value == "")
@@ -132,14 +133,23 @@ namespace FastReport.Utils
         value = value.Replace("\r\n", "\r");
         return value.Split('\r');
       }
-#if true //CROSSPLATFORM
-            if (type == typeof(SkiaSharp.SKFont))
-            {
-                return "";//TODOnew TypeConverters.FontConverter().ConvertFromInvariantString(value);
-            }
-#endif
+
+      if (type == typeof(SkiaSharp.SKFont))
+      {
+          return new TypeConverters.FontConverterSkia().ConvertFromInvariantString(value);
+      }
+
       if (type == typeof(SkiaSharp.SKColor))
-        return value;
+      {
+        if(value.Contains("#"))
+        {
+            return SkiaSharp.SKColor.Parse(value);
+        }
+        else
+        {
+            return (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == value).FirstOrDefault().GetValue(null);
+        }
+      }
       return TypeDescriptor.GetConverter(type).ConvertFromInvariantString(value);
     }
 
@@ -495,7 +505,7 @@ namespace FastReport.Utils
           value = text.Substring(start, end - start);
           start = end;
         }
-
+        
         collection.Add(name, value);
       }
 

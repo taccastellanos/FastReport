@@ -44,9 +44,10 @@ namespace FastReport.Web
                                         TableCell textcell = table[j, i];
                                         if (textcell.Name == objectName)
                                         {
-                                            SkiaSharp.SKRect rect = new SkiaSharp.SKRect(table.Columns[j].AbsLeft,
-                                                table.Rows[i].AbsTop,
-                                                textcell.Width,
+                                            SkiaSharp.SKRect rect = new SkiaSharp.SKRect();
+                                            rect.Location = new SkiaSharp.SKPoint(table.Columns[j].AbsLeft,
+                                                table.Rows[i].AbsTop);
+                                            rect.Size = new SkiaSharp.SKSize(textcell.Width,
                                                 textcell.Height);
                                             if (rect.Contains(point))
                                             {

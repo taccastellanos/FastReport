@@ -50,7 +50,7 @@ namespace FastReport.Utils
             {
                 return (int)g.DpiX;
             }*/
-            return 1;
+            return 72;
         }
 
         public static SkiaSharp.SKFont DefaultFont
@@ -83,9 +83,9 @@ namespace FastReport.Utils
         {
             get
             {
+                
                 if (FDefaultReportFont == null)
                 {
-                    
                     switch (System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)
                     {
                         case "ja":
@@ -98,6 +98,7 @@ namespace FastReport.Utils
 
                         default:
                             FDefaultReportFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
+                            
                             break;
                     }
                 }
@@ -160,28 +161,25 @@ namespace FastReport.Utils
 
         public static SkiaSharp.SKSize MeasureString(string text, SkiaSharp.SKFont font)
         {
-            /*TODO
-            using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
             
-            using (StringFormat sf = new StringFormat())
-            {
-                SkiaSharp.SKGraphics g = Graphics.FromImage(bmp);
-                return MeasureString(g, text, font, sf);
-            }*/
-            return new SkiaSharp.SKSize(0,0);
+            using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1)){
+                var g = new SkiaSharp.SKCanvas(bmp);
+                return MeasureString(g, text, font,  SkiaSharp.SKTextAlign.Left/*StringFormat*/);
+            }            
         }
 
-        public static SkiaSharp.SKSize MeasureString(SkiaSharp.SKDrawable g, string text, SkiaSharp.SKFont font, SkiaSharp.SKTextAlign format)
+        public static SkiaSharp.SKSize MeasureString(SkiaSharp.SKCanvas g, string text, SkiaSharp.SKFont font, SkiaSharp.SKTextAlign format)
         {
             return MeasureString(g, text, font, new SkiaSharp.SKRect(0, 0, 10000, 10000), format);
         }
 
-        public static SkiaSharp.SKSize MeasureString(SkiaSharp.SKDrawable g, string text, SkiaSharp.SKFont font, SkiaSharp.SKRect layoutRect, SkiaSharp.SKTextAlign format)
+        public static SkiaSharp.SKSize MeasureString(SkiaSharp.SKCanvas g, string text, SkiaSharp.SKFont font, SkiaSharp.SKRect layoutRect, SkiaSharp.SKTextAlign format)
         {
             
             if (String.IsNullOrEmpty(text))
                 return new SkiaSharp.SKSize(0, 0);
-            /*TODO
+
+            /*
             CharacterRange[] characterRanges = { new CharacterRange(0, text.Length) };
             StringFormatFlags saveFlags = format.FormatFlags;
             format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
@@ -189,12 +187,34 @@ namespace FastReport.Utils
             Region[] regions = g.MeasureCharacterRanges(text, font, layoutRect, format);
             format.FormatFlags = saveFlags;
             SkiaSharp.SKRect rect = regions[0].GetBounds(g);
-            regions[0].Dispose();
-            return rect.Size;*/
-            return new SkiaSharp.SKSize(0,0);
+            regions[0].Dispose();*/
+            SkiaSharp.SKPaint pt_text = new SkiaSharp.SKPaint(font);
+            pt_text.MeasureText(text, ref layoutRect);
+            g.DrawPaint(pt_text);
+            SkiaSharp.SKRect rect = g.LocalClipBounds;
+            return rect.Size;
+            
             
         }
+        
+        public static float[] GetDashStyle(DashStyle ds)
+        {   
+            switch(ds)
+            {
+                case DashStyle.Dot:
+                    return new float[]{10,10};
+                    
+                case DashStyle.Dash:
+                    return new float[]{30,10};
+                    
+                case DashStyle.DashDot:
+                    return new float[]{30,10,10,10};
 
+                case DashStyle.DashDotDot:     
+                    return new float[]{30,10,10,10,10,10};
+            }
+            return new float[]{};
+        }
         public static void FloodFill(SkiaSharp.SKBitmap bmp, int x, int y, SkiaSharp.SKColor color, SkiaSharp.SKColor replacementColor)
         {
             if (x < 0 || y < 0 || x >= bmp.Width || y >= bmp.Height || bmp.GetPixel(x, y) != color)
@@ -206,19 +226,16 @@ namespace FastReport.Utils
             FloodFill(bmp, x, y + 1, color, replacementColor);
         }
 
-        internal static MonoRendering GetMonoRendering(SkiaSharp.SKDrawable printerGraphics)
+        internal static MonoRendering GetMonoRendering(SkiaSharp.SKCanvas printerGraphics)
         {
             if (FMonoRendering == MonoRendering.Undefined)
             {
-                /*TODO
-                GraphicsUnit savedUnit = printerGraphics.PageUnit;
-                printerGraphics.PageUnit = GraphicsUnit.Point;
+                
+                SkiaSharp.SKPaint p = new SkiaSharp.SKPaint();
 
                 const string s = "test string test string test string test string";
-                float f1 = printerGraphics.MeasureString(s, DefaultReportFont).Width;
+                float f1 = p.MeasureText(s);
                 FMonoRendering = f1 > 200 ? MonoRendering.Pango : MonoRendering.Cairo;
-
-                printerGraphics.PageUnit = savedUnit;*/
             }
             return FMonoRendering;
         }

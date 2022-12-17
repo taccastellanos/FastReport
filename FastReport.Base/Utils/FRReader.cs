@@ -595,6 +595,7 @@ namespace FastReport.Utils
                     return "null";
                 return null;
             }
+            
             return Converter.FromString(typ, propValue);
         }
 

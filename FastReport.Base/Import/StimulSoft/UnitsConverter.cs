@@ -1,6 +1,6 @@
 using System;
 using System.Globalization;
-
+using System.Linq;
 using FastReport.Utils;
 using FastReport.Barcode;
 
@@ -185,7 +185,7 @@ namespace FastReport.Import.StimulSoft
                     return new SkiaSharp.SKColor(byte.Parse(rgb[0]), byte.Parse(rgb[1]), byte.Parse(rgb[2]));
                 }
                 else 
-                    return new SkiaSharp.SKColor();//TODO (SkiaSharp.SKColors).FromName(str);
+                    return (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == str).FirstOrDefault().GetValue(null);
             }
             return SkiaSharp.SKColors.Black;
         }

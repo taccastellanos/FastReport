@@ -276,15 +276,18 @@ namespace FastReport.Export.Html
                             if (saveStreams)
                             {
                                 MemoryStream ImageFileStream = new MemoryStream();
-                                //TODO Metafile.Save(ImageFileStream, format);
+                                var sd = Metafile.Encode(format, 95);
+                                sd.SaveTo(ImageFileStream);
+                                
                                 GeneratedUpdate(targetPath + ImageFileName, ImageFileStream);
                             }
                             else
                             {
                                 using (FileStream ImageFileStream =
                                     new FileStream(targetPath + ImageFileName, FileMode.Create)){
-                                    //TODOMetafile.Save(ImageFileStream, format);
-                                    }
+                                    var sd = Metafile.Encode(format, 95);
+                                    sd.SaveTo(ImageFileStream);
+                                }
                             }
                         }
                         else if (PictureStream != null && !EmbedPictures)

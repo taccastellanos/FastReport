@@ -268,7 +268,7 @@ namespace FastReport.Export
 
         internal static string HTMLColor(SkiaSharp.SKColor color)
         {
-            return color.ToString();
+            return $"#{ByteToHex(color.Red)}{ByteToHex(color.Green)}{ByteToHex(color.Blue)}";
         }
 
         internal static string HTMLColorCode(SkiaSharp.SKColor color)

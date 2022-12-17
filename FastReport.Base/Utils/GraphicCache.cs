@@ -40,7 +40,7 @@ namespace FastReport
         /// <returns>The <b>Pen</b> object.</returns>
         public /*Pen*/SkiaSharp.SKPaint GetPen(SkiaSharp.SKColor color, float width, DashStyle style)
         {
-            return  new SkiaSharp.SKPaint();//TODOGetPen(color, width, style, LineJoin.Miter);
+            return  GetPen(color, width, style, SkiaSharp.SKStrokeJoin.Miter);
         }
 
         /// <summary>
@@ -51,21 +51,32 @@ namespace FastReport
         /// <param name="style">Dash style of a pen.</param>
         /// <param name="lineJoin">Line join of a pen.</param>
         /// <returns>The <b>Pen</b> object.</returns>
-        public /*Pen*/SkiaSharp.SKPaint GetPen(SkiaSharp.SKColor color, float width, DashStyle style, LineJoin lineJoin)
+        public /*Pen*/SkiaSharp.SKPaint GetPen(SkiaSharp.SKColor color, float width, DashStyle style, SkiaSharp.SKStrokeJoin lineJoin)
         {
             int hash = color.GetHashCode() ^ width.GetHashCode() ^ style.GetHashCode() ^ lineJoin.GetHashCode();
-            /*TODO
-            /*Pen/SkiaSharp.SKPaint result = pens[hash] as /*Pen/SkiaSharp.SKPaint;
+            
+            /*Pen*/SkiaSharp.SKPaint result = pens[hash] as /*Pen*/SkiaSharp.SKPaint;
             if (result == null)
             {
-                result = new /*Pen/SkiaSharp.SKPaint (color, width);
-                result.DashStyle = style;
-                result.LineJoin = lineJoin;
+                result = new /*Pen*/SkiaSharp.SKPaint();
+                result.Color = color;
+                result.Style = SkiaSharp.SKPaintStyle.Stroke;
+                result.StrokeJoin = lineJoin;
+                result.StrokeWidth = width;
+                result.StrokeCap = SkiaSharp.SKStrokeCap.Square;
+                
+                if(style != DashStyle.Solid)
+                {
+                    
+                    var pattern = Utils.DrawUtils.GetDashStyle(style);
+                    
+                    result.PathEffect = SkiaSharp.SKPathEffect.CreateDash(pattern, 20);
+                }
+             
                 pens[hash] = result;
             }
             return result;
-            */
-            return new SkiaSharp.SKPaint();
+            
         }
 
         /// <summary>
@@ -78,12 +89,16 @@ namespace FastReport
             int hash = color.GetHashCode();
             
             /*SolidBrush*/SkiaSharp.SKPaint result = brushes[hash] as /*SolidBrush*/SkiaSharp.SKPaint;
-            /*TODO
+            
             if (result == null)
             {
-                result = new /*SolidBrush/SkiaSharp.SKPaint(color);
+                var p = new SkiaSharp.SKPaint();
+                p.Color = color;
+                p.Style = SkiaSharp.SKPaintStyle.Fill;
+                 
+                result = /*SolidBrush*/p;
                 brushes[hash] = result;
-            }*/
+            }
             return result;
         }
 
@@ -100,7 +115,9 @@ namespace FastReport
             var result = fonts[hash] as SkiaSharp.SKFont;
             if (result == null)
             {
+                
                 result = new SkiaSharp.SKFont( name, size);
+                
                 fonts[hash] = result;
             }
             return result;
@@ -116,13 +133,13 @@ namespace FastReport
         /// <param name="firstTab">The number of spaces between the beginning of a line of text and the first tab stop.</param>
         /// <param name="tabWidth">Distance between tab stops.</param>
         /// <returns>The <b>StringFormat</b> object.</returns>
-        public StringAlignment GetStringFormat(StringAlignment align, StringAlignment lineAlign,
+        public StringFormat GetStringFormat(StringAlignment align, StringAlignment lineAlign,
           StringTrimming trimming, StringFormatFlags flags, float firstTab, float tabWidth)
         {
-            /*TODO
+            
             int hash = align.GetHashCode() ^ (lineAlign.GetHashCode() << 2) ^ (trimming.GetHashCode() << 5) ^
               (flags.GetHashCode() << 16) ^ (100 - firstTab).GetHashCode() ^ tabWidth.GetHashCode();
-            StringAlignment result = stringFormats[hash] as StringFormat;
+            StringFormat result = stringFormats[hash] as StringFormat;
             if (result == null)
             {
                 result = new StringFormat();
@@ -140,8 +157,7 @@ namespace FastReport
                 result.SetTabStops(0, tabStops);
                 stringFormats[hash] = result;
             }
-            return result;*/
-            return StringAlignment.Center;
+            return result;
         }
 
         /// <summary>
@@ -155,17 +171,17 @@ namespace FastReport
         /// <param name="tabWidth">Distance between tab stops.</param>
         /// <param name="defaultTab">Default distance between default tabs stops.</param>
         /// <returns>The <b>StringFormat</b> object.</returns>
-        public StringAlignment GetStringFormat(StringAlignment align, StringAlignment lineAlign,
+        public StringFormat GetStringFormat(StringAlignment align, StringAlignment lineAlign,
           StringTrimming trimming, StringFormatFlags flags, float firstTab, FloatCollection tabWidth,
           float defaultTab = 48)
         {
-            /*TODO
+            
             int hash = align.GetHashCode() ^ (lineAlign.GetHashCode() << 2) ^ (trimming.GetHashCode() << 5) ^
               (flags.GetHashCode() << 16) ^ (100 - firstTab).GetHashCode() ^ tabWidth.GetHashCode();
-            SkiaSharp.SKTextAlign result = stringFormats[hash] as StringFormat;
+            StringFormat result = stringFormats[hash] as StringFormat;
             if (result == null)
             {
-                result = new  SkiaSharp.SKTextAlign();
+                result = new  StringFormat();
                 result.Alignment = align;
                 result.LineAlignment = lineAlign;
                 result.Trimming = trimming;
@@ -185,8 +201,7 @@ namespace FastReport
                 result.SetTabStops(0, tabStops);
                 stringFormats[hash] = result;
             }
-            return result;*/
-            return StringAlignment.Center;
+            return result;
         }
 
         /// <summary>

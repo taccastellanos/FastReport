@@ -302,7 +302,7 @@ namespace FastReport.Export.Html
         private void LayerText(FastString Page, TextObject obj)
         {
             float top = 0;
-
+            
             if (obj.Font.Typeface.FamilyName == "Wingdings" )
             {
                 obj.Text = WingdingsToUnicodeConverter.Convert(obj.Text);
@@ -322,7 +322,7 @@ namespace FastReport.Export.Html
                         {
                             top = obj.Height - htmlTextRenderer.CalcHeight();
                         }
-                        /* TODO
+                        
                         FastString sb = GetHtmlParagraph(htmlTextRenderer);
 
                         LayerBack(Page, obj,
@@ -330,21 +330,23 @@ namespace FastReport.Export.Html
                         top + obj.Padding.Top,
                         obj.Width - obj.Padding.Horizontal,
                         obj.ParagraphOffset));
-                        */
+                        
                     }
                     break;
                 default:
                     if (obj.VertAlign != VertAlign.Top)
                     {
-                        SkiaSharp.SKDrawable g = htmlMeasureGraphics;
-                        /* TODO
-                        using (SkiaSharp.SKFont f = new SkiaSharp.SKFont(obj.Font.Typeface, obj.Font.Size * DrawUtils.ScreenDpiFX)
+                        SkiaSharp.SKCanvas g = htmlMeasureGraphics;
+                        
+                        using (SkiaSharp.SKFont f = new SkiaSharp.SKFont(obj.Font.Typeface, obj.Font.Size * DrawUtils.ScreenDpiFX))
                         {
-                            SkiaSharp.SKRect textRect = new SkiaSharp.SKRect(obj.AbsLeft + obj.Padding.Left, obj.AbsTop + obj.Padding.Top,
+                            var textRect = new SkiaSharp.SKRect();
+                            textRect.Location = new SkiaSharp.SKPoint(obj.AbsLeft + obj.Padding.Left, obj.AbsTop + obj.Padding.Top);
+                            textRect.Size = new SkiaSharp.SKSize(
                                 obj.Width - obj.Padding.Left - obj.Padding.Right,
                                 obj.Height - obj.Padding.Top - obj.Padding.Bottom);
-                            SkiaSharp.SKTextAlign format = obj.GetStringFormat(Report.GraphicCache, 0);
-                            /*Brush/SkiaSharp.SKPaint textBrush = Report.GraphicCache.GetBrush(obj.TextColor);
+                            StringFormat format = obj.GetStringFormat(Report.GraphicCache, 0);
+                            /*Brush*/SkiaSharp.SKPaint textBrush = Report.GraphicCache.GetBrush(obj.TextColor);
                             AdvancedTextRenderer renderer = new AdvancedTextRenderer(obj.Text, g, f, textBrush, null,
                                 textRect, format, obj.HorzAlign, obj.VertAlign, obj.LineHeight, obj.Angle, obj.FontWidthRatio,
                                 obj.ForceJustify, obj.Wysiwyg, obj.HasHtmlTags, false, Zoom, Zoom, obj.InlineImageCache);
@@ -381,7 +383,7 @@ namespace FastReport.Export.Html
                                     }
                                 }
                             }
-                        }*/
+                        }
                     }
 
                     LayerBack(Page, obj,
@@ -457,12 +459,12 @@ namespace FastReport.Export.Html
                                         case '\t':
                                             if (word.Type == HtmlTextRenderer.WordType.Tab)
                                             {
-                                                /* TODO
+                                                
                                                 if(layers)
                                                     sb.Append($"<span style=\"tab-size: {Math.Round(prevWidth + run.Width)}px;\">&Tab;</span>");
                                                 else
                                                     sb.Append($"<span style=\"tab-size: {Math.Round(run.Left + run.Width)}px;\">&Tab;</span>");
-                                                */
+                                                
                                             }
                                             else
                                                 sb.Append("&Tab;");
@@ -485,8 +487,9 @@ namespace FastReport.Export.Html
                                         float w, h;
                                         using (SkiaSharp.SKBitmap bmp = runImage.GetBitmap(out w, out h))
                                         {
-
-                                            //TODO bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                            
+                                            var d = bmp.Encode(ms, SkiaSharp.SKEncodedImageFormat.Png, 100);        
+                                            
                                         }
                                         ms.Flush();
                                         sb.Append("<img src=\"data:image/png;base64,").Append(Convert.ToBase64String(ms.ToArray()))
@@ -531,13 +534,13 @@ namespace FastReport.Export.Html
                 if (pictures)
                 {
                     MemoryStream PictureStream = new MemoryStream();
-                    System.Drawing.Imaging.ImageFormat FPictureFormat = System.Drawing.Imaging.ImageFormat.Bmp;
+                    SkiaSharp.SKEncodedImageFormat FPictureFormat = SkiaSharp.SKEncodedImageFormat.Bmp;
                     if (ImageFormat == SkiaSharp.SKEncodedImageFormat.Png)
-                        FPictureFormat = System.Drawing.Imaging.ImageFormat.Png;
+                        FPictureFormat = SkiaSharp.SKEncodedImageFormat.Png;
                     else if (ImageFormat == SkiaSharp.SKEncodedImageFormat.Jpeg)
-                        FPictureFormat = System.Drawing.Imaging.ImageFormat.Jpeg;
+                        FPictureFormat = SkiaSharp.SKEncodedImageFormat.Jpeg;
                     else if (ImageFormat == SkiaSharp.SKEncodedImageFormat.Gif)
-                        FPictureFormat = System.Drawing.Imaging.ImageFormat.Gif;
+                        FPictureFormat = SkiaSharp.SKEncodedImageFormat.Gif;
 
                     Width = obj.Width == 0 ? obj.Border.LeftLine.Width : obj.Width;
                     Height = obj.Height == 0 ? obj.Border.TopLine.Width : obj.Height;
@@ -556,8 +559,8 @@ namespace FastReport.Export.Html
                             (int)(Math.Abs(Math.Round(Height * Zoom * zoom)))
                             ))
                     {
-                        /*TODO
-                        using (Graphics g = Graphics.FromImage(image))
+                        
+                        using (var g = new SkiaSharp.SKCanvas(image))
                         {
                             if (obj is TextObjectBase)
                                 g.Clear(GetClearColor(obj));
@@ -567,31 +570,34 @@ namespace FastReport.Export.Html
 
                             float dx = 0;
                             float dy = 0;
-                            g.TranslateTransform((-Left - dx) * Zoom * zoom, (-Top - dy) * Zoom * zoom);
+                            g.Translate((-Left - dx) * Zoom * zoom, (-Top - dy) * Zoom * zoom);
 
                             BorderLines oldLines = obj.Border.Lines;
                             obj.Border.Lines = BorderLines.None;
                             obj.Draw(new FRPaintEventArgs(g, Zoom * zoom, Zoom * zoom, Report.GraphicCache));
                             obj.Border.Lines = oldLines;
-                        }*/
+                        }
                         
                         using (SkiaSharp.SKBitmap b = new SkiaSharp.SKBitmap (
                         (int)(Math.Abs(Math.Round(Width * Zoom))),
                         (int)(Math.Abs(Math.Round(Height * Zoom)))
                         ))
                         {
-                            /* TODO
-                            using (Graphics gr = Graphics.FromImage(b))
+                            
+                            using (var gr = new SkiaSharp.SKCanvas(b))
                             {
-                                gr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                                gr.DrawImage(image, 0, 0, (int)Math.Abs(Width) * Zoom, (int)Math.Abs(Height) * Zoom);
+                                gr.DrawBitmap(image, 0,0);
                             }
 
-                            if (FPictureFormat == System.Drawing.Imaging.ImageFormat.Jpeg)
-                                ExportUtils.SaveJpeg(b, PictureStream, 95);
+                            if (FPictureFormat == SkiaSharp.SKEncodedImageFormat.Jpeg)
+                            {
+                                ExportUtils.SaveJpeg(SkiaSharp.SKImage.FromBitmap(b), PictureStream, 95);
+                            }
                             else
-                                b.Save(PictureStream, FPictureFormat);
-                                */
+                            {
+                                b.Encode(PictureStream, SkiaSharp.SKEncodedImageFormat.Png, 100); 
+                            }
+                                
                         }
                     }
                     PictureStream.Position = 0;
@@ -714,7 +720,7 @@ namespace FastReport.Export.Html
 
         private void LayerShape(FastString Page, ShapeObject obj, FastString text)
         {
-            /* TODO
+            
             float Width, Height;
             FastString addstyle = new FastString(64);
 
@@ -725,12 +731,12 @@ namespace FastReport.Export.Html
             float x = obj.Width > 0 ? obj.AbsLeft : (obj.AbsLeft + obj.Width);
             float y = obj.Height > 0 ? hPos + obj.AbsTop : (hPos + obj.AbsTop + obj.Height);
             Layer(Page, obj, x, y, obj.Width, obj.Height, text, null, addstyle);
-            */
+            
         }
 
         private void LayerBack(FastString Page, ReportComponentBase obj, FastString text)
         {
-            /* TODO
+            
             if (obj.Border.Shadow)
             {
                 using (TextObject shadow = new TextObject())
@@ -757,12 +763,12 @@ namespace FastReport.Export.Html
                     Layer(Page, obj, obj.AbsLeft, hPos + obj.AbsTop, obj.Width, obj.Height, text, GetStyleTag(UpdateCSSTable(obj)), null);
                 else
                     LayerPicture(Page, obj, text);
-            }*/
+            }
         }
 
         private void LayerTable(FastString Page, FastString CSS, TableBase table)
         {
-            /* TODO
+            
             float y = 0;
             for (int i = 0; i < table.RowCount; i++)
             {
@@ -796,7 +802,10 @@ namespace FastReport.Export.Html
                         else
                         {
                             if (textcell is TextObject && !(textcell as TextObject).TextOutline.Enabled && IsMemo(textcell))
+                            {
+                            
                                 LayerText(Page, textcell as TextObject);
+                            }
                             else
                             {
                                 LayerBack(Page, textcell as ReportComponentBase, null);
@@ -807,7 +816,7 @@ namespace FastReport.Export.Html
                     x += (table.Columns[j]).Width;
                 }
                 y += (table.Rows[i]).Height;
-            }*/
+            }
         }
 
         private bool IsMemo(ReportComponentBase Obj)
@@ -832,27 +841,34 @@ namespace FastReport.Export.Html
                 pictureWatermark.Height = (ExportUtils.GetPageHeight(page) - page.TopMargin - page.BottomMargin) * Units.Millimeters;
 
                 pictureWatermark.SizeMode = PictureBoxSizeMode.Normal;
-                //TODO pictureWatermark.Image = new SkiaSharp.SKBitmap((int)pictureWatermark.Width, (int)pictureWatermark.Height);
-/*TODO
-                using (var g = SkiaSharp.SKGraphics.FromImage(pictureWatermark.Image))
+                pictureWatermark.Image = new SkiaSharp.SKBitmap((int)pictureWatermark.Width, (int)pictureWatermark.Height);
+
+                using (var g = new SkiaSharp.SKCanvas(pictureWatermark.Image))
                 {
                     g.Clear(SkiaSharp.SKColors.Transparent);
+                    var rt = new SkiaSharp.SKRect();
+                    rt.Location = new SkiaSharp.SKPoint(0,0);
+                    rt.Size = new SkiaSharp.SKSize(pictureWatermark.Width, pictureWatermark.Height);
+
+                    var rw = new SkiaSharp.SKRect();
+                    rw.Location = new SkiaSharp.SKPoint(0, 0);
+                    rw.Size = new SkiaSharp.SKSize(pictureWatermark.Width, pictureWatermark.Height);
                     if (drawText)
                         page.Watermark.DrawText(new FRPaintEventArgs(g, 1f, 1f, Report.GraphicCache),
-                            new SkiaSharp.SKRect(0, 0, pictureWatermark.Width, pictureWatermark.Height), Report, true);
+                            rt, Report, true);
                     else
                         page.Watermark.DrawImage(new FRPaintEventArgs(g, 1f, 1f, Report.GraphicCache),
-                            new SkiaSharp.SKRect(0, 0, pictureWatermark.Width, pictureWatermark.Height), Report, true);
+                            rw, Report, true);
                     pictureWatermark.Transparency = page.Watermark.ImageTransparency;
                     LayerBack(Page, pictureWatermark, null);
                     LayerPicture(Page, pictureWatermark, null);
-                }*/
+                }
             }
         }
 
         private void ExportHTMLPageLayeredBegin(HTMLData d)
         {
-            /* TODO
+            
             if (!singlePage && !WebMode)
                 cssStyles.Clear();
 
@@ -916,12 +932,12 @@ namespace FastReport.Export.Html
 
                 if (reportPage.Watermark.Enabled && !reportPage.Watermark.ShowTextOnTop)
                     Watermark(htmlPage, reportPage, true);
-            }*/
+            }
         }
 
         private void ExportHTMLPageLayeredEnd(HTMLData d)
         {
-            /* TODO
+            
             // to do
             if (d.page.Watermark.Enabled && d.page.Watermark.ShowImageOnTop)
                 Watermark(htmlPage, d.page, false);
@@ -939,12 +955,12 @@ namespace FastReport.Export.Html
             htmlPage.Append("</div>");
 
             ExportHTMLPageFinal(css, htmlPage, d, maxWidth, maxHeight);
-            */
+            
         }
 
         private void ExportBandLayers(BandBase band)
         {
-            /* TODO
+            
             LayerBack(htmlPage, band, null);
             foreach (Base c in band.ForEachAllConvectedObjects(this))
             {
@@ -994,6 +1010,7 @@ namespace FastReport.Export.Html
                                     tableback.FillColor = table.FillColor;
                                     tableback.Left = table.AbsLeft;
                                     tableback.Top = table.AbsTop;
+                                    
                                     float tableWidth = 0;
                                     float tableHeight = 0;
                                   
@@ -1003,6 +1020,7 @@ namespace FastReport.Export.Html
                                         tableHeight += table.Rows[i].Height;                         
                                     tableback.Width = (tableWidth < table.Width) ? tableWidth : table.Width;
                                     tableback.Height = tableHeight;
+
                                     LayerText(htmlPage, tableback);
                                 }
                                 LayerTable(htmlPage, css, table);
@@ -1010,6 +1028,8 @@ namespace FastReport.Export.Html
                         }
                         else if (IsMemo(obj))
                         {
+                          
+
                             LayerText(htmlPage, obj as TextObject);
                         }
                         else if (obj is HtmlObject)
@@ -1039,7 +1059,7 @@ namespace FastReport.Export.Html
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 }

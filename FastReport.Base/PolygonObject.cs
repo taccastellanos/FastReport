@@ -25,12 +25,11 @@ namespace FastReport
         /// <returns>Always returns a non-empty path</returns>
         protected SkiaSharp.SKPath getPolygonPath (/*Pen*/SkiaSharp.SKPaint pen, float scaleX, float scaleY)
         {
-            /*TODO
+            
             SkiaSharp.SKPath gp = base.GetPath(pen, AbsLeft, AbsTop, AbsRight, AbsBottom, scaleX, scaleY);
-            gp.CloseAllFigures();
+            gp.Reset();
             return gp;
-            */
-            return new SkiaSharp.SKPath();
+            
         }
 
         /// <summary>
@@ -50,18 +49,22 @@ namespace FastReport
                 pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
             }
             else pen = e.Cache.GetPen(Border.Color, 1, DashStyle.Solid);
-/*TODO
-            /*Brush/SkiaSharp.SKPaint brush = null;
-            if (Fill is SolidFill)
-                /*Brush/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
-            else
-                /*Brush/SkiaSharp.SKPaint = Fill.CreateBrush(new SkiaSharp.SKRect(x, y, dx, dy), e.ScaleX, e.ScaleY);
 
-            using (GraphicsPath path = getPolygonPath(pen, e.ScaleX, e.ScaleY))
+            /*Brush*/SkiaSharp.SKPaint brush = null;
+            if (Fill is SolidFill)
+                brush = e.Cache.GetBrush((Fill as SolidFill).Color);
+            else
+            {
+                var r = new SkiaSharp.SKRect();
+                r.Location = new SkiaSharp.SKPoint(x, y);
+                r.Size = new SkiaSharp.SKSize(dx, dy);
+                brush = Fill.CreateBrush(r, e.ScaleX, e.ScaleY);
+            }
+            using (var path = getPolygonPath(pen, e.ScaleX, e.ScaleY))
             {
                 if(polygonSelectionMode == PolygonSelectionMode.MoveAndScale)
-                e.Graphics.FillAndDrawPath(pen, brush, path);
-            }*/
+                e.Graphics.DrawPath(path,pen);//brush
+            }
         }
 
         #endregion

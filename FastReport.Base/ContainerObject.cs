@@ -120,11 +120,10 @@ namespace FastReport
             updatingLayout = true;
             try
             {
-                SkiaSharp.SKRect remainingBounds = new SkiaSharp.SKRect(0, 0, Width, Height);
-                /*TODO
-                remainingBounds.Width += dx;
-                remainingBounds.Height += dy;
-                */
+                SkiaSharp.SKRect remainingBounds = new SkiaSharp.SKRect();
+                remainingBounds.Location = new SkiaSharp.SKPoint(0,0);                
+                remainingBounds.Size = new SkiaSharp.SKSize(remainingBounds.Width + dx, remainingBounds.Height + dy);
+                
                 foreach (ReportComponentBase c in Objects)
                 {
                     if ((c.Anchor & AnchorStyles.Right) != 0)
@@ -152,36 +151,51 @@ namespace FastReport
                     switch (c.Dock)
                     {
                         case DockStyle.Left:
-                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Top, c.Width, remainingBounds.Height);
-                            /*TODO
-                            remainingBounds.X += c.Width;
-                            remainingBounds.Width -= c.Width;
-                            */
+                            var rl = new SkiaSharp.SKRect();
+                            rl.Location = new SkiaSharp.SKPoint(remainingBounds.Left, remainingBounds.Top);
+                            rl.Size = new SkiaSharp.SKSize(c.Width, remainingBounds.Height);
+                            c.Bounds = rl;
+                            
+                            remainingBounds.Left += c.Width;
+                            remainingBounds.Size = new SkiaSharp.SKSize(remainingBounds.Width - c.Width, remainingBounds.Height);
+                            
                             break;
 
                         case DockStyle.Top:
-                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Top, remainingBounds.Width, c.Height);
-                            /*TODO
-                            remainingBounds.Y += c.Height;
-                            remainingBounds.Height -= c.Height;
-                            */
+                            var rt = new SkiaSharp.SKRect();
+                            rt.Location = new SkiaSharp.SKPoint(remainingBounds.Left, remainingBounds.Top);
+                            rt.Size = new SkiaSharp.SKSize(remainingBounds.Width, c.Height);
+                            c.Bounds = rt;
+                            
+                            remainingBounds.Top += c.Height;
+                            remainingBounds.Size = new SkiaSharp.SKSize(remainingBounds.Width, remainingBounds.Height - c.Height);
+                            
                             break;
 
                         case DockStyle.Right:
-                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Right - c.Width, remainingBounds.Top, c.Width, remainingBounds.Height);
-                            //TODOremainingBounds.Width -= c.Width;
+                            var rr = new SkiaSharp.SKRect();
+                            rr.Location = new SkiaSharp.SKPoint(remainingBounds.Right - c.Width, remainingBounds.Top);
+                            rr.Size = new SkiaSharp.SKSize(c.Width, remainingBounds.Height);
+                            c.Bounds = rr;
+
+                            remainingBounds.Size = new SkiaSharp.SKSize(remainingBounds.Width - c.Width, remainingBounds.Height);
+                            
                             break;
 
                         case DockStyle.Bottom:
-                            c.Bounds = new SkiaSharp.SKRect(remainingBounds.Left, remainingBounds.Bottom - c.Height, remainingBounds.Width, c.Height);
-                            //TODOremainingBounds.Height -= c.Height;
+                            var rb = new SkiaSharp.SKRect();
+                            rb.Location = new SkiaSharp.SKPoint(remainingBounds.Left, remainingBounds.Bottom - c.Height);
+                            rb.Size = new SkiaSharp.SKSize( remainingBounds.Width, c.Height);
+                            c.Bounds = rb;
+                            
+                            remainingBounds.Size = new SkiaSharp.SKSize(remainingBounds.Width, remainingBounds.Height - c.Height);
+                            
                             break;
 
                         case DockStyle.Fill:
                             c.Bounds = remainingBounds;
-                            /*TODOremainingBounds.Width = 0;
-                            remainingBounds.Height = 0;
-                            */
+                            remainingBounds.Size = new SkiaSharp.SKSize(0, 0);
+                                                        
                             break;
                     }
                 }
@@ -377,7 +391,10 @@ namespace FastReport
         {
             DrawBackground(e);
             DrawMarkers(e);
-            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
+            var r = new SkiaSharp.SKRect();
+            r.Location = new SkiaSharp.SKPoint(AbsLeft, AbsTop);
+            r.Size = new SkiaSharp.SKSize(Width, Height);
+            Border.Draw(e, r);
             base.Draw(e);
         }
         #endregion

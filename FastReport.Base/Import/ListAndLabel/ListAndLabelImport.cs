@@ -110,26 +110,30 @@ namespace FastReport.Import.ListAndLabel
                     fontSize = DrawUtils.DefaultReportFont.Size;
                 }
                 SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
-                /*TODO
+                
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Bold")))
                 {
-                    fontStyle |= SkiaSharp.SKFontStyle.Bold;
+                    fontStyle = SkiaSharp.SKFontStyle.Bold;
                 }
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Italic")))
                 {
-                    fontStyle |= SkiaSharp.SKFontStyle.Italic;
+                    if(fontStyle == SkiaSharp.SKFontStyle.Bold)
+                        fontStyle = SkiaSharp.SKFontStyle.BoldItalic;
+                    else     
+                        fontStyle = SkiaSharp.SKFontStyle.Italic;
                 }
+                /*TODO
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Underline")))
                 {
-                    fontStyle |= SkiaSharp.SKFontStyle.Underline;
+                     |= SkiaSharp.SKFontStyle.Underline;
                 }
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Strikeout")))
                 {
                     fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
-                }
-                */
-                defaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName( fontFamily), fontSize);
-                defaultTextColor = SkiaSharp.SKColors.Empty;//. FromName(GetValueLL("DefaultFont/Color=LL.Color"));
+                }*/
+                
+                defaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName( fontFamily, fontStyle), fontSize);
+                defaultTextColor = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("DefaultFont/Color=LL.Color")).FirstOrDefault().GetValue(null);
             }
         }
 
@@ -186,58 +190,62 @@ namespace FastReport.Import.ListAndLabel
             if (GetValueLL("Size", index) != "Null()")
                 fontSize = Convert.ToSingle(GetValueLL("Size", index).Replace('.', ','));
             SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
-            /*
-            if (UnitsConverter.ConvertBool(GetValueLL("Bold", index)))
-            {
-                fontStyle |= SkiaSharp.SKFontStyle.Bold;
-            }
-            if (UnitsConverter.ConvertBool(GetValueLL("Italic", index)))
-            {
-                fontStyle |= SkiaSharp.SKFontStyle.Italic;
-            }
-            if (UnitsConverter.ConvertBool(GetValueLL("Underline", index)))
-            {
-                fontStyle |= SkiaSharp.SKFontStyle.Underline;
-            }
-            if (UnitsConverter.ConvertBool(GetValueLL("Strikeout", index)))
-            {
-                fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
-            }*/
-            return new SkiaSharp.SKFont(fontFamily == "Null()" ? SkiaSharp.SKTypeface.Default : SkiaSharp.SKTypeface.FromFamilyName(fontFamily), fontSize);
+            if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Bold")))
+                {
+                    fontStyle = SkiaSharp.SKFontStyle.Bold;
+                }
+                if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Italic")))
+                {
+                    if(fontStyle == SkiaSharp.SKFontStyle.Bold)
+                        fontStyle = SkiaSharp.SKFontStyle.BoldItalic;
+                    else     
+                        fontStyle = SkiaSharp.SKFontStyle.Italic;
+                }
+                /*TODO
+                if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Underline")))
+                {
+                     |= SkiaSharp.SKFontStyle.Underline;
+                }
+                if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Strikeout")))
+                {
+                    fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
+                }*/
+            
+            return new SkiaSharp.SKFont(fontFamily == "Null()" ? SkiaSharp.SKTypeface.Default : SkiaSharp.SKTypeface.FromFamilyName(fontFamily, fontStyle), fontSize);
             //}
         }
 
         private void LoadBorder(int startIndex, Border border)
         {
-            /*TODO
+            
             if (UnitsConverter.ConvertBool(GetValueLL("Frame/Left/Line", startIndex)))
             {
                 border.Lines |= BorderLines.Left;
-                border.LeftLine.Color = Color.FromName(GetValueLL("Frame/Left/Line/Color=LL.Color", startIndex));
+                border.LeftLine.Color = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("Frame/Left/Line/Color=LL.Color", startIndex)).FirstOrDefault().GetValue(null);
                 border.LeftLine.Style = UnitsConverter.ConvertLineType(GetValueLL("Frame/Left/Line/LineType", startIndex));
                 border.LeftLine.Width = UnitsConverter.LLUnitsToPixels(GetValueLL("Frame/Left/LineWidth", startIndex));
             }
             if (UnitsConverter.ConvertBool(GetValueLL("Frame/Top/Line", startIndex)))
             {
                 border.Lines |= BorderLines.Top;
-                border.TopLine.Color = Color.FromName(GetValueLL("Frame/Top/Line/Color=LL.Color", startIndex));
+                border.TopLine.Color = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("Frame/Top/Line/Color=LL.Color", startIndex)).FirstOrDefault().GetValue(null);
                 border.TopLine.Style = UnitsConverter.ConvertLineType(GetValueLL("Frame/Top/Line/LineType", startIndex));
                 border.TopLine.Width = UnitsConverter.LLUnitsToPixels(GetValueLL("Frame/Top/LineWidth", startIndex));
             }
             if (UnitsConverter.ConvertBool(GetValueLL("Frame/Right/Line", startIndex)))
             {
                 border.Lines |= BorderLines.Right;
-                border.RightLine.Color = Color.FromName(GetValueLL("Frame/Right/Line/Color=LL.Color", startIndex));
+                border.RightLine.Color = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("Frame/Right/Line/Color=LL.Color", startIndex)).FirstOrDefault().GetValue(null);
                 border.RightLine.Style = UnitsConverter.ConvertLineType(GetValueLL("Frame/Right/Line/LineType", startIndex));
                 border.RightLine.Width = UnitsConverter.LLUnitsToPixels(GetValueLL("Frame/Right/LineWidth", startIndex));
             }
             if (UnitsConverter.ConvertBool(GetValueLL("Frame/Bottom/Line", startIndex)))
             {
                 border.Lines |= BorderLines.Bottom;
-                border.BottomLine.Color = Color.FromName(GetValueLL("Frame/Bottom/Line/Color=LL.Color", startIndex));
+                border.BottomLine.Color = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("Frame/Bottom/Line/Color=LL.Color", startIndex)).FirstOrDefault().GetValue(null);
                 border.BottomLine.Style = UnitsConverter.ConvertLineType(GetValueLL("Frame/Bottom/Line/LineType", startIndex));
                 border.BottomLine.Width = UnitsConverter.LLUnitsToPixels(GetValueLL("Frame/Bottom/LineWidth", startIndex));
-            }*/
+            }
         }
 
         private void LoadTextObject(int startIndex, TextObject textObj)
@@ -251,9 +259,9 @@ namespace FastReport.Import.ListAndLabel
             int fontIndex = textLL.IndexOf("[Font]", startIndex);
             if (GetValueLL("Color", fontIndex) != "Null()")
             {
-                /*TODO
-                textObj.TextColor = Color.FromName(GetValueLL("Color=LL.Color", fontIndex));
-                */
+                
+                textObj.TextColor =(SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("Color=LL.Color", fontIndex)).FirstOrDefault().GetValue(null); 
+                
             }
             //if (!UnitsConverter.ConvertBool(GetValueLL("Default", fontIndex)))
             //{
@@ -270,9 +278,8 @@ namespace FastReport.Import.ListAndLabel
             int colorIndex = textLL.IndexOf("FgColor", startIndex);
             if (colorIndex >= 0)
             {
-                /*TODO
-                lineObj.Border.Color = Color.FromName(GetValueLL("FgColor=LL.Color", colorIndex));
-                */
+
+                lineObj.Border.Color = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("FgColor=LL.Color", colorIndex)).FirstOrDefault().GetValue(null); 
                 lineObj.Border.Style = UnitsConverter.ConvertLineType(GetValueLL("LineType", colorIndex));
                 lineObj.Border.Width = UnitsConverter.LLUnitsToPixels(GetValueLL("Width", colorIndex));
             }
@@ -298,19 +305,19 @@ namespace FastReport.Import.ListAndLabel
 
         private SkiaSharp.SKColor GetColorForShapeObject(string colorString, int colorIndex)
         {
-            /*TODO
+            
             string colorName = GetValueLL(colorString + "=LL.Color", colorIndex);
-            SkiaSharp.SKColor color = Color.FromName(colorName);
-            if (color.IsNamedColor)
+             
+            SkiaSharp.SKColor color = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == colorName).FirstOrDefault().GetValue(null);
+            if (color != null)
                 return color;
             colorName = GetValueLL(colorString, colorIndex);
             string[] colors = colorName.Replace("RGB", "").Replace("(", "").Replace(")", "").Split(',');
             if (colors.Length != 3)
-                return Color.Transparent;
-            color = Color.FromArgb(int.Parse(colors[0]), int.Parse(colors[1]), int.Parse(colors[2]));
+                return SkiaSharp.SKColors.Transparent;
+            color = new SkiaSharp.SKColor(byte.Parse(colors[0]), byte.Parse(colors[1]), byte.Parse(colors[2]));
             return color;
-            */
-            return new SkiaSharp.SKColor();
+        
         }
 
         private void LoadRectangle(int startIndex, ShapeObject shapeObj)

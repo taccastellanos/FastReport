@@ -150,7 +150,7 @@ namespace FastReport.Export.Html
         private const string NBSP = "&nbsp;";
         private int currentPage = 0;
         private HTMLData d;
-        private SkiaSharp.SKDrawable htmlMeasureGraphics;
+        private SkiaSharp.SKCanvas htmlMeasureGraphics;
         private float maxWidth, maxHeight;
         private FastString css;
         private FastString htmlPage;
