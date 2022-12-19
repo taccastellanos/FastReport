@@ -38,8 +38,8 @@ namespace FastReport.Barcode
         private bool trim;
         internal SkiaSharp.SKRect drawArea;
         internal SkiaSharp.SKRect barArea;
-        internal static SkiaSharp.SKFont FFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8);
-        internal static SkiaSharp.SKFont FSmallFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 6);
+        internal static FastReport.SKFont FFont = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8);
+        internal static FastReport.SKFont FSmallFont = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 6);
         internal bool textUp;
         internal float ratioMin;
         internal float ratioMax;
@@ -509,8 +509,8 @@ namespace FastReport.Barcode
             /* TODO
             float fontZoom = 14f / (int)g.MeasureString(s, FFont).Height * zoom;
             
-            SkiaSharp.SKFont font = small ? FSmallFont : FFont;
-            using (var drawFont = new SkiaSharp.SKFont(font.Typeface, font.Size * fontZoom))
+            FastReport.SKFont font = small ? FSmallFont : FFont;
+            using (var drawFont = new FastReport.SKFont(font.Typeface, font.Size * fontZoom))
             {
                 SkiaSharp.SKSize size = g.MeasureString(s, drawFont);
                 size.Width /= zoom;

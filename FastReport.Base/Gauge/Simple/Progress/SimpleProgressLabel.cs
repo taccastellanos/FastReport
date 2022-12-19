@@ -57,7 +57,7 @@ namespace FastReport.Gauge.Simple.Progress
 
             SkiaSharp.SKPoint lblPt = new SkiaSharp.SKPoint(x + dx / 2, y + dy/2);
             SkiaSharp.SKSize txtSize = RadialUtils.GetStringSize(e, Parent, Font, Text);
-            SkiaSharp.SKFont font = RadialUtils.GetFont(e, Parent, Font);
+            FastReport.SKFont font = RadialUtils.GetFont(e, Parent, Font);
             /*Brush*/SkiaSharp.SKPaint brush = e.Cache.GetBrush(Color);
             Text = Math.Round((Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum) * 100, decimals) + "%";
             /*TODO

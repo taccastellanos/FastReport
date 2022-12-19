@@ -850,6 +850,8 @@ namespace FastReport
         public virtual void Deserialize(FRReader reader)
         {
             reader.ReadProperties(this);
+
+            
             while (reader.NextItem())
             {
                 DeserializeSubItems(reader);

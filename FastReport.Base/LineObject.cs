@@ -75,24 +75,32 @@ namespace FastReport
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
-            /*TODO
-            IGraphics g = e.Graphics;
+            
+            var g = e.Graphics;
+            SkiaSharp.SKPaint p = new SkiaSharp.SKPaint();
+            p.Style = SkiaSharp.SKPaintStyle.Stroke;
+            p.Color = SkiaSharp.SKColors.Black;
+            
+            p.FilterQuality = SkiaSharp.SKFilterQuality.High;
+            
             // draw marker when inserting a line
             if (Width == 0 && Height == 0)
             {
-                g.DrawLine(Pens.Black, AbsLeft * e.ScaleX - 6, AbsTop * e.ScaleY, AbsLeft * e.ScaleX + 6, AbsTop * e.ScaleY);
-                g.DrawLine(Pens.Black, AbsLeft * e.ScaleX, AbsTop * e.ScaleY - 6, AbsLeft * e.ScaleX, AbsTop * e.ScaleY + 6);
+
+
+                g.DrawLine(AbsLeft * e.ScaleX - 6, AbsTop * e.ScaleY, AbsLeft * e.ScaleX + 6, AbsTop * e.ScaleY, p);
+                g.DrawLine(AbsLeft * e.ScaleX, AbsTop * e.ScaleY - 6, AbsLeft * e.ScaleX, AbsTop * e.ScaleY + 6, p);
                 return;
             }
 
             Report report = Report;
             if (report != null && report.SmoothGraphics)
             {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+                //TODO g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                p.IsAntialias = true;
             }
 
-            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
+            /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
 
             float width = Width;
             float height = Height;
@@ -111,7 +119,7 @@ namespace FastReport
 
             if (StartCap.Style == CapStyle.None && EndCap.Style == CapStyle.None)
             {
-                g.DrawLine(pen, x1, y1, x2, y2);
+                g.DrawLine(x1, y1, x2, y2, pen);
             }
             else
             {
@@ -120,9 +128,9 @@ namespace FastReport
                 float len = (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
                 float scale = Border.Width * e.ScaleX;
 
-                IGraphicsState state = g.Save();
-                g.TranslateTransform(x1, y1);
-                g.RotateTransform(-angle);
+                var state = g.Save();
+                g.Translate(x1, y1);
+                g.RotateDegrees(-angle);
                 float y = 0;
                 SkiaSharp.SKPath startCapPath = null;
                 SkiaSharp.SKPath endCapPath = null;
@@ -137,35 +145,35 @@ namespace FastReport
                     EndCap.GetCustomCapPath(out endCapPath, out inset);
                     len -= inset * scale;
                 }
-                g.DrawLine(pen, 0, y, 0, len);
-                g.Restore(state);
+                g.DrawLine(0, y, 0, len, pen);
+                g.RestoreToCount(state);
 
                 pen = e.Cache.GetPen(Border.Color, 1, Border.DashStyle);
                 if (StartCap.Style != CapStyle.None)
                 {
                     state = g.Save();
-                    g.TranslateTransform(x1, y1);
-                    g.RotateTransform(180 - angle);
-                    g.ScaleTransform(scale, scale);
-                    g.DrawPath(pen, startCapPath);
-                    g.Restore(state);
+                    g.Translate(x1, y1);
+                    g.RotateDegrees(180 - angle);
+                    g.Scale(scale, scale);
+                    g.DrawPath(startCapPath, pen);
+                    g.RestoreToCount(state);
                 }
                 if (EndCap.Style != CapStyle.None)
                 {
                     state = g.Save();
-                    g.TranslateTransform(x2, y2);
-                    g.RotateTransform(-angle);
-                    g.ScaleTransform(scale, scale);
-                    g.DrawPath(pen, endCapPath);
-                    g.Restore(state);
+                    g.Translate(x2, y2);
+                    g.RotateDegrees(-angle);
+                    g.Scale(scale, scale);
+                    g.DrawPath(endCapPath, pen);
+                    g.RestoreToCount(state);
                 }
             }
 
             if (report != null && report.SmoothGraphics && Diagonal)
             {
-                g.InterpolationMode = InterpolationMode.Default;
-                g.SmoothingMode = SmoothingMode.Default;
-            }*/
+                /*TODO g.InterpolationMode = InterpolationMode.Default;
+                /p.IsAntialias = SmoothingMode.Default;*/
+            }
         }
 
         /// <inheritdoc/>

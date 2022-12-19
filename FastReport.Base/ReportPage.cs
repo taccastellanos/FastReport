@@ -688,20 +688,19 @@ namespace FastReport
         #region Private Methods
         private void DrawBackground(FRPaintEventArgs e, SkiaSharp.SKRect rect)
         {
-           
-           /*TODO rect.Width *= e.ScaleX;
-            rect.Height *= e.ScaleY;
+            rect.Size = new SkiaSharp.SKSize(rect.Width * e.ScaleX, rect.Height * e.ScaleY);
+            
 
-            /*Brush/SkiaSharp.SKPaint brush = null;
+            /*Brush*/SkiaSharp.SKPaint brush = null;
             if (Fill is SolidFill)
                 brush = e.Cache.GetBrush((Fill as SolidFill).Color);
             else
                 brush = Fill.CreateBrush(rect, e.ScaleX, e.ScaleY);
 
-            e.Graphics.FillRectangle(brush, rect.Left, rect.Top, rect.Width, rect.Height);
+            e.Graphics.DrawRect(rect, brush);
             if (!(Fill is SolidFill))
                 brush.Dispose();
-                */
+                
         }
         #endregion
 
@@ -949,16 +948,19 @@ namespace FastReport
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
-            /*TODO
+            
             if (IsDesigning)
                 return;
 
-            IGraphics g = e.Graphics;
-            SkiaSharp.SKRect pageRect = new SkiaSharp.SKRect(0, 0,
-              WidthInPixels - 1 / e.ScaleX, HeightInPixels - 1 / e.ScaleY);
-            SkiaSharp.SKRect printableRect = new SkiaSharp.SKRect(
-              LeftMargin * Units.Millimeters,
-              TopMargin * Units.Millimeters,
+            var g = e.Graphics;
+            SkiaSharp.SKRect pageRect = new SkiaSharp.SKRect();
+            pageRect.Location = new SkiaSharp.SKPoint(0, 0);
+            pageRect.Size = new SkiaSharp.SKSize(WidthInPixels - 1 / e.ScaleX, HeightInPixels - 1 / e.ScaleY);
+              
+            SkiaSharp.SKRect printableRect = new SkiaSharp.SKRect();
+            printableRect.Location = new SkiaSharp.SKPoint(LeftMargin * Units.Millimeters,
+              TopMargin * Units.Millimeters);
+            printableRect.Size = new SkiaSharp.SKSize(  
               (PaperWidth - LeftMargin - RightMargin) * Units.Millimeters,
               (PaperHeight - TopMargin - BottomMargin) * Units.Millimeters);
 
@@ -980,7 +982,7 @@ namespace FastReport
 
             float leftMargin = (int)Math.Round(LeftMargin * Units.Millimeters * e.ScaleX);
             float topMargin = (int)Math.Round(TopMargin * Units.Millimeters * e.ScaleY);
-            g.TranslateTransform(leftMargin, topMargin);
+            g.Translate(leftMargin, topMargin);
 
             try
             {
@@ -1012,7 +1014,7 @@ namespace FastReport
             }
             finally
             {
-                g.TranslateTransform(-leftMargin, -topMargin);
+                g.Translate(-leftMargin, -topMargin);
             }
 
             if (Watermark.Enabled)
@@ -1021,7 +1023,7 @@ namespace FastReport
                     Watermark.DrawImage(e, pageRect, Report, IsPrinting);
                 if (Watermark.ShowTextOnTop)
                     Watermark.DrawText(e, pageRect, Report, IsPrinting);
-            }*/
+            }
         }
 
         internal void InitializeComponents()

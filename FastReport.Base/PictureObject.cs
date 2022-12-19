@@ -423,10 +423,10 @@ namespace FastReport
             }*/
         }
 
-        protected override void DrawImageInternal2(SkiaSharp.SKDrawable graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft)
+        protected override void DrawImageInternal2(SkiaSharp.SKCanvas graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft)
         {
-            /*TODO
-            SkiaSharp.SKImage  image = transparentImage != null ? transparentImage.Clone() as SkiaSharp.SKImage  : Image.Clone() as Image;
+            /*
+            SkiaSharp.SKBitmap  image = transparentImage != null ? transparentImage.Copy()  : Image.Copy();
             if (image == null)
                 return;
             if (Grayscale)

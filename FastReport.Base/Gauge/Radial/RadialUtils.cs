@@ -6,16 +6,17 @@ namespace FastReport.Gauge.Radial
 {
      internal class RadialUtils
     {
-        public static SkiaSharp.SKFont GetFont(FRPaintEventArgs e, GaugeObject gauge, SkiaSharp.SKFont font)
+        public static FastReport.SKFont GetFont(FRPaintEventArgs e, GaugeObject gauge, FastReport.SKFont font)
         {
-            return e.Cache.GetFont(font.Typeface, gauge.IsPrinting ? font.Size : font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, font.Typeface.FontStyle);
+            return e.Cache.GetFont(font.Typeface, gauge.IsPrinting ? font.Size : font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, font.Style);
         }
-        public static SkiaSharp.SKSize GetStringSize(FRPaintEventArgs e, GaugeObject gauge, SkiaSharp.SKFont font, string text)
+        public static SkiaSharp.SKSize GetStringSize(FRPaintEventArgs e, GaugeObject gauge, FastReport.SKFont font, string text)
         {
-            /*TODO
-            return e.Graphics.MeasureString(text, GetFont(e, gauge, font));
-            */
-            return SkiaSharp.SKSize.Empty;
+            var p = new SkiaSharp.SKPaint(GetFont(e, gauge, font));
+            var textBounds = new SkiaSharp.SKRect();
+            p.MeasureText(text, ref textBounds);
+            return textBounds.Size;
+            
         }
 
         public static SkiaSharp.SKPoint[] RotateVector(SkiaSharp.SKPoint[] vector, double angle, SkiaSharp.SKPoint center)

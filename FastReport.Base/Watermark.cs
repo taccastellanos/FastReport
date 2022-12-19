@@ -139,7 +139,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets a font of the watermark text.
         /// </summary>
-        public SkiaSharp.SKFont Font
+        public FastReport.SKFont Font
         {
             get { return textObject.Font; }
             set { textObject.Font = value; }
@@ -203,7 +203,7 @@ namespace FastReport
         #region Private Methods
         //private bool ShouldSerializeFont()
         //{
-        //    return Font.Name != DrawUtils.DefaultReportFont.Name || Font.Size != 60 || Font.Style != SkiaSharp.SKFontStyle.Regular;
+        //    return Font.Name != DrawUtils.DefaultReportFont.Name || Font.Size != 60 || Font.Style != FontStyle.Regular;
         //}
 
         private bool ShouldSerializeTextFill()
@@ -357,7 +357,7 @@ namespace FastReport
             textObject.HorzAlign = HorzAlign.Center;
             textObject.VertAlign = VertAlign.Center;
             ImageSize = WatermarkImageSize.Zoom;
-            Font = new SkiaSharp.SKFont(DrawUtils.DefaultReportFont.Typeface, 60);
+            Font = new FastReport.SKFont(DrawUtils.DefaultReportFont.Typeface, 60);
             TextFill = new SolidFill(new SkiaSharp.SKColor(SkiaSharp.SKColors.Gray.Red,SkiaSharp.SKColors.Gray.Green,SkiaSharp.SKColors.Gray.Blue,40));
             TextRotation = WatermarkTextRotation.ForwardDiagonal;
             ShowTextOnTop = true;

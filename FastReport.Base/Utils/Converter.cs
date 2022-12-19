@@ -75,7 +75,7 @@ namespace FastReport.Utils
         return type.AssemblyQualifiedName;
       }
 
-      if (value is SkiaSharp.SKFont)
+      if (value is FastReport.SKFont)
       {
           return new TypeConverters.FontConverterSkia().ConvertToInvariantString(value);
       }
@@ -134,9 +134,11 @@ namespace FastReport.Utils
         return value.Split('\r');
       }
 
-      if (type == typeof(SkiaSharp.SKFont))
+      if (type == typeof(FastReport.SKFont))
       {
-          return new TypeConverters.FontConverterSkia().ConvertFromInvariantString(value);
+          var f = (SKFont)new TypeConverters.FontConverterSkia().ConvertFromInvariantString(value);
+          
+          return f;
       }
 
       if (type == typeof(SkiaSharp.SKColor))

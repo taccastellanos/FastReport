@@ -177,7 +177,7 @@ namespace FastReport.Import.RDL
 
         private void LoadStyle(XmlNode styleNode)
         {
-            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+            FontStyle fontStyle = FontStyle.Regular;
             string fontFamily = "Arial";
             float fontSize = 10.0f;
             int paddingTop = 0;
@@ -269,7 +269,7 @@ namespace FastReport.Import.RDL
             }
             if (component is TextObject)
             {
-                (component as TextObject).Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontFamily), fontSize);
+                (component as TextObject).Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontFamily), fontSize);
                 (component as TextObject).Padding = new Padding(paddingLeft, paddingTop, paddingRight, paddingBottom);
             }
             else if (component is PictureObject)
@@ -469,7 +469,7 @@ namespace FastReport.Import.RDL
 
         private void ParseTextBoxStyle(XmlNode runChild)
         {
-            SkiaSharp.SKFontStyle style = SkiaSharp.SKFontStyle.Normal;
+            FontStyle style = FontStyle.Regular;
             var textBoxForeColor = SkiaSharp.SKColors.Black;
             string fontFamily = String.Empty;
             int fontSize = 0;
@@ -482,11 +482,11 @@ namespace FastReport.Import.RDL
                 else if (styleChild.Name == "FontSize")
                     int.TryParse(styleChild.InnerText.Replace("pt", ""), out fontSize);
                 else if (styleChild.Name == "FontWeight" && styleChild.InnerText == "Bold")
-                    style = style | SkiaSharp.SKFontStyle.Bold;
+                    style = style | FontStyle.Bold;
                 else if (styleChild.Name == "FontStyle" && styleChild.InnerText == "Italic")
-                    style = style | SkiaSharp.SKFontStyle.Italic;
+                    style = style | FontStyle.Italic;
                 else if (styleChild.Name == "TextDecoration" && styleChild.InnerText == "Underline")
-                    style = style | SkiaSharp.SKFontStyle.Underline;
+                    style = style | FontStyle.Underline;
                 else if(styleChild.Name == "Color")
                    textBoxForeColor = ColorTranslator.FromHtml(styleChild.InnerText);
 
@@ -494,13 +494,13 @@ namespace FastReport.Import.RDL
             if (fontFamily == string.Empty)
                 fontFamily = defaultFontFamily;
             if (fontFamily == string.Empty && fontSize == 0)
-                (component as TextObject).Font = new SkiaSharp.SKFont((component as TextObject).Font, style);
+                (component as TextObject).Font = new FastReport.SKFont((component as TextObject).Font, style);
             else if (fontFamily == string.Empty)
-                (component as TextObject).Font = new SkiaSharp.SKFont((component as TextObject).Font.FontFamily, fontSize, style);
+                (component as TextObject).Font = new FastReport.SKFont((component as TextObject).Font.FontFamily, fontSize, style);
             else if (fontSize == 0)
-                (component as TextObject).Font = new SkiaSharp.SKFont(fontFamily, (component as TextObject).Font.Size, style);
+                (component as TextObject).Font = new FastReport.SKFont(fontFamily, (component as TextObject).Font.Size, style);
             else
-                (component as TextObject).Font = new SkiaSharp.SKFont(fontFamily, fontSize, style);
+                (component as TextObject).Font = new FastReport.SKFont(fontFamily, fontSize, style);
             (component as TextObject).TextColor = textBoxForeColor;*/
         }
 

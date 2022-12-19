@@ -71,19 +71,23 @@ namespace FastReport.Gauge.Linear
         /// <inheritdoc/>
         public override void Draw(FRPaintEventArgs e)
         {
+            
+            var g = e.Graphics;
             /*TODO
-            IGraphics g = e.Graphics;
             if (Report != null && Report.SmoothGraphics)
             {
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.SmoothingMode = SmoothingMode.AntiAlias;
-            }
+            }*/
 
             base.Draw(e);
             Scale.Draw(e);
             Pointer.Draw(e);
-            Border.Draw(e, new SkiaSharp.SKRect(AbsLeft, AbsTop, Width, Height));
-            */
+            var r = new SkiaSharp.SKRect();
+            r.Location = new SkiaSharp.SKPoint(AbsLeft, AbsTop);
+            r.Size = new SkiaSharp.SKSize(Width, Height);
+            Border.Draw(e, r);
+            
         }
 
         /// <inheritdoc/>

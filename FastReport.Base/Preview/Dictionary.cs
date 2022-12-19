@@ -63,6 +63,7 @@ namespace FastReport.Preview
                 if(item.OriginalComponent != null)
                     item.OriginalComponent.SetReport(this.preparedPages.Report);
                 Base result = item.CloneObject(name);
+                
                 //result.SetReport(this);
                 return result;
         }
@@ -171,6 +172,7 @@ namespace FastReport.Preview
         // try frequently used objects first. The CreateInstance method is very slow.
         if (type == typeof(TextObject)){
           result = new TextObject();
+          
         }
         else if (type == typeof(TableCell))
           result = new TableCell();

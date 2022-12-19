@@ -103,12 +103,23 @@ namespace FastReport
         SkiaSharp.SKPath gp = new SkiaSharp.SKPath();
         if (radius < 1)
             radius = 1;
-            /*TODO
-        gp.AddArc(x1 - radius - 1, y, radius + 1, radius + 1, 270, 90);
-        gp.AddArc(x1 - radius - 1, y1 - radius - 1, radius + 1, radius + 1, 0, 90);
-        gp.AddArc(x, y1 - radius - 1, radius + 1, radius + 1, 90, 90);
-        gp.AddArc(x, y, radius, radius, 180, 90);
-        gp.Close();*/
+        var r = new SkiaSharp.SKRect();
+        r.Location = new SkiaSharp.SKPoint(x1 - radius - 1, y); 
+        r.Size = new SkiaSharp.SKSize(radius + 1, radius + 1);
+        gp.AddArc(r, 270, 90);
+        r = new SkiaSharp.SKRect();
+        r.Location = new SkiaSharp.SKPoint(x1 - radius - 1, y1 - radius - 1); 
+        r.Size = new SkiaSharp.SKSize(radius + 1, radius + 1);
+        gp.AddArc(r, 0, 90);
+        r = new SkiaSharp.SKRect();
+        r.Location = new SkiaSharp.SKPoint(x, y1 - radius - 1); 
+        r.Size = new SkiaSharp.SKSize(radius + 1, radius + 1);
+        gp.AddArc(r, 90, 90);
+        r = new SkiaSharp.SKRect();
+        r.Location = new SkiaSharp.SKPoint(x, y); 
+        r.Size = new SkiaSharp.SKSize(radius, radius);
+        gp.AddArc(r, 180, 90);
+        gp.Close();
         return gp;
     }
 #endif
@@ -128,11 +139,11 @@ namespace FastReport
     /// <inheritdoc/>
     public override void Draw(FRPaintEventArgs e)
     {
-      /*TODO
+      
       if (Math.Abs(Width) < 1 || Math.Abs(Height) < 1)
         return;
 
-      IGraphics g = e.Graphics;
+      var g = e.Graphics;
       float x = (AbsLeft + Border.Width / 2) * e.ScaleX;
       float y = (AbsTop + Border.Width / 2) * e.ScaleY;
       float dx = (Width - Border.Width) * e.ScaleX - 1;
@@ -140,24 +151,30 @@ namespace FastReport
       float x1 = x + dx;
       float y1 = y + dy;
 
-      /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
-      /*Brush/SkiaSharp.SKPaint brush = null;
+      var r = new SkiaSharp.SKRect();
+      r.Location = new SkiaSharp.SKPoint(x, y);
+      r.Size = new SkiaSharp.SKSize(dx, dy);
+      /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(Border.Color, Border.Width * e.ScaleX, Border.DashStyle);
+      /*Brush*/SkiaSharp.SKPaint brush = null;
       if (Fill is SolidFill)
-        /*Brush/SkiaSharp.SKPaint = e.Cache.GetBrush((Fill as SolidFill).Color);
+        /*Brush*/brush = e.Cache.GetBrush((Fill as SolidFill).Color);
       else
-        /*Brush/SkiaSharp.SKPaint = Fill.CreateBrush(new SkiaSharp.SKRect(x, y, dx, dy), e.ScaleX, e.ScaleY);
+        /*Brush*/brush = Fill.CreateBrush(r, e.ScaleX, e.ScaleY);
         
       Report report = Report;
       if (report != null && report.SmoothGraphics && Shape != ShapeKind.Rectangle)
       {
+        /*TODO
         g.InterpolationMode = InterpolationMode.HighQualityBicubic;
         g.SmoothingMode = SmoothingMode.AntiAlias;
+        */
       }  
 
       switch (Shape)
       {
         case ShapeKind.Rectangle:
-          g.FillAndDrawRectangle(pen, brush, x, y, dx, dy);
+          g.DrawRect(x, y, dx, dy,pen);
+          g.DrawRect(x, y, dx, dy,brush);
           break;
 
         case ShapeKind.RoundRectangle:
@@ -167,30 +184,35 @@ namespace FastReport
           else
             min = Math.Min(min, curve * e.ScaleX * 10);
           SkiaSharp.SKPath gp = GetRoundRectPath(x, y, x1, y1, min);
-          g.FillAndDrawPath(pen, brush, gp);
+          g.DrawPath(gp, pen);
+          g.DrawPath(gp, brush);
+          
           gp.Dispose();
           break;
 
         case ShapeKind.Ellipse:
-          g.FillAndDrawEllipse(pen, brush, x, y, dx, dy);
+          g.DrawOval(x, y, dx, dy,pen);
           break;
 
         case ShapeKind.Triangle:
-          SkiaSharp.SKSkiaSharp.SKPoint[] triPoints = { 
+          SkiaSharp.SKPoint[] triPoints = { 
             new SkiaSharp.SKPoint(x1, y1), new SkiaSharp.SKPoint(x, y1), new SkiaSharp.SKPoint(x + dx / 2, y), new SkiaSharp.SKPoint(x1, y1) };
-          g.FillAndDrawPolygon(pen, brush, triPoints);
+          g.DrawPoints(SkiaSharp.SKPointMode.Polygon, triPoints, pen);
+          g.DrawPoints(SkiaSharp.SKPointMode.Polygon, triPoints, brush);
           break;
 
         case ShapeKind.Diamond:
-          SkiaSharp.SKSkiaSharp.SKPoint[] diaPoints = { 
+          SkiaSharp.SKPoint[] diaPoints = { 
             new SkiaSharp.SKPoint(x + dx / 2, y), new SkiaSharp.SKPoint(x1, y + dy / 2), new SkiaSharp.SKPoint(x + dx / 2, y1),
             new SkiaSharp.SKPoint(x, y + dy / 2) };
-          g.FillAndDrawPolygon(pen, brush, diaPoints);
+          g.DrawPoints(SkiaSharp.SKPointMode.Polygon, diaPoints, pen);
+          g.DrawPoints(SkiaSharp.SKPointMode.Polygon, diaPoints, brush);
           break;
       }
 
       if (!(Fill is SolidFill))
         brush.Dispose();
+        /*TODO
       if (report != null && report.SmoothGraphics)
       {
         g.InterpolationMode = InterpolationMode.Default;

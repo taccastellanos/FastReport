@@ -39,9 +39,9 @@ namespace FastReport.ReportBuilder
         /// <param name="emSize"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public ReportTitleBuilder<T> Font(string familyName, float emSize, SkiaSharp.SKFontStyle style)
+        public ReportTitleBuilder<T> Font(string familyName, float emSize, FontStyle style)
         {
-            _report._reportTitle.Font = new SkiaSharp.SKFont(familyName, emSize, style);
+            _report._reportTitle.Font = new FastReport.SKFont(familyName, emSize, style);
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace FastReport.ReportBuilder
         /// <returns></returns>
         public ReportTitleBuilder<T> Font(string familyName, float emSize)
         {
-            return Font(familyName, emSize, SkiaSharp.SKFontStyle.Regular | SkiaSharp.SKFontStyle.Bold);
+            return Font(familyName, emSize, FontStyle.Regular | FontStyle.Bold);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace FastReport.ReportBuilder
         /// <returns></returns>
         public ReportTitleBuilder<T> Font(string familyName)
         {
-            return Font(familyName, 14, SkiaSharp.SKFontStyle.Regular | SkiaSharp.SKFontStyle.Bold);
+            return Font(familyName, 14, FontStyle.Regular | FontStyle.Bold);
         }
 
         /// <summary>

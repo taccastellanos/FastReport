@@ -16,7 +16,7 @@ namespace FastReport.Gauge
         #region Fields
 
         private GaugeObject parent;
-        private SkiaSharp.SKFont font;
+        private FastReport.SKFont font;
         private FillBase textFill;
         private ScaleTicks majorTicks;
         private ScaleTicks minorTicks;
@@ -59,7 +59,7 @@ namespace FastReport.Gauge
         /// Gets or sets the font of scale.
         /// </summary>
         [Browsable(true)]
-        public SkiaSharp.SKFont Font
+        public FastReport.SKFont Font
         {
             get { return font; }
             set { font = value; }
@@ -85,7 +85,7 @@ namespace FastReport.Gauge
         public GaugeScale(GaugeObject parent)
         {
             this.parent = parent;
-            font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8.0f);
+            font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8.0f);
             TextFill = new SolidFill(SkiaSharp.SKColors.Black);
             majorTicks = new ScaleTicks();
             minorTicks = new ScaleTicks();

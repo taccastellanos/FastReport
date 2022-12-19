@@ -17,7 +17,7 @@ namespace FastReport.Import.ListAndLabel
 
         private ReportPage page;
         private string textLL;
-        private SkiaSharp.SKFont defaultFont;
+        private FastReport.SKFont defaultFont;
         private SkiaSharp.SKColor defaultTextColor;
         private bool isListAndLabelReport;
 
@@ -43,7 +43,7 @@ namespace FastReport.Import.ListAndLabel
         public ListAndLabelImport() : base()
         {
             textLL = "";
-            defaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10.0f);
+            defaultFont = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10.0f);
             defaultTextColor = SkiaSharp.SKColors.Black;
             isListAndLabelReport = true;
         }
@@ -94,7 +94,7 @@ namespace FastReport.Import.ListAndLabel
             defFontParts[2] = defFontParts[2][0].ToString();
             defaultTextColor = new SkiaSharp.SKColor(byte.Parse(defFontParts[0]), byte.Parse(defFontParts[1]), byte.Parse(defFontParts[2]));
             float fontsize = Convert.ToSingle(defFontParts[3].Replace('.', ','));
-            defaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(defFontParts.Last().Trim('}')), fontsize);
+            defaultFont = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName(defFontParts.Last().Trim('}')), fontsize);
             return;
             if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Default")))
             {
@@ -109,30 +109,28 @@ namespace FastReport.Import.ListAndLabel
                 {
                     fontSize = DrawUtils.DefaultReportFont.Size;
                 }
-                SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+                FontStyle fontStyle = FontStyle.Regular;
                 
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Bold")))
                 {
-                    fontStyle = SkiaSharp.SKFontStyle.Bold;
+                    fontStyle |= FontStyle.Bold;
                 }
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Italic")))
                 {
-                    if(fontStyle == SkiaSharp.SKFontStyle.Bold)
-                        fontStyle = SkiaSharp.SKFontStyle.BoldItalic;
-                    else     
-                        fontStyle = SkiaSharp.SKFontStyle.Italic;
+                    
+                    fontStyle |= FontStyle.Italic;
                 }
-                /*TODO
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Underline")))
                 {
-                     |= SkiaSharp.SKFontStyle.Underline;
+                    fontStyle |= FontStyle.Underline;
                 }
                 if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Strikeout")))
                 {
-                    fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
-                }*/
+                    fontStyle |= FontStyle.Strikeout;
+                }
                 
-                defaultFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName( fontFamily, fontStyle), fontSize);
+                defaultFont = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName( fontFamily), fontSize);
+                defaultFont.Style = fontStyle;
                 defaultTextColor = (SkiaSharp.SKColor)typeof(SkiaSharp.SKColors).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).Where(x=> x.Name == GetValueLL("DefaultFont/Color=LL.Color")).FirstOrDefault().GetValue(null);
             }
         }
@@ -180,7 +178,7 @@ namespace FastReport.Import.ListAndLabel
             comp.Height = UnitsConverter.LLUnitsToPixels(GetValueLL("Position/Height", startIndex));
         }
 
-        private SkiaSharp.SKFont LoadFont(int startIndex)
+        private FastReport.SKFont LoadFont(int startIndex)
         {
             int index = textLL.IndexOf("[Font]", startIndex);
             //if (!UnitsConverter.ConvertBool(GetValueLL("Default", index)))
@@ -189,30 +187,28 @@ namespace FastReport.Import.ListAndLabel
             float fontSize = defaultFont.Size;
             if (GetValueLL("Size", index) != "Null()")
                 fontSize = Convert.ToSingle(GetValueLL("Size", index).Replace('.', ','));
-            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+            FontStyle fontStyle = FontStyle.Regular;
             if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Bold")))
                 {
-                    fontStyle = SkiaSharp.SKFontStyle.Bold;
-                }
-                if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Italic")))
-                {
-                    if(fontStyle == SkiaSharp.SKFontStyle.Bold)
-                        fontStyle = SkiaSharp.SKFontStyle.BoldItalic;
-                    else     
-                        fontStyle = SkiaSharp.SKFontStyle.Italic;
-                }
-                /*TODO
-                if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Underline")))
-                {
-                     |= SkiaSharp.SKFontStyle.Underline;
-                }
-                if (UnitsConverter.ConvertBool(GetValueLL("DefaultFont/Strikeout")))
-                {
-                    fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
-                }*/
+                fontStyle |= FontStyle.Bold;
+            }
+            if (UnitsConverter.ConvertBool(GetValueLL("Italic", index)))
+            {
+                fontStyle |= FontStyle.Italic;
+            }
+            if (UnitsConverter.ConvertBool(GetValueLL("Underline", index)))
+            {
+                fontStyle |= FontStyle.Underline;
+            }
+            if (UnitsConverter.ConvertBool(GetValueLL("Strikeout", index)))
+            {
+                fontStyle |= FontStyle.Strikeout;
+            }
             
-            return new SkiaSharp.SKFont(fontFamily == "Null()" ? SkiaSharp.SKTypeface.Default : SkiaSharp.SKTypeface.FromFamilyName(fontFamily, fontStyle), fontSize);
+            var f = new FastReport.SKFont(fontFamily == "Null()" ? SkiaSharp.SKTypeface.Default : SkiaSharp.SKTypeface.FromFamilyName(fontFamily), fontSize);
+            f.Style = fontStyle;
             //}
+            return f;
         }
 
         private void LoadBorder(int startIndex, Border border)

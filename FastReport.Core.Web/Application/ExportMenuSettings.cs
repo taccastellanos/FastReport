@@ -18,7 +18,7 @@ namespace FastReport.Web
         /// <summary>
         /// Used to change font family, style in export settings.
         /// </summary>
-        public SkiaSharp.SKFont FontSettings { get; set; } = null;
+        public FastReport.SKFont FontSettings { get; set; } = null;
         /// <summary>
         /// Used to change font color in export settings.
         /// </summary>

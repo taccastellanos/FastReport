@@ -479,6 +479,7 @@ namespace FastReport.Export
 
         public void InstantExportExportBand(BandBase band)
         {
+            Console.WriteLine($"InstantExportExportBand: ");
             ExportBand(band);
         }
 
@@ -513,7 +514,11 @@ namespace FastReport.Export
                         }
                         if (band.Exportable
                             || webPreview)
+                            {
+                            Console.WriteLine($"ExportPageNew: {band}");
+                            
                             ExportBand(band);
+                            }
                         else if (obj != null)
                         {
                             if (shiftNonExportable)

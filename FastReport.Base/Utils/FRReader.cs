@@ -311,7 +311,7 @@ namespace FastReport.Utils
             {
                 string name = properties[i].Key;
                 string value = properties[i].Value;
-
+                
                 // check multiple properties like Frame.LeftLine.Typ
                 object obj1 = obj;
                 int len = name.Length;
@@ -364,16 +364,18 @@ namespace FastReport.Utils
                             fixups.Add(new FixupInfo(obj1, name, value));
                         }
                         else
-                        {
+                        { 
                             pi.SetValue(obj1, Converter.FromString(pi.PropertyType, value), null);
                         }
                     }
+                   
                 }
                 catch (Exception e)
                 {
                     errors += e.Message + "\r\n";
                 }
             }
+          
         }
 
         /// <summary>
@@ -454,6 +456,8 @@ namespace FastReport.Utils
             // with two dots
             if (FProps2.Length > 0)
                 DoReadProperties(obj, FProps2);
+                
+   
         }
 
         private void AppendProperty(ref XmlProperty[] fProps, XmlProperty xmlProperty)

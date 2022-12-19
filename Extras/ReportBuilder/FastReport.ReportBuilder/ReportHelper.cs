@@ -84,7 +84,7 @@ namespace FastReport.ReportBuilder
                     textGroupHeader.CreateUniqueName();
                     textGroupHeader.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 2, Units.Centimeters * 0.5f);
                     textGroupHeader.Text = $"[{groupHeader.Condition}]";
-                    textGroupHeader.Font = new SkiaSharp.SKFont("Tahoma", 10, SkiaSharp.SKFontStyle.Bold);
+                    textGroupHeader.Font = new FastReport.SKFont("Tahoma", 10, FontStyle.Bold);
                     textGroupHeader.Parent = groupHeader;
                 }
             }

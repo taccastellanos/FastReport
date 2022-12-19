@@ -447,21 +447,18 @@ namespace FastReport
             {
                 case PictureBoxSizeMode.Normal:
                 case PictureBoxSizeMode.AutoSize:
-                /*TODO
-                    rect.Width = imageWidth * scaleX;
-                    rect.Height = imageHeight * scaleY;
-                    
+                
+                    rect.Size = new SkiaSharp.SKSize(imageWidth * scaleX,imageHeight * scaleY);
                     if (Angle == 90 || Angle == 180)
-                        rect.X -= rect.Width - drawRect.Width;
+                        rect.Left -= rect.Width - drawRect.Width;
                     if (Angle == 180)
-                        rect.Y -= rect.Height - drawRect.Height;*/
+                        rect.Top -= rect.Height - drawRect.Height;
                     break;
 
                 case PictureBoxSizeMode.CenterImage:
                     rect.Offset((Width - imageWidth) * scaleX / 2, (Height - imageHeight) * scaleY / 2);
-                    /*TODO
-                    rect.Width = imageWidth * scaleX;
-                    rect.Height = imageHeight * scaleY;*/
+                    rect.Size = new SkiaSharp.SKSize(imageWidth * scaleX, imageHeight * scaleY);
+                    
                     break;
 
                 case PictureBoxSizeMode.StretchImage:
@@ -791,7 +788,7 @@ namespace FastReport
         /// <param name="drawRect"></param>
         internal virtual void DrawImageInternal(FRPaintEventArgs e, SkiaSharp.SKRect drawRect)
         {
-            /*TODO
+            
             bool rotate = Angle == 90 || Angle == 270;
             float imageWidth = ImageWidth;//rotate ? Image.Height : Image.Width;
             float imageHeight = ImageHeight;//rotate ? Image.Width : Image.Height;
@@ -799,15 +796,15 @@ namespace FastReport
             SkiaSharp.SKPoint upperLeft;
             SkiaSharp.SKPoint upperRight;
             SkiaSharp.SKPoint lowerLeft;
-            System.Drawing.Drawing2D.Matrix matrix = e.Graphics.Transform;
-            GetImageAngleTransform(drawRect, imageWidth, imageHeight, e.ScaleX, e.ScaleY, matrix.OffsetX, matrix.OffsetY, out upperLeft, out upperRight, out lowerLeft);
-            DrawImageInternal2(e.Graphics, upperLeft, upperRight, lowerLeft);*/
+            var matrix = SkiaSharp.SKMatrix.CreateTranslation(drawRect.Left, drawRect.Top);
+            GetImageAngleTransform(drawRect, imageWidth, imageHeight, e.ScaleX, e.ScaleY, matrix.SkewX, matrix.SkewY, out upperLeft, out upperRight, out lowerLeft);
+            DrawImageInternal2(e.Graphics, upperLeft, upperRight, lowerLeft);
         }
         #endregion Internal Methods
 
         #region Protected Methods
 
-        protected abstract void DrawImageInternal2(SkiaSharp.SKDrawable graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft);
+        protected abstract void DrawImageInternal2(SkiaSharp.SKCanvas graphics, SkiaSharp.SKPoint upperLeft, SkiaSharp.SKPoint upperRight, SkiaSharp.SKPoint lowerLeft);
 
         /// <summary>
         /// Reset index of image

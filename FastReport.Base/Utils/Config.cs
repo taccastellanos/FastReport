@@ -324,16 +324,20 @@ namespace FastReport.Utils
 
         private static void InitTextRenderingHint()
         {
-            /* TODO
+            
             // init TextRenderingHint.SystemDefault
             // bug in .Net: if you use any other hint before SystemDefault, the SystemDefault will
             // look like SingleBitPerPixel
             using (SkiaSharp.SKBitmap bmp = new SkiaSharp.SKBitmap(1, 1))
-            using (SkiaSharp.SKGraphics g = SkiaSharp.SKGraphics.FromImage(bmp))
+            using (SkiaSharp.SKCanvas g = new SkiaSharp.SKCanvas(bmp))
             {
-                g.TextRenderingHint = TextRenderingHint.SystemDefault;
-                g.DrawString(" ", SystemFonts.DefaultFont, Brushes.Black, 0, 0);
-            }*/
+                var p = new SkiaSharp.SKPaint(new SkiaSharp.SKFont(SkiaSharp.SKTypeface.Default));
+                p.Color = SkiaSharp.SKColors.Black;
+                p.Style = SkiaSharp.SKPaintStyle.Fill;
+                p.IsAntialias = true; 
+                
+                g.DrawText(" ", 0, 0, p);
+            }
         }
 
         private static void CheckWebMode()

@@ -7,7 +7,7 @@ namespace FastReport
     {
         #region Private Methods
 
-        private SkiaSharp.SKFont GetDefaultFontInternal()
+        private FastReport.SKFont GetDefaultFontInternal()
         {
             return DrawUtils.DefaultFont;
         }

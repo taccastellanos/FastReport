@@ -12,7 +12,7 @@ namespace FastReport.Barcode
   /// </summary>
   public abstract class Barcode2DBase : BarcodeBase
   {
-    private static SkiaSharp.SKFont FFont = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8);
+    private static FastReport.SKFont FFont = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 8);
 
         private void DrawBarcode(SkiaSharp.SKDrawable g, float width, float height)
         {
@@ -52,7 +52,7 @@ namespace FastReport.Barcode
                     // When we print, .Net automatically scales the font. However, we need to handle this process.
                     // Downscale the font to the screen resolution, then scale by required value (ky).
                     float fontZoom = 18f / (int)g.MeasureString(data, FFont).Height * ky;
-                    using (var drawFont = new SkiaSharp.SKFont(FFont.Typeface, FFont.Size * fontZoom))
+                    using (var drawFont = new FastReport.SKFont(FFont.Typeface, FFont.Size * fontZoom))
                     {
                         g.DrawString(data, drawFont, Brushes.Black, new SkiaSharp.SKRect(0, height - 18 * ky, width, 18 * ky));
                     }

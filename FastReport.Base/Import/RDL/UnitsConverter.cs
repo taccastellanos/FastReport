@@ -121,17 +121,17 @@ namespace FastReport.Import.RDL
         }
 
         /// <summary>
-        /// Converts the RDL SkiaSharp.SKFontStyle to SkiaSharp.SKFontStyle.
+        /// Converts the RDL FontStyle to FontStyle.
         /// </summary>
-        /// <param name="fontStyle">The RDL SkiaSharp.SKFontStyle value.</param>
-        /// <returns>The SkiaSharp.SKFontStyle value.</returns>
-        public static SkiaSharp.SKFontStyle ConvertFontStyle(string fontStyle)
+        /// <param name="fontStyle">The RDL FontStyle value.</param>
+        /// <returns>The FontStyle value.</returns>
+        public static FontStyle ConvertFontStyle(string fontStyle)
         {
             if (fontStyle == "Italic")
             {
-                return SkiaSharp.SKFontStyle.Italic;
+                return FontStyle.Italic;
             }
-            return SkiaSharp.SKFontStyle.Normal;
+            return FontStyle.Regular;
         }
 
         /// <summary>

@@ -8,15 +8,16 @@ namespace FastReport.Export.Html
 {
     public partial class HTMLExport : ExportBase
     {
-        private void HTMLFontStyle(FastString FFontDesc, SkiaSharp.SKFont font, float LineHeight)
+        private void HTMLFontStyle(FastString FFontDesc, FastReport.SKFont font, float LineHeight)
         {
-            FFontDesc.Append((font.Typeface.FontStyle.Weight == (int)SkiaSharp.SKFontStyleWeight.Bold  ? "font-weight:bold;" : String.Empty) +
-                (((font.Typeface.FontStyle.Slant & SkiaSharp.SKFontStyleSlant.Italic) > 0) ? "font-style:italic;" : "font-style:normal;"));
-            if ((font.Metrics.UnderlinePosition ) < 0 )
+            Console.WriteLine($"HTMLFontStyle Style:{font.Style} fontName:{font.Typeface.FamilyName} fontSize:{font.Size} ");
+            FFontDesc.Append((((font.Style & FontStyle.Bold) > 0) ? "font-weight:bold;" : String.Empty) +
+                (((font.Style & FontStyle.Italic) > 0) ? "font-style:italic;" : "font-style:normal;"));
+            if ((font.Style & FontStyle.Underline) > 0 && (font.Style & FontStyle.Strikeout) > 0)
                 FFontDesc.Append("text-decoration:underline|line-through;");
-            else if ((font.Metrics.UnderlinePosition ) > 0 )
+            else if ((font.Style & FontStyle.Underline) > 0)
                 FFontDesc.Append("text-decoration:underline;");
-            else if ((font.Metrics.UnderlinePosition ) == 0)
+            else if ((font.Style & FontStyle.Strikeout) > 0)
                 FFontDesc.Append("text-decoration:line-through;");
             FFontDesc.Append("font-family:").Append(font.Typeface.FamilyName).Append(";");
             FFontDesc.Append("font-size:").Append(Px(Math.Round(font.Size * 96 / 72)));
@@ -211,9 +212,10 @@ namespace FastReport.Export.Html
                 Append(" { ").ToString();
         }
 
-        private void HTMLGetStyle(FastString style, SkiaSharp.SKFont Font, SkiaSharp.SKColor TextColor, SkiaSharp.SKColor FillColor, HorzAlign HAlign, VertAlign VAlign,
+        private void HTMLGetStyle(FastString style, FastReport.SKFont Font, SkiaSharp.SKColor TextColor, SkiaSharp.SKColor FillColor, HorzAlign HAlign, VertAlign VAlign,
             Border Border, Padding Padding, bool RTL, bool wordWrap, float LineHeight, float ParagraphOffset)
         {
+            
             HTMLFontStyle(style, Font, LineHeight);
             style.Append("color:").Append(ExportUtils.HTMLColor(TextColor)).Append(";");
             style.Append("background-color:");

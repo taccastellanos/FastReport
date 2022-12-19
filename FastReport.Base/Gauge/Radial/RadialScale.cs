@@ -143,7 +143,7 @@ namespace FastReport.Gauge.Radial
         {
             /*TODO
             IGraphics g = e.Graphics;
-            SkiaSharp.SKFont font = RadialUtils.GetFont(e, Parent, Font);
+            FastReport.SKFont font = RadialUtils.GetFont(e, Parent, Font);
             SkiaSharp.SKSize strSize = RadialUtils.GetStringSize(e, Parent, Font, text);
             float dx = 0;
             float dy = 0;

@@ -17,16 +17,18 @@ namespace FastReport.Export.Html
             return "position:absolute;";
         }
 
-        private string GetStyle(SkiaSharp.SKFont Font, SkiaSharp.SKColor TextColor, SkiaSharp.SKColor FillColor,
+        private string GetStyle(FastReport.SKFont Font, SkiaSharp.SKColor TextColor, SkiaSharp.SKColor FillColor,
             bool RTL, HorzAlign HAlign, Border Border, bool WordWrap, float LineHeight, float Width, float Height, bool Clip)
         {
             FastString style = new FastString(256);
-
+            
             if (Font != null)
             {
+                Console.WriteLine($"GetStyle: Style:{Font.Style}");
                 if (Zoom != 1)
                 {
-                    SkiaSharp.SKFont newFont = new SkiaSharp.SKFont(Font.Typeface, Font.Size * Zoom);
+                    FastReport.SKFont newFont = new FastReport.SKFont(Font.Typeface, Font.Size * Zoom);
+                    newFont.Style = Font.Style;
                         HTMLFontStyle(style, newFont, LineHeight);
                 }
                 else
@@ -67,6 +69,7 @@ namespace FastReport.Export.Html
             if (obj is TextObject)
             {
                 TextObject textObj = obj as TextObject;
+                 Console.WriteLine($"UpdateCSSTable: Style:{textObj.Font.Style} Text: {textObj.Text}");
                 style = GetStyle(textObj.Font, textObj.TextColor, textObj.FillColor,
                     textObj.RightToLeft, textObj.HorzAlign, textObj.Border, textObj.WordWrap, textObj.LineHeight,
                     textObj.Width, textObj.Height, textObj.Clip);
@@ -216,7 +219,7 @@ namespace FastReport.Export.Html
                     TextObject textObject = obj as TextObject;
                     hrefStyle = String.Format("style=\"color:{0}{1}\"",
                         ExportUtils.HTMLColor(textObject.TextColor),
-                        textObject.Font.Metrics.UnderlinePosition == null ? ";text-decoration:none" : String.Empty
+                        (textObject.Font.Style & ~FontStyle.Underline)>0 ? ";text-decoration:none" : String.Empty
                         );
                 }
             
@@ -324,7 +327,6 @@ namespace FastReport.Export.Html
                         }
                         
                         FastString sb = GetHtmlParagraph(htmlTextRenderer);
-
                         LayerBack(Page, obj,
                         GetSpanText(obj, sb,
                         top + obj.Padding.Top,
@@ -338,7 +340,7 @@ namespace FastReport.Export.Html
                     {
                         SkiaSharp.SKCanvas g = htmlMeasureGraphics;
                         
-                        using (SkiaSharp.SKFont f = new SkiaSharp.SKFont(obj.Font.Typeface, obj.Font.Size * DrawUtils.ScreenDpiFX))
+                        using (FastReport.SKFont f = new FastReport.SKFont(obj.Font.Typeface, obj.Font.Size * DrawUtils.ScreenDpiFX))
                         {
                             var textRect = new SkiaSharp.SKRect();
                             textRect.Location = new SkiaSharp.SKPoint(obj.AbsLeft + obj.Padding.Left, obj.AbsTop + obj.Padding.Top);
@@ -347,7 +349,8 @@ namespace FastReport.Export.Html
                                 obj.Height - obj.Padding.Top - obj.Padding.Bottom);
                             StringFormat format = obj.GetStringFormat(Report.GraphicCache, 0);
                             /*Brush*/SkiaSharp.SKPaint textBrush = Report.GraphicCache.GetBrush(obj.TextColor);
-                            AdvancedTextRenderer renderer = new AdvancedTextRenderer(obj.Text, g, f, textBrush, null,
+                            
+                            AdvancedTextRenderer renderer = new AdvancedTextRenderer(obj.Text, g, f, textBrush, new SkiaSharp.SKPaint(),
                                 textRect, format, obj.HorzAlign, obj.VertAlign, obj.LineHeight, obj.Angle, obj.FontWidthRatio,
                                 obj.ForceJustify, obj.Wysiwyg, obj.HasHtmlTags, false, Zoom, Zoom, obj.InlineImageCache);
                             if (renderer.Paragraphs.Count > 0)
@@ -385,7 +388,7 @@ namespace FastReport.Export.Html
                             }
                         }
                     }
-
+Console.WriteLine($"LayerText: {obj} Text:{obj.Text}");
                     LayerBack(Page, obj,
                         GetSpanText(obj, ExportUtils.HtmlString(obj.Text, obj.TextRenderType, Px(Math.Round(obj.Font.Size * 96 / 72))),
                         top,
@@ -516,6 +519,7 @@ namespace FastReport.Export.Html
 
         private void LayerHtml(FastString Page, HtmlObject obj)
         {
+            Console.WriteLine($"LayerHtml: {obj} Text:{obj.Text}");
             LayerBack(Page, obj,
                 GetSpanText(obj, new Utils.FastString(obj.Text),
                 obj.Padding.Top,
@@ -553,7 +557,7 @@ namespace FastReport.Export.Html
 
                     int zoom = highQualitySVG ? 3 : 1;
 
-                    using (SkiaSharp.SKBitmap image =
+                    using (var image =
                         new SkiaSharp.SKBitmap(
                             (int)(Math.Abs(Math.Round(Width * Zoom * zoom))),
                             (int)(Math.Abs(Math.Round(Height * Zoom * zoom)))
@@ -586,7 +590,9 @@ namespace FastReport.Export.Html
                             
                             using (var gr = new SkiaSharp.SKCanvas(b))
                             {
-                                gr.DrawBitmap(image, 0,0);
+                                //TODOgr.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                                
+                                //TODOgr.DrawBitmap(image, 0, 0, (int)Math.Abs(Width) * Zoom, (int)Math.Abs(Height) * Zoom);
                             }
 
                             if (FPictureFormat == SkiaSharp.SKEncodedImageFormat.Jpeg)
@@ -694,7 +700,7 @@ namespace FastReport.Export.Html
 
                 if (IsMemo(obj))
                     (obj as TextObject).Text = old_text;
-
+                
                 FastString picStyleBuilder = new FastString("background: url('")
                     .Append(pic).Append("') no-repeat !important;-webkit-print-color-adjust:exact;");
 
@@ -803,7 +809,8 @@ namespace FastReport.Export.Html
                         {
                             if (textcell is TextObject && !(textcell as TextObject).TextOutline.Enabled && IsMemo(textcell))
                             {
-                            
+                                
+                                Console.WriteLine($"ExportBandLayers memo: Style:{((TextObject)textcell).Font.Style} Text:{((TextObject)textcell).Text}");
                                 LayerText(Page, textcell as TextObject);
                             }
                             else
@@ -960,7 +967,6 @@ namespace FastReport.Export.Html
 
         private void ExportBandLayers(BandBase band)
         {
-            
             LayerBack(htmlPage, band, null);
             foreach (Base c in band.ForEachAllConvectedObjects(this))
             {
@@ -1020,7 +1026,9 @@ namespace FastReport.Export.Html
                                         tableHeight += table.Rows[i].Height;                         
                                     tableback.Width = (tableWidth < table.Width) ? tableWidth : table.Width;
                                     tableback.Height = tableHeight;
-
+                                    
+                                    Console.WriteLine($"ExportBandLayers TableBase: {tableback.Font}");
+                            
                                     LayerText(htmlPage, tableback);
                                 }
                                 LayerTable(htmlPage, css, table);
@@ -1029,7 +1037,7 @@ namespace FastReport.Export.Html
                         else if (IsMemo(obj))
                         {
                           
-
+                            Console.WriteLine($"ExportBandLayers memo: Style:{((TextObject)obj).Font.Style} Text:{((TextObject)obj).Text}");
                             LayerText(htmlPage, obj as TextObject);
                         }
                         else if (obj is HtmlObject)

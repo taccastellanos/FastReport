@@ -63,7 +63,7 @@ namespace UserFunctions
             titleText1.Parent = page.ReportTitle;
             titleText1.CreateUniqueName();
             titleText1.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 1);
-            titleText1.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
+            titleText1.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, FontStyle.Bold);
             titleText1.HorzAlign = HorzAlign.Center;
 
             // !!! use our function

@@ -116,6 +116,7 @@ namespace FastReport.Preview
                 if (type == null)
                     return null;
                 obj = Activator.CreateInstance(type) as Base;
+                Console.WriteLine($"ReadObject:{obj}");
             }
             obj.SetRunning(true);
 
@@ -137,7 +138,7 @@ namespace FastReport.Preview
                     ReadObject(obj, item[i], true, reader);
                 }
             }
-
+            
             obj.Parent = parent;
             return obj;
         }
@@ -218,6 +219,7 @@ namespace FastReport.Preview
 
         internal IEnumerable<Base> GetPageItems(ReportPage page, bool postprocess)
         {
+            Console.WriteLine($"page.UnlimitedHeight: {page.UnlimitedHeight} page.UnlimitedWidth: {page.UnlimitedWidth}");
             if (!(page.UnlimitedHeight || page.UnlimitedWidth))
             {
                 foreach (Base child in page.ChildObjects)
@@ -235,6 +237,7 @@ namespace FastReport.Preview
                     foreach (Base child in page.ChildObjects)
 #pragma warning restore CS0162 // Unreachable code detected
                     {
+
                         if (child is OverlayBand)
                             yield return child;
                     }
@@ -246,6 +249,7 @@ namespace FastReport.Preview
                     reader.BlobStore = preparedPages.BlobStore;
                     for (int i = 0; i < xmlItem.Count; i++)
                     {
+                    
                         if (postprocess) yield return ReadObject(page, xmlItem[i], true, reader);
                         else
                             using (Base obj = ReadObject(page, xmlItem[i], true, reader))

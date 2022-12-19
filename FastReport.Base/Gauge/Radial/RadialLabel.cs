@@ -37,7 +37,7 @@ namespace FastReport.Gauge.Radial
 
                 SkiaSharp.SKPoint lblPt = new SkiaSharp.SKPoint(x + dx / 2, y + dy - ((Parent.Scale as RadialScale).AvrTick.Y - y));
                 SkiaSharp.SKSize txtSize = RadialUtils.GetStringSize(e, Parent, Font, Text);
-                SkiaSharp.SKFont font = RadialUtils.GetFont(e, Parent, Font);
+                FastReport.SKFont font = RadialUtils.GetFont(e, Parent, Font);
                 /*Brush/SkiaSharp.SKPaint brush = e.Cache.GetBrush(Color);
                 e.Graphics.DrawString(Text, font, brush, lblPt.X - txtSize.Width / 2, lblPt.Y - txtSize.Height / 2);
             }*/

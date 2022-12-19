@@ -801,10 +801,12 @@ namespace FastReport
         public virtual bool IsVisible(FRPaintEventArgs e)
         {
             
-            SkiaSharp.SKRect objRect = new SkiaSharp.SKRect(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
+            SkiaSharp.SKRect objRect = new SkiaSharp.SKRect();
+            objRect.Location = new SkiaSharp.SKPoint( AbsLeft * e.ScaleX, AbsTop * e.ScaleY);
+            objRect.Size = new SkiaSharp.SKSize(
               Width * e.ScaleX + 1, Height * e.ScaleY + 1);
             
-            return false;//TODO e.Graphics.IsVisible(objRect);
+            return e.Graphics.GetLocalClipBounds(out objRect);
         }
 
         /// <summary>

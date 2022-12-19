@@ -1241,31 +1241,31 @@ namespace FastReport.Import.StimulSoft
             return xmlNodeList;
         }
 
-        private SkiaSharp.SKFont ParseFont(string font)
+        private FastReport.SKFont ParseFont(string font)
         {
-            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+            FontStyle fontStyle = FontStyle.Regular;
             string[] defFontParts = font.Split(',');
             /*TODO
             if (font.Contains("Bold"))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Bold;
+                fontStyle |= FontStyle.Bold;
             }
             if (font.Contains("Italic"))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Italic;
+                fontStyle |= FontStyle.Italic;
             }
             if (font.Contains("Underline"))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Underline;
+                fontStyle |= FontStyle.Underline;
             }
             if (font.Contains("Strikeout"))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
+                fontStyle |= FontStyle.Strikeout;
             }
 
-            return new SkiaSharp.SKFont(defFontParts[0], UnitsConverter.ConvertFloat(defFontParts[1]), fontStyle);
+            return new FastReport.SKFont(defFontParts[0], UnitsConverter.ConvertFloat(defFontParts[1]), fontStyle);
             */
-            return new SkiaSharp.SKFont();
+            return new FastReport.SKFont();
         }
 
         private void ParseTextOptions(TextObject textObject, string data)

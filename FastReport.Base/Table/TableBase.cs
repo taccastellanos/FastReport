@@ -511,7 +511,7 @@ namespace FastReport.Table
             Height = Rows[Rows.Count - 1].Bottom;
             SkiaSharp.SKRect objRect = new SkiaSharp.SKRect(AbsLeft * e.ScaleX, AbsTop * e.ScaleY,
               Width * e.ScaleX + 1, Height * e.ScaleY + 1);
-            return true;//TODOe.Graphics.IsVisible(objRect);
+            return e.Graphics.GetLocalClipBounds(out objRect);
         }
 
         internal void SetResultTable(TableResult table)

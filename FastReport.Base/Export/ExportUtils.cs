@@ -707,7 +707,7 @@ namespace FastReport.Export
                 if (ice.MimeType == codec)
                     return ice;
             }*/
-            return SkiaSharp.SKEncodedImageFormat.Bmp ;
+            return SkiaSharp.SKEncodedImageFormat.Jpeg ;
         }
 
         /// <summary>
@@ -716,12 +716,10 @@ namespace FastReport.Export
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static void SaveJpeg(SkiaSharp.SKImage image, Stream buff, int quality)
         {
-            /*TODO
-            ImageCodecInfo ici = ExportUtils.GetCodec("image/jpeg");
-            EncoderParameters ep = new EncoderParameters();
-            ep.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
-            image.Save(buff, ici, ep);
-            */
+            
+            var data = image.Encode(SkiaSharp.SKEncodedImageFormat.Jpeg,quality);
+            data.SaveTo(buff);
+        
         }
 
         internal static string TruncLeadSlash(string line)

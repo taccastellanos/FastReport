@@ -58,15 +58,15 @@ namespace FastReport.Export.Image
         private SkiaSharp.SKColorType monochromeTiffCompression ;
         private SkiaSharp.SKImage masterTiffImage;
         private SkiaSharp.SKImage bigImage;
-        /* TODO
-        private SkiaSharp.SKGraphics bigGraphics;*/
+        
+        private SkiaSharp.SKCanvas bigGraphics;
         private float curOriginY;
         private bool firstPage;
         private int paddingNonSeparatePages;
         private int pageNumber;
         private SkiaSharp.SKImage image;
-/* TODO
-        private static SkiaSharp.SKGraphics g;*/
+
+        private static SkiaSharp.SKCanvas g;
         private int height;
         private int width;
         private int widthK;

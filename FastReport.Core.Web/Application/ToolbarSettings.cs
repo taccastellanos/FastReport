@@ -95,9 +95,9 @@ namespace FastReport.Web
         /// <summary>
         /// Use to change Font in Toolbar,
         /// Default value null
-        /// <para>Example syntax : new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14 , SkiaSharp.SKFontStyle.Bold)</para>
+        /// <para>Example syntax : new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14 , FontStyle.Bold)</para>
         /// </summary>
-        public SkiaSharp.SKFont FontSettings { get; set; } = null;
+        public FastReport.SKFont FontSettings { get; set; } = null;
 
         public int Height { get; set; } = 40;
 

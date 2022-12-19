@@ -16,7 +16,7 @@ namespace FastReport
         private bool applyTextFill;
         private Border border;
         private FillBase fill;
-        private SkiaSharp.SKFont font;
+        private FastReport.SKFont font;
         private FillBase textFill;
 
         #endregion Private Fields
@@ -80,7 +80,7 @@ namespace FastReport
         /// <summary>
         /// Gets or sets a font.
         /// </summary>
-        public SkiaSharp.SKFont Font
+        public FastReport.SKFont Font
         {
             get { return font; }
             set { font = value; }
@@ -139,6 +139,7 @@ namespace FastReport
         /// </remarks>
         public void Deserialize(FRReader reader)
         {
+
             reader.ReadProperties(this);
             Fill.Deserialize(reader, "Fill");
             TextFill.Deserialize(reader, "TextFill");

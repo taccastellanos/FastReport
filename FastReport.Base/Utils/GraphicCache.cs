@@ -109,14 +109,17 @@ namespace FastReport
         /// <param name="size">Size of a font.</param>
         /// <param name="style">Style of a font.</param>
         /// <returns>The <b>Font</b> object.</returns>
-        public SkiaSharp.SKFont GetFont(SkiaSharp.SKTypeface name, float size, SkiaSharp.SKFontStyle style)
+        public FastReport.SKFont GetFont(SkiaSharp.SKTypeface name, float size, FontStyle style)
         {
             int hash = name.GetHashCode() ^ size.GetHashCode() ^ style.GetHashCode();
-            var result = fonts[hash] as SkiaSharp.SKFont;
+            var result = fonts[hash] as FastReport.SKFont;
             if (result == null)
             {
                 
-                result = new SkiaSharp.SKFont( name, size);
+                result = new FastReport.SKFont( name, size)
+                {
+                    Style = style
+                };
                 
                 fonts[hash] = result;
             }
@@ -217,7 +220,7 @@ namespace FastReport
             {
                 //TODObrush.Dispose();
             }
-            foreach (SkiaSharp.SKFont font in fonts.Values)
+            foreach (FastReport.SKFont font in fonts.Values)
             {
                 font.Dispose();
             }

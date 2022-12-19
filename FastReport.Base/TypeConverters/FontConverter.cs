@@ -39,9 +39,9 @@ namespace FastReport.TypeConverters
         /// <inheritdoc/>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (value is SkiaSharp.SKFont)
+            if (value is FastReport.SKFont)
             {
-                SkiaSharp.SKFont font = value as SkiaSharp.SKFont;
+                FastReport.SKFont font = value as FastReport.SKFont;
                 if (destinationType == typeof(string))
                 {
                     if (culture == null)
@@ -89,7 +89,7 @@ namespace FastReport.TypeConverters
                             break;
                     }
 */
-                    if (font.Typeface.FontStyle !=  SkiaSharp.SKFontStyle.Normal )
+                    if (font.Style !=  FontStyle.Regular )
                     {
                         sb.Append(culture.TextInfo.ListSeparator[0]);
                         sb.Append(" style=");
@@ -101,7 +101,7 @@ namespace FastReport.TypeConverters
 
                 if (destinationType == typeof(InstanceDescriptor))
                 {
-                    ConstructorInfo met = typeof(SkiaSharp.SKFont).GetConstructor(new Type[] { typeof(SkiaSharp.SKTypeface), typeof(float) });
+                    ConstructorInfo met = typeof(FastReport.SKFont).GetConstructor(new Type[] { typeof(SkiaSharp.SKTypeface), typeof(float) });
                     object[] args = new object[4];
                     args[0] = font.Typeface.FamilyName;
                     args[1] = font.Size;                    
@@ -141,7 +141,7 @@ namespace FastReport.TypeConverters
             string style = null;
             string sizeStr = null;
             float fontSize = 8.25f;
-            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Normal;
+            FontStyle fontStyle = FontStyle.Regular;
       
 
             // Get the index of the first separator (would indicate the end of the name in the string).
@@ -149,7 +149,7 @@ namespace FastReport.TypeConverters
 
             if (nameIndex < 0)
             {
-                return new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontName), fontSize);
+                return new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontName), fontSize);
             }
 
             // Some parameters are provided in addition to name.
@@ -204,13 +204,13 @@ namespace FastReport.TypeConverters
                     // Parse FontStyle
                     style = style.Substring(6); // style string always starts with style=
                     string[] styleTokens = style.Split(separator);
-/*TODO
+                    
                     for (int tokenCount = 0; tokenCount < styleTokens.Length; tokenCount++)
                     {
                         string styleText = styleTokens[tokenCount];
                         styleText = styleText.Trim();
 
-                        fontStyle |= (FontStyle)Struct.Parse(typeof(FontStyle), styleText, true);
+                        fontStyle |= (FontStyle)Enum.Parse(typeof(FontStyle), styleText, true);
 
                         // Enum.IsDefined doesn't do what we want on flags enums...
                         FontStyle validBits = FontStyle.Regular | FontStyle.Bold | FontStyle.Italic | FontStyle.Underline | FontStyle.Strikeout;
@@ -218,11 +218,14 @@ namespace FastReport.TypeConverters
                         {
                             throw new InvalidEnumArgumentException("FontStyle", (int)fontStyle, typeof(FontStyle));
                         }
-                    }*/
+                    }
                 }
             }
-
-            var result = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontName, fontStyle), fontSize);
+     
+            var result = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName(fontName), fontSize)
+                                                                                    {
+                                                                                        Style = fontStyle
+                                                                                    };
             if (result.Typeface.FamilyName != fontName)
             {
                 // font family not found in installed fonts, search in the user fonts
@@ -233,13 +236,16 @@ namespace FastReport.TypeConverters
                     {
                         if (String.Compare(fontName, f, true) == 0)
                         {
-                            result = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName(f, fontStyle), fontSize);
+                            result = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName(f), fontSize)
+                                                                                                            {
+                                                                                                                Style = fontStyle
+                                                                                                            };
                             break;
                         }
                     }
                 }
             }
-
+            
             return result;
         }
 
@@ -299,7 +305,7 @@ namespace FastReport.TypeConverters
             float size = 8;
             string name = null;
             bool vertical = false;
-            SkiaSharp.SKFontStyle style = SkiaSharp.SKFontStyle.Normal;
+            FontStyle style = FontStyle.Regular;
             SkiaSharp.SKTypeface fontFamily = null;
             //TODO GraphicsUnit unit = GraphicsUnit.Point;
 
@@ -322,7 +328,7 @@ namespace FastReport.TypeConverters
             {
                 if ((bool)value == true)
                 {
-                    style = SkiaSharp.SKFontStyle.Bold;
+                    style = FontStyle.Bold;
                     
                 }
             }
@@ -331,17 +337,12 @@ namespace FastReport.TypeConverters
             {
                 if ((bool)value == true)
                 {
-                    if(style == SkiaSharp.SKFontStyle.Bold)
-                    {
-                        style = SkiaSharp.SKFontStyle.BoldItalic;
-                    }
-                    else
-                    {
-                        style = SkiaSharp.SKFontStyle.BoldItalic;
-                    }
+                    
+                    style |= FontStyle.Italic;
+                    
                 }
             }
-/*TODO
+
             if ((value = propertyValues["Strikeout"]) != null)
             {
                 
@@ -354,20 +355,19 @@ namespace FastReport.TypeConverters
                 if ((bool)value == true)
                     style |= FontStyle.Underline;
             }
-*/
             if (name == null)
             {
-                fontFamily = SkiaSharp.SKTypeface.FromFamilyName("Arial", style);
+                fontFamily = SkiaSharp.SKTypeface.FromFamilyName("Arial");
             }
             else
             {
-                SkiaSharp.SKFontManager collection = SkiaSharp.SKFontManager.Default;
+                var collection = SkiaSharp.SKFontManager.Default;
                 
                 foreach (var font in collection.GetFontFamilies())
                 {
                     if (name.Equals(font, StringComparison.OrdinalIgnoreCase))
                     {
-                        fontFamily = SkiaSharp.SKTypeface.FromFamilyName(font, style);
+                        fontFamily = SkiaSharp.SKTypeface.FromFamilyName(font);
                         break;
                     }
                 }
@@ -375,15 +375,17 @@ namespace FastReport.TypeConverters
                 // font family not found in installed fonts
                 if (fontFamily == null)
                 {
-                    fontFamily = SkiaSharp.SKTypeface.FromFamilyName(name, style);
+                    fontFamily = SkiaSharp.SKTypeface.FromFamilyName(name);
                 }
 
                 // font family not found in private fonts also
                 if (fontFamily == null)
                     fontFamily = SkiaSharp.SKTypeface.Default;
             }
-
-            return new SkiaSharp.SKFont(fontFamily, size);
+            var f = new FastReport.SKFont(fontFamily, size);
+            f.Style = style;
+            
+            return f;
         }
 
         /// <inheritdoc/>
@@ -398,7 +400,7 @@ namespace FastReport.TypeConverters
             object value,
             Attribute[] attributes)
         {
-            return value is SkiaSharp.SKFont ? TypeDescriptor.GetProperties(value, attributes) : base.GetProperties(context, value, attributes);
+            return value is FastReport.SKFont ? TypeDescriptor.GetProperties(value, attributes) : base.GetProperties(context, value, attributes);
         }
 
         /// <inheritdoc/>

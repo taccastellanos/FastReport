@@ -237,7 +237,7 @@ namespace FastReport
         else if(cell.IsBomb)
         {
           
-          table[x,y].Font = new SkiaSharp.SKFont(table[x,y].Font.FontFamily, 0.1f);
+          table[x,y].Font = new FastReport.SKFont(table[x,y].Font.FontFamily, 0.1f);
           table[x,y].Text = BOMB;
           
         }

@@ -56,7 +56,7 @@ namespace DataFromDataSet
             titleText.Parent = page.ReportTitle;
             titleText.CreateUniqueName();
             titleText.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 5, 0, Units.Centimeters * 10, Units.Centimeters * 1);
-            titleText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
+            titleText.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, FontStyle.Bold);
             titleText.Text = "Employees";
             titleText.HorzAlign = HorzAlign.Center;
 
@@ -123,7 +123,7 @@ namespace DataFromDataSet
             categoryText.Parent = masterDataBand;
             categoryText.CreateUniqueName();
             categoryText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 5, Units.Centimeters * 0.5f);
-            categoryText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10, SkiaSharp.SKFontStyle.Bold);
+            categoryText.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10, FontStyle.Bold);
             categoryText.Text = "[Categories.CategoryName]";
 
             // create detail data band
@@ -178,7 +178,7 @@ namespace DataFromDataSet
             groupText.Parent = groupHeaderBand;
             groupText.CreateUniqueName();
             groupText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 1);
-            groupText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
+            groupText.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, FontStyle.Bold);
             groupText.Text = "[[Products.ProductName].Substring(0,1)]";
             groupText.VertAlign = VertAlign.Center;
             groupText.Fill = new LinearGradientFill(Color.OldLace, Color.Moccasin, 90, 0.5f, 1);
@@ -254,7 +254,7 @@ namespace DataFromDataSet
             groupText.Parent = groupHeaderBand;
             groupText.CreateUniqueName();
             groupText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 1);
-            groupText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
+            groupText.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, FontStyle.Bold);
             groupText.Text = "[[Products.ProductName].Substring(0,1)]";
             groupText.VertAlign = VertAlign.Center;
             groupText.Fill = new LinearGradientFill(Color.OldLace, Color.Moccasin, 90, 0.5f, 1);
@@ -270,7 +270,7 @@ namespace DataFromDataSet
             nestedText.Parent = nestedGroupBand;
             nestedText.CreateUniqueName();
             nestedText.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 10, Units.Centimeters * 0.5f);
-            nestedText.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10, SkiaSharp.SKFontStyle.Bold);
+            nestedText.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10, FontStyle.Bold);
             nestedText.Text = "[[Products.ProductName].Substring(0,2)]";
 
             // create data band
@@ -348,7 +348,7 @@ namespace DataFromDataSet
             titleText1.Parent = page.ReportTitle;
             titleText1.CreateUniqueName();
             titleText1.Bounds = new SkiaSharp.SKRect(0, 0, Units.Centimeters * 8, Units.Centimeters * 1);
-            titleText1.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
+            titleText1.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, FontStyle.Bold);
             titleText1.Text = "Products";
             titleText1.HorzAlign = HorzAlign.Center;
 
@@ -356,7 +356,7 @@ namespace DataFromDataSet
             titleText2.Parent = page.ReportTitle;
             titleText2.CreateUniqueName();
             titleText2.Bounds = new SkiaSharp.SKRect(Units.Centimeters * 9, 0, Units.Centimeters * 8, Units.Centimeters * 1);
-            titleText2.Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, SkiaSharp.SKFontStyle.Bold);
+            titleText2.Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 14, FontStyle.Bold);
             titleText2.Text = "Suppliers";
             titleText2.HorzAlign = HorzAlign.Center;
 

@@ -791,11 +791,11 @@ namespace FastReport.Table
             {
                 if (Report.Engine.UnlimitedHeight)
                 {
-                    //TODObounds.Height = tableEndY;
+                    bounds.Size = new SkiaSharp.SKSize(bounds.Width, tableEndY);
                 }
                 if (Report.Engine.UnlimitedWidth)
                 {
-                    //TODObounds.Width = tableEndX;
+                    bounds.Size = new SkiaSharp.SKSize(tableEndX, bounds.Height);                    
                 }
             }
 

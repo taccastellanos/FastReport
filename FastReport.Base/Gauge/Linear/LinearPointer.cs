@@ -64,9 +64,9 @@ namespace FastReport.Gauge.Linear
 
         private void DrawHorz(FRPaintEventArgs e)
         {
-            /*TODO
-            IGraphics g = e.Graphics;
-            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
+            
+            var g = e.Graphics;
+            /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
 
             left = (float)(Parent.AbsLeft + 0.5f * Units.Centimeters + (Parent.Width - 1.0f * Units.Centimeters) * (Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum)) * e.ScaleX;
             top = (Parent.AbsTop + Parent.Height / 2) * e.ScaleY;
@@ -75,8 +75,11 @@ namespace FastReport.Gauge.Linear
 
             float dx = width / 2;
             float dy = height * 0.3f;
-            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(new SkiaSharp.SKRect(left - dx, top, width, height), e.ScaleX, e.ScaleY);
-            SkiaSharp.SKSkiaSharp.SKPoint[] p = new SkiaSharp.SKSkiaSharp.SKPoint[]
+            var r = new SkiaSharp.SKRect();
+            r.Location = new SkiaSharp.SKPoint(left - dx, top);
+            r.Size = new SkiaSharp.SKSize(width, height);
+            /*Brush*/SkiaSharp.SKPaint brush = Fill.CreateBrush(r, e.ScaleX, e.ScaleY);
+            SkiaSharp.SKPoint[] p = new SkiaSharp.SKPoint[]
             {
                 new SkiaSharp.SKPoint(left, top),
                 new SkiaSharp.SKPoint(left + dx, top + dy),
@@ -92,19 +95,24 @@ namespace FastReport.Gauge.Linear
                 p[3].Y = top - height;
                 p[4].Y = top - dy;
             }
+        
+            SkiaSharp.SKPath path = new SkiaSharp.SKPath();
+            path.MoveTo(p[0]);
+            path.LineTo(p[1]);
+            path.LineTo(p[2]);
+            path.LineTo(p[3]);
+            path.LineTo(p[4]);
+            path.LineTo(p[4].X, p[0].Y);
 
-            SkiaSharp.SKPath path = new GraphicsPath();
-            path.AddLines(p);
-            path.AddLine(p[4], p[0]);
-
-            g.FillAndDrawPath(pen, brush, path);*/
+            g.DrawPath(path, pen);
+            g.DrawPath(path, brush);
         }
 
         private void DrawVert(FRPaintEventArgs e)
         {
-            /*TODO
-            IGraphics g = e.Graphics;
-            /*Pen/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
+            
+            var g = e.Graphics;
+            /*Pen*/SkiaSharp.SKPaint pen = e.Cache.GetPen(BorderColor, BorderWidth * e.ScaleX, DashStyle.Solid);
 
             left = (Parent.AbsLeft + Parent.Width / 2) * e.ScaleX;
             top = (float)(Parent.AbsTop + Parent.Height - 0.5f * Units.Centimeters - (Parent.Height - 1.0f * Units.Centimeters) * (Parent.Value - Parent.Minimum) / (Parent.Maximum - Parent.Minimum)) * e.ScaleY;
@@ -113,8 +121,11 @@ namespace FastReport.Gauge.Linear
 
             float dx = width * 0.3f;
             float dy = height / 2;
-            /*Brush/SkiaSharp.SKPaint brush = Fill.CreateBrush(new SkiaSharp.SKRect(left, top - dy, width, height), e.ScaleX, e.ScaleY);
-            SkiaSharp.SKSkiaSharp.SKPoint[] p = new SkiaSharp.SKSkiaSharp.SKPoint[]
+            var r = new SkiaSharp.SKRect();
+            r.Location = new SkiaSharp.SKPoint(left, top - dy);
+            r.Size = new SkiaSharp.SKSize(width, height);
+            /*Brush*/SkiaSharp.SKPaint brush = Fill.CreateBrush(r, e.ScaleX, e.ScaleY);
+            SkiaSharp.SKPoint[] p = new SkiaSharp.SKPoint[]
             {
                 new SkiaSharp.SKPoint(left, top),
                 new SkiaSharp.SKPoint(left + dx, top - dy),
@@ -131,11 +142,17 @@ namespace FastReport.Gauge.Linear
                 p[4].X = left - dx;
             }
 
-            SkiaSharp.SKPath path = new GraphicsPath();
-            path.AddLines(p);
-            path.AddLine(p[4], p[0]);
+            SkiaSharp.SKPath path = new SkiaSharp.SKPath();
+            path.MoveTo(p[0]);
+            path.LineTo(p[1]);
+            path.LineTo(p[2]);
+            path.LineTo(p[3]);
+            path.LineTo(p[4]);            
+            path.LineTo(p[4].X, p[0].Y);
 
-            g.FillAndDrawPath(pen, brush, path);*/
+            g.DrawPath(path, pen);
+            g.DrawPath(path, brush);
+            
         }
 
         #endregion // Private Methods

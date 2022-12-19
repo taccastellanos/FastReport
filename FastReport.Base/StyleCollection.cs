@@ -142,11 +142,13 @@ namespace FastReport
     {
       Clear();
       Name = "";
+
       reader.ReadProperties(this);
       while (reader.NextItem())
       {
         Style s = new Style();
         reader.Read(s);
+        
         Add(s);
       }
     }

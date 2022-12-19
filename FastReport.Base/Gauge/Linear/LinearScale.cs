@@ -59,7 +59,7 @@ namespace FastReport.Gauge.Linear
             float y2 = top + height;
             float step = width / (majorTicksNum - 1);
             int textStep = (int)((Parent.Maximum - Parent.Minimum) / (majorTicksNum - 1));
-            SkiaSharp.SKFont font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
+            FastReport.SKFont font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
             string text = Parent.Minimum.ToString();
             float y3 = y1 - 0.4f * Units.Centimeters * e.ScaleY;
             if ((Parent as LinearGauge).Inverted)
@@ -109,7 +109,7 @@ namespace FastReport.Gauge.Linear
             float x2 = left + width;
             float step = height / (majorTicksNum - 1);
             int textStep = (int)((Parent.Maximum - Parent.Minimum) / (majorTicksNum - 1));
-            SkiaSharp.SKFont font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
+            FastReport.SKFont font = e.Cache.GetFont(Font.FontFamily, Parent.IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi, Font.Style);
             string text = Parent.Minimum.ToString();
             for (int i = 0; i < majorTicksNum; i++)
             {

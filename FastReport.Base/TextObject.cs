@@ -269,7 +269,7 @@ namespace FastReport
         private bool rightToLeft;
         private bool wordWrap;
         private bool underlines;
-        private SkiaSharp.SKFont font;
+        private SKFont font;
         private FillBase textFill;
         private TextOutline textOutline;
         private StringTrimming trimming;
@@ -287,7 +287,7 @@ namespace FastReport
         private float autoShrinkMinSize;
         private float paragraphOffset;
         private FillBase savedTextFill;
-        private SkiaSharp.SKFont savedFont;
+        private FastReport.SKFont savedFont;
         private string savedText;
         private FormatBase savedFormat;
         private InlineImageCache inlineImageCache;
@@ -421,7 +421,7 @@ namespace FastReport
         /// Gets or sets the font settings for this object.
         /// </summary>
         [Category("Appearance")]
-        public SkiaSharp.SKFont Font
+        public SKFont Font
         {
             get { return font; }
             set
@@ -751,7 +751,7 @@ namespace FastReport
             if (String.IsNullOrEmpty(Text) || report == null)
                 return new SkiaSharp.SKSize(0, 0);
 
-            SkiaSharp.SKFont font = report.GraphicCache.GetFont(Font.Typeface, Font.Size * 96f / DrawUtils.ScreenDpi, Font.Typeface.FontStyle);
+            FastReport.SKFont font = report.GraphicCache.GetFont(Font.Typeface, Font.Size * 96f / DrawUtils.ScreenDpi, Font.Style);
             float width = 0;
             if (WordWrap)
             {
@@ -913,7 +913,7 @@ namespace FastReport
             if (report == null)
                 return "";
 
-            SkiaSharp.SKFont font = report.GraphicCache.GetFont(Font.Typeface, Font.Size * 96f / DrawUtils.ScreenDpi, Font.Typeface.FontStyle);
+            FastReport.SKFont font = report.GraphicCache.GetFont(Font.Typeface, Font.Size * 96f / DrawUtils.ScreenDpi, Font.Style);
             var format = GetStringFormat(report.GraphicCache, StringFormatFlags.LineLimit);
             SkiaSharp.SKRect textRect = new SkiaSharp.SKRect();
             textRect.Location = new SkiaSharp.SKPoint(0, 0);
@@ -1010,7 +1010,10 @@ namespace FastReport
             {
                 while (CalcWidth() > Width - 1 && Font.Size > AutoShrinkMinSize && Font.Size>1)
                 {
-                    Font = new SkiaSharp.SKFont(Font.Typeface, Font.Size - 1);
+                    Font = new SKFont(Font.Typeface, Font.Size - 1)
+														{
+                                                         Style = Font.Style
+														};
                 }
             }
             else if (AutoShrink == AutoShrinkMode.FontWidth)
@@ -1170,7 +1173,7 @@ namespace FastReport
             context.g = g;
             context.font = font.Typeface;
             context.size = font.Size;
-            context.style = font.Typeface.FontStyle; // no keep
+            context.style = font.Style; // no keep
             context.color = TextColor; // no keep
             context.underlineColor = textOutline.Color;
             context.rect = textRect;
@@ -1218,9 +1221,9 @@ namespace FastReport
                     text = MakeParagraphOffset(text);
                 StringFormat format = GetStringFormat(e.Cache, 0, e.ScaleX);
 
-                SkiaSharp.SKFont font = e.Cache.GetFont(Font.Typeface,
+                FastReport.SKFont font = e.Cache.GetFont(Font.Typeface,
                   IsPrinting ? Font.Size : Font.Size * e.ScaleX * 96f / DrawUtils.ScreenDpi,
-                  Font.Typeface.FontStyle);
+                  Font.Style);
 
                 /*Brush*/SkiaSharp.SKPaint textBrush = null;
                 if (TextFill is SolidFill)
@@ -1287,24 +1290,25 @@ namespace FastReport
                                     }
                                     else
                                     {
-                                        var path = new SkiaSharp.SKPath();
-                                        /*TODOpath.AddText(text, font.FontFamily, Convert.ToInt32(font.Style),
+                                        var path = outlinePen.GetTextPath(text,0,0);
+                                        /*path.AddText(text, font.FontFamily, Convert.ToInt32(font.Style),
                                             g.DpiY * font.Size / 72, textRect, format);*/
 
                                         var state = g.Save();
                                         g.ClipPath(path);
-                                        //TODOg.FillPath(textBrush, path);
+                                        //g.FillPath(textBrush, path);
 
                                         //regime for text output with drawbehind 
                                         if (TextOutline.DrawBehind)
                                         {
                                             
                                             g.DrawPath(path, outlinePen);
-                                            //TODOg.FillPath(textBrush, path);
+                                            g.DrawPath(path,textBrush);
                                         }
                                         else //without. default
                                         {
-                                            //TODOg.FillAndDrawPath(outlinePen, textBrush, path);
+                                            g.DrawPath(path,textBrush);
+                                            g.DrawPath(path, outlinePen);                                            
                                         }
                                         g.RestoreToCount(state);
 
@@ -1516,7 +1520,8 @@ namespace FastReport
                                 {
                                     if (major < 2016)
                                     {
-                                        Font = new SkiaSharp.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
+                                        Font = new FastReport.SKFont(SkiaSharp.SKTypeface.FromFamilyName("Arial"), 10);
+                                        Font.Style = FontStyle.Regular;
                                     }
                                 }
                             }

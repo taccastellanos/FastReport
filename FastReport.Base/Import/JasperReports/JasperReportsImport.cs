@@ -949,34 +949,34 @@ namespace FastReport.Import.JasperReports
             return (ReportComponentBase)(band as ReportComponentBase).ChildObjects[(band as ReportComponentBase).ChildObjects.Count - 1];
         }
 
-        private SkiaSharp.SKFont ParseFont(XmlNode font)
+        private FastReport.SKFont ParseFont(XmlNode font)
         { 
             float size = 10;
             if (font.Attributes["size"] != null)
                 size = UnitsConverter.ConvertFloat(font.Attributes["size"].Value);
             /*TODO
-            SkiaSharp.SKFontStyle fontStyle = SkiaSharp.SKFontStyle.Regular;
+            FontStyle fontStyle = FontStyle.Regular;
             if (font.Attributes["isBold"] != null && UnitsConverter.ConvertBool(font.Attributes["isBold"].Value))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Bold;
+                fontStyle |= FontStyle.Bold;
             }
             if (font.Attributes["isItalic"] != null && UnitsConverter.ConvertBool(font.Attributes["isItalic"].Value))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Italic;
+                fontStyle |= FontStyle.Italic;
             }
             if (font.Attributes["isUnderline"] != null && UnitsConverter.ConvertBool(font.Attributes["isUnderline"].Value))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Underline;
+                fontStyle |= FontStyle.Underline;
             }
             if (font.Attributes["isStrikeThrough"] != null && UnitsConverter.ConvertBool(font.Attributes["isStrikeThrough"].Value))
             {
-                fontStyle |= SkiaSharp.SKFontStyle.Strikeout;
+                fontStyle |= FontStyle.Strikeout;
             }
 
             if(font.Attributes["fontName"] == null)
-                return new SkiaSharp.SKFont(DrawUtils.DefaultReportFont.FontFamily, size, fontStyle); 
+                return new FastReport.SKFont(DrawUtils.DefaultReportFont.FontFamily, size, fontStyle); 
             */
-            return new SkiaSharp.SKFont();//font.Attributes["fontName"].Value, size, fontStyle);
+            return new FastReport.SKFont();//font.Attributes["fontName"].Value, size, fontStyle);
         }
 
         private void LoadStyles()
